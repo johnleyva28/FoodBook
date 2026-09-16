@@ -5,6 +5,7 @@ import '../../../core/theme/foodbook_colors.dart';
 import '../../../core/theme/foodbook_spacing.dart';
 import '../../../core/theme/foodbook_text_styles.dart';
 import '../../../core/utils/date_helper.dart';
+import '../../../core/widgets/foodbook_logo.dart';
 import '../../../core/widgets/hero_card.dart';
 import '../../../core/widgets/reminder_banner.dart';
 import '../../../core/widgets/stat_row.dart';
@@ -58,32 +59,7 @@ class _DailyView extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Icon(
-                  Icons.restaurant_rounded,
-                  size: 22,
-                  color: theme.colorScheme.primary,
-                ),
-                const SizedBox(width: FoodBookSpacing.sm),
-                Text(
-                  'FoodBook',
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: 0.3,
-                  ),
-                ),
-              ],
-            ),
-            Text(
-              todayLabel,
-              style: theme.textTheme.bodySmall,
-            ),
-          ],
-        ),
+        title: FoodBookHeader(subtitle: todayLabel),
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () async {
