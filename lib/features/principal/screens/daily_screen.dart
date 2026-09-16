@@ -5,6 +5,7 @@ import '../../../core/theme/foodbook_colors.dart';
 import '../../../core/theme/foodbook_spacing.dart';
 import '../../../core/theme/foodbook_text_styles.dart';
 import '../../../core/utils/date_helper.dart';
+import '../../../core/widgets/app_toast.dart';
 import '../../../core/widgets/foodbook_logo.dart';
 import '../../../core/widgets/hero_card.dart';
 import '../../../core/widgets/reminder_banner.dart';
@@ -73,11 +74,9 @@ class _DailyView extends StatelessWidget {
               categoryName: result.categoryName,
             );
             if (!context.mounted) return;
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('Bocadillo de S/ ${result.price.toStringAsFixed(2)} agregado'),
-                action: SnackBarAction(label: 'OK', onPressed: () {}),
-              ),
+            AppToast.success(
+              context,
+              'Bocadillo de S/ ${result.price.toStringAsFixed(2)} agregado',
             );
           }
         },
@@ -213,22 +212,20 @@ class _DailyView extends StatelessWidget {
                       ),
                     ),
                     onDismissed: (_) async {
-                      final messenger = ScaffoldMessenger.of(context);
                       await vm.deleteSnack(s.id);
-                      messenger.showSnackBar(
-                        SnackBar(
-                          content: Text('Eliminado: ${desc ?? "bocadillo"}'),
-                          action: SnackBarAction(
-                            label: 'Deshacer',
-                            onPressed: () {
-                              vm.addSnack(
-                                price: s.price,
-                                description: desc,
-                                categoryName: cat,
-                              );
-                            },
-                          ),
-                        ),
+                      if (!context.mounted) return;
+                      AppToast.withAction(
+                        context,
+                        message: 'Eliminado: ${desc ?? "bocadillo"}',
+                        actionLabel: 'Deshacer',
+                        kind: AppToastKind.warning,
+                        onAction: () {
+                          vm.addSnack(
+                            price: s.price,
+                            description: desc,
+                            categoryName: cat,
+                          );
+                        },
                       );
                     },
                     child: ListTile(

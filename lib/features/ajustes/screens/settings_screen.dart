@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../core/theme/foodbook_colors.dart';
 import '../../../core/theme/foodbook_spacing.dart';
+import '../../../core/widgets/app_toast.dart';
 import '../../../data/repositories/maintenance_repository.dart';
 import '../viewmodels/settings_viewmodel.dart';
 
@@ -410,12 +411,9 @@ class SettingsScreen extends StatelessWidget {
   }
 
   void _exportCsv(BuildContext context, SettingsViewModel vm) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text(
-          'Exportación CSV en construcción. Estará disponible en la próxima versión.',
-        ),
-      ),
+    AppToast.warning(
+      context,
+      'Exportación CSV en construcción. Estará disponible en la próxima versión.',
     );
   }
 
@@ -441,11 +439,7 @@ class SettingsScreen extends StatelessWidget {
               Navigator.pop(dialogContext);
               await repo.wipeAll();
               if (!context.mounted) return;
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Todos los datos fueron eliminados'),
-                ),
-              );
+              AppToast.danger(context, 'Todos los datos fueron eliminados');
             },
             child: const Text('Sí, borrar'),
           ),

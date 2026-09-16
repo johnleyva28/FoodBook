@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../../../core/theme/foodbook_colors.dart';
 import '../../../core/theme/foodbook_spacing.dart';
 import '../../../core/utils/date_helper.dart';
+import '../../../core/widgets/app_toast.dart';
 import '../../../core/widgets/stat_row.dart';
 import '../../../data/app_data_streams.dart';
 import '../../../data/repositories/catalog_repository.dart';
@@ -265,9 +266,7 @@ class _DiaDetalleScreenState extends State<DiaDetalleScreen> {
                   await _vm.deleteSnack(s.id);
                   await _load();
                   if (!mounted) return;
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Eliminado: $desc')),
-                  );
+                  AppToast.info(context, 'Eliminado: $desc');
                 },
                 child: ListTile(
                   leading: CircleAvatar(
@@ -821,9 +820,7 @@ class _NotesEditorState extends State<_NotesEditor> {
                 extras,
               );
               if (!context.mounted) return;
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Notas guardadas')),
-              );
+              AppToast.success(context, 'Notas guardadas');
             },
             icon: const Icon(Icons.save_rounded, size: 18),
             label: const Text('Guardar notas'),
