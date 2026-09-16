@@ -2,6 +2,12 @@
 
 Todos los cambios notables en FoodBook se documentan aquí. El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y la convención de commits es [Conventional Commits](https://www.conventionalcommits.org/es/v1.0.0/).
 
+## Estado del build
+
+- ✅ `flutter analyze` → No issues found
+- ✅ `flutter test` → 14/14 tests passed
+- ✅ `flutter build windows --debug` → Build successful
+
 ## [2.0.0] — 2026-09-15
 
 ### Added — Sistema visual

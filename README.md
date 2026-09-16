@@ -131,6 +131,11 @@ flutter run -d windows    # escritorio
 flutter test
 ```
 
+Estado actual (FoodBook 2.0.0):
+- ✅ `flutter analyze` → **No issues found**
+- ✅ `flutter test` → **14/14 tests passed**
+- ✅ `flutter build windows --debug` → **Build successful**
+
 Los tests cubren:
 
 - `unit_test.dart` — constantes y decodificación de campos opcionales.
