@@ -12,6 +12,25 @@ class MoneyFormatter {
 
   const MoneyFormatter({required this.symbol, this._locale = 'es_PE'});
 
+  /// Crea el formateador a partir de un código (PEN, USD, S/, $).
+  factory MoneyFormatter.fromCode(String? code, {String locale = 'es_PE'}) {
+    return MoneyFormatter(symbol: _symbolFor(code), locale: locale);
+  }
+
+  /// Mapea el código a su símbolo. Acepta códigos ('PEN', 'USD')
+  /// o símbolos literales ('S/', '$').
+  static String _symbolFor(String? code) {
+    switch (code) {
+      case r'$':
+      case 'USD':
+        return r'$';
+      case 'S/':
+      case 'PEN':
+      default:
+        return 'S/';
+    }
+  }
+
   /// Formato estándar: `S/ 12.50`.
   String format(double amount) {
     final n = NumberFormat.currency(
