@@ -24,6 +24,7 @@ class PaymentRepository {
     required double amount,
     String? note,
     String? methodName,
+    String? date,
   }) {
     final encoded = _encodeNote(note, methodName);
     return _db
@@ -31,7 +32,7 @@ class PaymentRepository {
         .insert(
           PaymentsCompanion.insert(
             amount: amount,
-            date: DateHelper.today(),
+            date: date ?? DateHelper.today(),
             note: Value(encoded),
           ),
         );
@@ -75,8 +76,6 @@ class PaymentRepository {
     final result = await query.getSingle();
     return result.read(sumExp) ?? 0.0;
   }
-
-  // ════════════════════════════════════════════════════════════
 
   String? _encodeNote(String? note, String? methodName) {
     final buffer = StringBuffer();

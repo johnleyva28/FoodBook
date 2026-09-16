@@ -80,6 +80,20 @@ class DailyLogRepository {
         .write(DailyLogsCompanion(hadDinner: Value(value)));
   }
 
+  /// Marca/desmarca almuerzo en una fecha arbitraria.
+  Future<void> setLunchForDate(String date, bool value) async {
+    await getOrCreateForDate(date);
+    await (_db.update(_db.dailyLogs)..where((t) => t.date.equals(date)))
+        .write(DailyLogsCompanion(hadLunch: Value(value)));
+  }
+
+  /// Marca/desmarca cena en una fecha arbitraria.
+  Future<void> setDinnerForDate(String date, bool value) async {
+    await getOrCreateForDate(date);
+    await (_db.update(_db.dailyLogs)..where((t) => t.date.equals(date)))
+        .write(DailyLogsCompanion(hadDinner: Value(value)));
+  }
+
   Future<void> saveBreakfast({
     required bool had,
     required double price,
@@ -89,6 +103,23 @@ class DailyLogRepository {
     await (_db.update(
       _db.dailyLogs,
     )..where((t) => t.date.equals(DateHelper.today()))).write(
+      DailyLogsCompanion(
+        hadBreakfast: Value(had),
+        breakfastPrice: Value(had ? price : 0.0),
+        breakfastDesc: Value(description),
+      ),
+    );
+  }
+
+  /// Guarda el desayuno en una fecha arbitraria.
+  Future<void> saveBreakfastForDate(
+    String date, {
+    required bool had,
+    required double price,
+    String? description,
+  }) async {
+    await getOrCreateForDate(date);
+    await (_db.update(_db.dailyLogs)..where((t) => t.date.equals(date))).write(
       DailyLogsCompanion(
         hadBreakfast: Value(had),
         breakfastPrice: Value(had ? price : 0.0),

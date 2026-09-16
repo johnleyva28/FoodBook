@@ -4,17 +4,16 @@ import '../core/theme/foodbook_spacing.dart';
 import '../core/theme/foodbook_text_styles.dart';
 import '../features/ajustes/screens/settings_screen.dart';
 import '../features/cuentas/screens/accounts_screen.dart';
-import '../features/historial/screens/history_screen.dart';
 import '../features/perfil/screens/profile_screen.dart';
 import '../features/principal/screens/daily_screen.dart';
 
 /// Shell raíz con la barra de navegación inferior.
 ///
-/// Estructura de 5 destinos centrada en "Principal":
-///   | Cuentas | Historial | Principal | Perfil | Ajustes |
+/// Estructura de 4 destinos centrada en "Hoy":
+///   | Cuentas | Hoy | Perfil | Ajustes |
 ///
-/// Cada destino se aloja en un `IndexedStack` para preservar el estado
-/// (scroll, switches, etc.) al cambiar de pestaña.
+/// El Historial y el Calendario se acceden desde el Perfil
+/// (sección "Mi actividad").
 class MainShell extends StatefulWidget {
   const MainShell({super.key});
 
@@ -22,8 +21,8 @@ class MainShell extends StatefulWidget {
   State<MainShell> createState() => _MainShellState();
 }
 
-class _MainShellState extends State<MainShell> with TickerProviderStateMixin {
-  int _index = 2; // Empieza en "Principal"
+class _MainShellState extends State<MainShell> {
+  int _index = 1; // Empieza en "Hoy" (centro-izquierda)
 
   late final List<_Destination> _destinations = const [
     _Destination(
@@ -31,12 +30,6 @@ class _MainShellState extends State<MainShell> with TickerProviderStateMixin {
       selectedIcon: Icons.account_balance_wallet_rounded,
       label: 'Cuentas',
       screen: AccountsScreen(),
-    ),
-    _Destination(
-      icon: Icons.calendar_today_outlined,
-      selectedIcon: Icons.calendar_month_rounded,
-      label: 'Historial',
-      screen: HistoryScreen(),
     ),
     _Destination(
       icon: Icons.home_outlined,

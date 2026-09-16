@@ -9,6 +9,7 @@ import '../../../data/repositories/daily_log_repository.dart';
 import '../../../data/repositories/payment_repository.dart';
 import '../../../data/repositories/settings_repository.dart';
 import '../../../data/repositories/snack_repository.dart';
+import '../../calendario/calendario_screen.dart';
 import '../../logros/achievements_screen.dart';
 import '../viewmodels/profile_viewmodel.dart';
 
@@ -168,23 +169,90 @@ class _ProfileView extends StatelessWidget {
             ),
           const SizedBox(height: FoodBookSpacing.lg),
 
-          // ── Botón cerrar / cambiar nombre ──
+          // ── Mi actividad (Calendario, Historial, Logros) ──
+          const _SectionTitle('Mi actividad'),
+          const SizedBox(height: FoodBookSpacing.sm),
+          Card(
+            child: Column(
+              children: [
+                ListTile(
+                  leading: CircleAvatar(
+                    backgroundColor: theme.colorScheme.primary
+                        .withValues(alpha: 0.18),
+                    child: Icon(
+                      Icons.calendar_view_month_rounded,
+                      color: theme.colorScheme.primary,
+                    ),
+                  ),
+                  title: const Text('Calendario'),
+                  subtitle: const Text(
+                    'Ver y editar días pasados o futuros',
+                  ),
+                  trailing: const Icon(Icons.chevron_right_rounded),
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => const CalendarioScreen(),
+                      ),
+                    );
+                  },
+                ),
+                const Divider(height: 1),
+                ListTile(
+                  leading: CircleAvatar(
+                    backgroundColor: theme.colorScheme.primary
+                        .withValues(alpha: 0.18),
+                    child: Icon(
+                      Icons.history_rounded,
+                      color: theme.colorScheme.primary,
+                    ),
+                  ),
+                  title: const Text('Historial'),
+                  subtitle: const Text(
+                    'Lista de días con actividad',
+                  ),
+                  trailing: const Icon(Icons.chevron_right_rounded),
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => const CalendarioScreen(),
+                      ),
+                    );
+                  },
+                ),
+                const Divider(height: 1),
+                ListTile(
+                  leading: CircleAvatar(
+                    backgroundColor:
+                        FoodBookColors.warning.withValues(alpha: 0.18),
+                    child: const Icon(
+                      Icons.emoji_events_rounded,
+                      color: FoodBookColors.warning,
+                    ),
+                  ),
+                  title: const Text('Logros'),
+                  subtitle: const Text(
+                    'Rachas y metas desbloqueadas',
+                  ),
+                  trailing: const Icon(Icons.chevron_right_rounded),
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => const AchievementsScreen(),
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: FoodBookSpacing.lg),
+
+          // ── Botones de edición ──
           OutlinedButton.icon(
             onPressed: () => _editName(context, vm),
             icon: const Icon(Icons.edit_rounded),
             label: const Text('Cambiar mi nombre'),
-          ),
-          const SizedBox(height: FoodBookSpacing.sm),
-          OutlinedButton.icon(
-            onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute<void>(
-                  builder: (_) => const AchievementsScreen(),
-                ),
-              );
-            },
-            icon: const Icon(Icons.emoji_events_rounded),
-            label: const Text('Ver mis logros'),
           ),
         ],
       ),
@@ -324,5 +392,15 @@ class _StatTile extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class _SectionTitle extends StatelessWidget {
+  final String text;
+  const _SectionTitle(this.text);
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(text, style: Theme.of(context).textTheme.titleLarge);
   }
 }

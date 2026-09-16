@@ -34,13 +34,14 @@ class SnackRepository {
     required double price,
     String? description,
     String? categoryName,
+    String? date,
   }) {
     final encoded = _encodeDescription(description, categoryName);
     return _db
         .into(_db.snackEntries)
         .insert(
           SnackEntriesCompanion.insert(
-            date: DateHelper.today(),
+            date: date ?? DateHelper.today(),
             price: price,
             description: Value(encoded),
           ),
@@ -93,6 +94,12 @@ class SnackRepository {
     }
     final result = await query.getSingle();
     return result.read(sumExp) ?? 0.0;
+  }
+
+  /// Ejecuta SQL crudo contra la base de datos. Útil para operaciones
+  /// sobre tablas auxiliares (no-Drift) desde otras capas.
+  Future<void> executeRaw(String sql, List<Object?> args) async {
+    await _db.customStatement(sql, args);
   }
 
   // ════════════════════════════════════════════════════════════
