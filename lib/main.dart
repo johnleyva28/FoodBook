@@ -3,6 +3,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
 
 import 'core/theme/app_theme.dart';
+import 'data/app_data_streams.dart';
 import 'data/database/app_database.dart';
 import 'data/repositories/catalog_repository.dart';
 import 'data/repositories/daily_extras_repository.dart';
@@ -54,6 +55,11 @@ class FoodBookApp extends StatelessWidget {
         ),
         ProxyProvider<AppDatabase, MaintenanceRepository>(
           update: (_, db, _) => MaintenanceRepository(db),
+        ),
+        // Bus reactivo único para todas las tablas operativas.
+        // Cualquier cambio se propaga instantáneamente a quien escuche.
+        ChangeNotifierProvider<AppDataStreams>(
+          create: (_) => AppDataStreams(db),
         ),
         // VM global de ajustes para que el themeMode sea reactivo desde
         // cualquier punto de la app (settings, splash, etc.).

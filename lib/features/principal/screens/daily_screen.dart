@@ -9,7 +9,7 @@ import '../../../core/widgets/foodbook_logo.dart';
 import '../../../core/widgets/hero_card.dart';
 import '../../../core/widgets/reminder_banner.dart';
 import '../../../core/widgets/stat_row.dart';
-import '../../../data/repositories/catalog_repository.dart';
+import '../../../data/app_data_streams.dart';
 import '../../../data/repositories/daily_log_repository.dart';
 import '../../../data/repositories/settings_repository.dart';
 import '../../../data/repositories/snack_repository.dart';
@@ -26,10 +26,10 @@ class DailyScreen extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (context) {
         final vm = DailyViewModel(
+          context.read<AppDataStreams>(),
           context.read<DailyLogRepository>(),
           context.read<SnackRepository>(),
           context.read<SettingsRepository>(),
-          context.read<CatalogRepository>(),
         );
         vm.init();
         return vm;
@@ -47,7 +47,7 @@ class _DailyView extends StatelessWidget {
     final vm = context.watch<DailyViewModel>();
     final theme = Theme.of(context);
     final todayLabel = DateHelper.label(DateTime.now());
-    final snacksTotal = vm.snacks.fold<double>(0, (s, e) => s + e.price);
+    final snacksTotal = vm.todaySnacks.fold<double>(0, (s, e) => s + e.price);
 
     if (vm.loading) {
       return Scaffold(
@@ -179,7 +179,7 @@ class _DailyView extends StatelessWidget {
               ),
             ),
             const SizedBox(height: FoodBookSpacing.sm),
-            if (vm.snacks.isEmpty)
+            if (vm.todaySnacks.isEmpty)
               const Card(
                 child: EmptyState(
                   icon: Icons.cookie_rounded,
@@ -189,7 +189,7 @@ class _DailyView extends StatelessWidget {
                 ),
               )
             else
-              ...vm.snacks.map((s) {
+              ...vm.todaySnacks.map((s) {
                 final decoded = SnackRepository.decode(s.description);
                 final cat = decoded.$1;
                 final desc = decoded.$2;
@@ -296,7 +296,7 @@ class _DailyView extends StatelessWidget {
     if (log.hadBreakfast) parts.add('desayuno');
     if (log.hadLunch) parts.add('almuerzo');
     if (log.hadDinner) parts.add('cena');
-    if (vm.snacks.isNotEmpty) parts.add('${vm.snacks.length} bocadillo(s)');
+    if (vm.todaySnacks.isNotEmpty) parts.add('${vm.todaySnacks.length} bocadillo(s)');
     if (parts.isEmpty) return 'Aún no marcaste ninguna comida';
     return parts.join(' • ');
   }

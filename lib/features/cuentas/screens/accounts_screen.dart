@@ -8,10 +8,10 @@ import '../../../core/widgets/hero_card.dart';
 import '../../../core/widgets/stat_row.dart';
 import '../../../data/database/app_database.dart';
 import '../../../data/repositories/catalog_repository.dart';
-import '../../../data/repositories/daily_log_repository.dart';
 import '../../../data/repositories/payment_repository.dart';
 import '../../../data/repositories/settings_repository.dart';
 import '../../../data/repositories/snack_repository.dart';
+import '../../../data/app_data_streams.dart';
 import '../../busqueda/search_screen.dart';
 import '../../busqueda/search_viewmodel.dart';
 import '../viewmodels/accounts_viewmodel.dart';
@@ -26,8 +26,7 @@ class AccountsScreen extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (context) {
         final vm = AccountsViewModel(
-          context.read<DailyLogRepository>(),
-          context.read<SnackRepository>(),
+          context.read<AppDataStreams>(),
           context.read<PaymentRepository>(),
           context.read<SettingsRepository>(),
         );

@@ -5,6 +5,7 @@ import '../../../core/theme/foodbook_colors.dart';
 import '../../../core/theme/foodbook_spacing.dart';
 import '../../../core/widgets/stat_row.dart';
 import '../../../core/utils/date_helper.dart';
+import '../../../data/app_data_streams.dart';
 import '../../../data/repositories/daily_extras_repository.dart';
 import '../../../data/repositories/daily_log_repository.dart';
 import '../../../data/repositories/payment_repository.dart';
@@ -20,23 +21,19 @@ class CalendarioScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (ctx) => _CalendarioVMBuilder.build(ctx),
+      create: (ctx) {
+        final vm = CalendarioViewModel(
+          ctx.read<AppDataStreams>(),
+          ctx.read<DailyLogRepository>(),
+          ctx.read<SnackRepository>(),
+          ctx.read<PaymentRepository>(),
+          ctx.read<DailyExtrasRepository>(),
+        );
+        vm.init();
+        return vm;
+      },
       child: const _CalendarioView(),
     );
-  }
-}
-
-class _CalendarioVMBuilder {
-  static CalendarioViewModel build(BuildContext ctx) {
-    final vm = CalendarioViewModel(
-      ctx.read<DailyLogRepository>(),
-      ctx.read<SnackRepository>(),
-      ctx.read<PaymentRepository>(),
-      ctx.read<DailyExtrasRepository>(),
-    );
-    vm.init();
-    vm.attachStreams(ctx);
-    return vm;
   }
 }
 
@@ -75,7 +72,6 @@ class _CalendarioView extends StatelessWidget {
                 FoodBookSpacing.xxl,
               ),
               children: [
-                // ── Resumen rápido ──
                 Card(
                   child: Padding(
                     padding: const EdgeInsets.all(FoodBookSpacing.md),
@@ -93,8 +89,6 @@ class _CalendarioView extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: FoodBookSpacing.lg),
-
-                // ── Grid del calendario ──
                 Card(
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(
@@ -118,8 +112,6 @@ class _CalendarioView extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: FoodBookSpacing.lg),
-
-                // ── Leyenda ──
                 Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: FoodBookSpacing.md,

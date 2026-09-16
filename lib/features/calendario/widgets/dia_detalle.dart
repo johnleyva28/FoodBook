@@ -6,6 +6,7 @@ import '../../../core/theme/foodbook_colors.dart';
 import '../../../core/theme/foodbook_spacing.dart';
 import '../../../core/utils/date_helper.dart';
 import '../../../core/widgets/stat_row.dart';
+import '../../../data/app_data_streams.dart';
 import '../../../data/repositories/catalog_repository.dart';
 import '../../../data/repositories/daily_extras_repository.dart';
 import '../../../data/repositories/daily_log_repository.dart';
@@ -39,7 +40,12 @@ class _DiaDetalleScreenState extends State<DiaDetalleScreen> {
   @override
   void initState() {
     super.initState();
+    // El VM se construye via ChangeNotifierProvider.value para que
+    // comparta el bus global AppDataStreams (mismo estado que las
+    // demás pantallas: Hoy, Cuentas, Calendario).
+    final streams = context.read<AppDataStreams>();
     _vm = CalendarioViewModel(
+      streams,
       context.read<DailyLogRepository>(),
       context.read<SnackRepository>(),
       context.read<PaymentRepository>(),
@@ -48,8 +54,21 @@ class _DiaDetalleScreenState extends State<DiaDetalleScreen> {
     _settingsRepo = context.read<SettingsRepository>();
     _catalogRepo = context.read<CatalogRepository>();
     _vm.init();
-    _vm.attachStreams(context);
-    _load();
+    _scheduleLoad();
+  }
+
+  void _scheduleLoad() {
+    // Esperamos el primer ciclo de micro-tareas para que los
+    // streams del bus global emitan al menos una vez.
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (!mounted) return;
+      final detail = await _vm.getDayDetail(widget.date);
+      if (!mounted) return;
+      setState(() {
+        _detail = detail;
+        _loading = false;
+      });
+    });
   }
 
   Future<void> _load() async {

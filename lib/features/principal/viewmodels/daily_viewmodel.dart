@@ -2,51 +2,64 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart' hide Category;
 
+import '../../../core/utils/date_helper.dart';
+import '../../../data/app_data_streams.dart';
 import '../../../data/database/app_database.dart';
-import '../../../data/models/category.dart';
-import '../../../data/repositories/catalog_repository.dart';
 import '../../../data/repositories/daily_log_repository.dart';
 import '../../../data/repositories/settings_repository.dart';
 import '../../../data/repositories/snack_repository.dart';
 
 /// ViewModel de la pantalla Principal.
-/// Expone el registro del día, los bocadillos, los precios base y el
-/// catálogo de categorías (para el selector de bocadillos).
+///
+/// Lee del `AppDataStreams` global para reactividad instantánea.
+/// Cualquier snack/pago/log editado desde Calendario o Cuentas
+/// se refleja al instante aquí.
 class DailyViewModel extends ChangeNotifier {
+  final AppDataStreams _streams;
   final DailyLogRepository _dailyLogRepo;
   final SnackRepository _snackRepo;
   final SettingsRepository _settingsRepo;
-  final CatalogRepository _catalogRepo;
-
-  StreamSubscription<DailyLog?>? _logSub;
-  StreamSubscription<List<SnackEntry>>? _snacksSub;
 
   DailyViewModel(
+    this._streams,
     this._dailyLogRepo,
     this._snackRepo,
     this._settingsRepo,
-    this._catalogRepo,
   );
 
-  // ── Estado ──
-  DailyLog? log;
-  List<SnackEntry> snacks = [];
-  List<Category> categories = [];
+  bool loading = true;
   double lunchPrice = 9.00;
   double dinnerPrice = 9.00;
-  bool loading = true;
 
   List<String> get categoryNames =>
-      categories.map((c) => c.name).toList(growable: false);
+      _streams.categories.map((c) => c.name).toList(growable: false);
 
-  // ── Totales calculados del día ──
+  /// Log del día actual. Se actualiza reactivamente.
+  DailyLog? get log {
+    final today = DateHelper.today();
+    for (final l in _streams.logs) {
+      if (l.date == today) return l;
+    }
+    return null;
+  }
+
+  /// Snacks de hoy (reactividad automática desde el bus).
+  List<SnackEntry> get todaySnacks {
+    final today = DateHelper.today();
+    return _streams.snacks.where((s) => s.date == today).toList();
+  }
+
+  /// Lista de snacks (acceso directo al bus para la UI).
+  List<SnackEntry> get snacks => todaySnacks;
+
   double get dayTotal {
-    if (log == null) return 0;
+    final l = log;
+    if (l == null) return 0;
     double total = 0;
-    if (log!.hadBreakfast) total += log!.breakfastPrice;
-    if (log!.hadLunch) total += lunchPrice;
-    if (log!.hadDinner) total += dinnerPrice;
-    for (final s in snacks) {
+    if (l.hadBreakfast) total += l.breakfastPrice;
+    if (l.hadLunch) total += lunchPrice;
+    if (l.hadDinner) total += dinnerPrice;
+    for (final s in todaySnacks) {
       total += s.price;
     }
     return total;
@@ -55,42 +68,35 @@ class DailyViewModel extends ChangeNotifier {
   Future<void> init() async {
     lunchPrice = await _settingsRepo.getLunchPrice();
     dinnerPrice = await _settingsRepo.getDinnerPrice();
-    categories = await _catalogRepo.getAllCategories();
 
-    // Nos aseguramos de que exista el registro de hoy.
-    log = await _dailyLogRepo.getOrCreateToday();
-
-    _logSub = _dailyLogRepo.watchToday().listen((value) {
-      log = value;
-      notifyListeners();
-    });
-
-    _snacksSub = _snackRepo.watchByDate(_todayDate).listen((value) {
-      snacks = value;
-      notifyListeners();
-    });
+    // Escuchar streams globales para que dayTotal/todaySnacks se recalculen.
+    _streams.addListener(_onStreamsChanged);
 
     loading = false;
     notifyListeners();
   }
 
-  String get _todayDate {
-    final now = DateTime.now();
-    return '${now.year.toString().padLeft(4, '0')}-'
-        '${now.month.toString().padLeft(2, '0')}-'
-        '${now.day.toString().padLeft(2, '0')}';
+  void _onStreamsChanged() {
+    if (!loading) notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    _streams.removeListener(_onStreamsChanged);
+    super.dispose();
   }
 
   // ── Acciones ──
 
   Future<void> toggleLunch(bool value) async {
+    // Asegurar registro del día
+    await _dailyLogRepo.getOrCreateToday();
     await _dailyLogRepo.toggleLunch(value);
-    notifyListeners();
   }
 
   Future<void> toggleDinner(bool value) async {
+    await _dailyLogRepo.getOrCreateToday();
     await _dailyLogRepo.toggleDinner(value);
-    notifyListeners();
   }
 
   Future<void> saveBreakfast({
@@ -98,12 +104,12 @@ class DailyViewModel extends ChangeNotifier {
     required double price,
     String? description,
   }) async {
+    await _dailyLogRepo.getOrCreateToday();
     await _dailyLogRepo.saveBreakfast(
       had: had,
       price: price,
       description: description,
     );
-    notifyListeners();
   }
 
   Future<void> addSnack({
@@ -116,7 +122,6 @@ class DailyViewModel extends ChangeNotifier {
       description: description,
       categoryName: categoryName,
     );
-    notifyListeners();
   }
 
   Future<void> updateSnack({
@@ -131,18 +136,9 @@ class DailyViewModel extends ChangeNotifier {
       description: description,
       categoryName: categoryName,
     );
-    notifyListeners();
   }
 
   Future<void> deleteSnack(int id) async {
     await _snackRepo.delete(id);
-    notifyListeners();
-  }
-
-  @override
-  void dispose() {
-    _logSub?.cancel();
-    _snacksSub?.cancel();
-    super.dispose();
   }
 }

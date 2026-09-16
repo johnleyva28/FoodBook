@@ -1,10 +1,9 @@
 import 'package:flutter/foundation.dart' show ChangeNotifier;
-import 'package:flutter/widgets.dart' show BuildContext;
-import 'package:provider/provider.dart' show ReadContext;
 
 import '../../../core/utils/date_helper.dart';
+import '../../../data/app_data_streams.dart';
 import '../../../data/database/app_database.dart';
-import '../../../data/models/category.dart';
+import '../../../data/models/category.dart' as model;
 import '../../../data/repositories/daily_extras_repository.dart';
 import '../../../data/repositories/daily_log_repository.dart';
 import '../../../data/repositories/payment_repository.dart';
@@ -12,69 +11,49 @@ import '../../../data/repositories/snack_repository.dart';
 
 /// ViewModel del calendario.
 ///
-/// Permite navegar por meses, ver marcadores por día y editar
-/// el detalle de cualquier día (pasado o futuro).
+/// Lee del `AppDataStreams` global para reactividad instantánea.
+/// Cualquier cambio en Hoy / Cuentas / DíaDetalle se refleja al
+/// instante sin recargar.
 class CalendarioViewModel extends ChangeNotifier {
+  final AppDataStreams _streams;
   final DailyLogRepository _dailyLogRepo;
   final SnackRepository _snackRepo;
   final PaymentRepository _paymentRepo;
   final DailyExtrasRepository _extrasRepo;
 
   CalendarioViewModel(
+    this._streams,
     this._dailyLogRepo,
     this._snackRepo,
     this._paymentRepo,
     this._extrasRepo,
   );
 
-  // Streams de datos crudos (alimentados desde la UI).
-  final List<DailyLog> logs = [];
-  final List<SnackEntry> snacks = [];
-  final List<Payment> payments = [];
   bool loading = true;
-
   late DateTime _viewedMonth;
   DateTime get viewedMonth => _viewedMonth;
+
+  // ── Streams reactivos (cacheados en AppDataStreams) ──
+  List<DailyLog> get logs => _streams.logs;
+  List<SnackEntry> get snacks => _streams.snacks;
+  List<Payment> get payments => _streams.payments;
 
   Future<void> init() async {
     final now = DateTime.now();
     _viewedMonth = DateTime(now.year, now.month, 1);
+    _streams.addListener(_onChange);
     loading = false;
     notifyListeners();
   }
 
-  /// Adjunta los streams reactivos del DB. Llamar desde la UI justo
-  /// después de `init()`.
-  void attachStreams(BuildContext context) {
-    final db = context.read<AppDatabase>();
-    db.select(db.dailyLogs).watch().listen((value) {
-      setData(logs: value, snacks: snacks, payments: payments);
-    });
-    db.select(db.snackEntries).watch().listen((value) {
-      setData(logs: logs, snacks: value, payments: payments);
-    });
-    db.select(db.payments).watch().listen((value) {
-      setData(logs: logs, snacks: snacks, payments: value);
-    });
+  void _onChange() {
+    if (!loading) notifyListeners();
   }
 
-  /// Sincroniza los datos crudos con el VM. Llamar desde la UI cuando
-  /// los streams emiten.
-  void setData({
-    required List<DailyLog> logs,
-    required List<SnackEntry> snacks,
-    required List<Payment> payments,
-  }) {
-    this.logs
-      ..clear()
-      ..addAll(logs);
-    this.snacks
-      ..clear()
-      ..addAll(snacks);
-    this.payments
-      ..clear()
-      ..addAll(payments);
-    notifyListeners();
+  @override
+  void dispose() {
+    _streams.removeListener(_onChange);
+    super.dispose();
   }
 
   /// Cambia el mes visualizado.
@@ -90,7 +69,6 @@ class CalendarioViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Etiqueta humana del mes visualizado.
   String get monthLabel {
     const months = [
       'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
@@ -161,12 +139,10 @@ class CalendarioViewModel extends ChangeNotifier {
 
   Future<void> toggleLunch(String date, bool value) async {
     await _dailyLogRepo.setLunchForDate(date, value);
-    notifyListeners();
   }
 
   Future<void> toggleDinner(String date, bool value) async {
     await _dailyLogRepo.setDinnerForDate(date, value);
-    notifyListeners();
   }
 
   Future<void> saveBreakfast(
@@ -181,7 +157,6 @@ class CalendarioViewModel extends ChangeNotifier {
       price: price,
       description: description,
     );
-    notifyListeners();
   }
 
   Future<void> addSnack(
@@ -196,7 +171,6 @@ class CalendarioViewModel extends ChangeNotifier {
       description: description,
       categoryName: categoryName,
     );
-    notifyListeners();
   }
 
   Future<void> updateSnack(
@@ -211,12 +185,10 @@ class CalendarioViewModel extends ChangeNotifier {
       description: description,
       categoryName: categoryName,
     );
-    notifyListeners();
   }
 
   Future<void> deleteSnack(int id) async {
     await _snackRepo.delete(id);
-    notifyListeners();
   }
 
   Future<void> addPayment(
@@ -231,7 +203,6 @@ class CalendarioViewModel extends ChangeNotifier {
       note: note,
       methodName: methodName,
     );
-    notifyListeners();
   }
 
   Future<void> updatePayment(
@@ -246,12 +217,10 @@ class CalendarioViewModel extends ChangeNotifier {
       note: note,
       methodName: methodName,
     );
-    notifyListeners();
   }
 
   Future<void> deletePayment(int id) async {
     await _paymentRepo.delete(id);
-    notifyListeners();
   }
 
   Future<void> saveExtras(
@@ -260,13 +229,12 @@ class CalendarioViewModel extends ChangeNotifier {
     int? rating,
     double extraExpenses = 0,
   }) async {
-    await _extrasRepo.upsert(DailyExtras(
+    await _extrasRepo.upsert(model.DailyExtras(
       date: date,
       notes: notes,
       rating: rating,
       extraExpenses: extraExpenses,
     ));
-    notifyListeners();
   }
 }
 
@@ -276,7 +244,7 @@ class DayDetail {
   final DailyLog? log;
   final List<SnackEntry> snacks;
   final List<Payment> payments;
-  final DailyExtras extras;
+  final model.DailyExtras extras;
 
   const DayDetail({
     required this.date,
@@ -290,8 +258,6 @@ class DayDetail {
     double t = 0;
     if (log != null) {
       if (log!.hadBreakfast) t += log!.breakfastPrice;
-      // Precio de almuerzo/cena viene de Settings; la UI los conoce.
-      // Aquí solo sumamos lo explícito.
     }
     for (final s in snacks) {
       t += s.price;
