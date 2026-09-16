@@ -6,6 +6,7 @@ import '../../../core/theme/foodbook_spacing.dart';
 import '../../../core/theme/foodbook_text_styles.dart';
 import '../../../core/utils/date_helper.dart';
 import '../../../core/widgets/hero_card.dart';
+import '../../../core/widgets/reminder_banner.dart';
 import '../../../core/widgets/stat_row.dart';
 import '../../../data/database/app_database.dart';
 import '../../../data/repositories/catalog_repository.dart';
@@ -127,7 +128,13 @@ class _DailyView extends StatelessWidget {
               icon: Icons.payments_rounded,
               variant: HeroCardVariant.primary,
             ),
-            const SizedBox(height: FoodBookSpacing.lg),
+            const SizedBox(height: FoodBookSpacing.md),
+
+            // ── Recordatorio in-app por hora ──
+            ReminderBanner.forNow(
+              onTapLunch: () => vm.toggleLunch(true),
+              onTapDinner: () => vm.toggleDinner(true),
+            ),
 
             // ── Comidas de la pensión ──
             _SectionHeader(title: 'Comidas de hoy', icon: Icons.lunch_dining_rounded),
