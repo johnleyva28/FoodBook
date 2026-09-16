@@ -10,20 +10,22 @@ import 'data/repositories/snack_repository.dart';
 import 'shell/main_shell.dart';
 
 Future<void> main() async {
-  // Necesario para usar DateFormat con locale 'es_PE'.
   WidgetsFlutterBinding.ensureInitialized();
   await initializeDateFormatting('es_PE', null);
 
-  runApp(const FoodBookApp());
+  // ✅ Se crea UNA sola vez, antes de runApp.
+  final db = AppDatabase();
+
+  runApp(FoodBookApp(db: db));
 }
 
 class FoodBookApp extends StatelessWidget {
-  const FoodBookApp({super.key});
+  final AppDatabase db;
+
+  const FoodBookApp({super.key, required this.db});
 
   @override
   Widget build(BuildContext context) {
-    final db = AppDatabase();
-
     return MultiProvider(
       providers: [
         Provider<AppDatabase>.value(value: db),

@@ -31,8 +31,8 @@ class SnackRepository {
 
   /// Suma total de bocadillos (opcionalmente en un rango).
   Future<double> totalBetween({String? fromDate, String? toDate}) async {
-    final query = _db.selectOnly(_db.snackEntries)
-      ..addColumns([_db.snackEntries.price]);
+    final sumExp = _db.snackEntries.price.sum();
+    final query = _db.selectOnly(_db.snackEntries)..addColumns([sumExp]);
     if (fromDate != null) {
       query.where(_db.snackEntries.date.isBiggerOrEqualValue(fromDate));
     }
@@ -40,7 +40,7 @@ class SnackRepository {
       query.where(_db.snackEntries.date.isSmallerOrEqualValue(toDate));
     }
     final result = await query.getSingle();
-    return result.read(_db.snackEntries.price) ?? 0.0;
+    return result.read(sumExp) ?? 0.0;
   }
 
   /// Suma de desayunos registrados en un rango.
@@ -48,8 +48,8 @@ class SnackRepository {
     String? fromDate,
     String? toDate,
   }) async {
-    final query = _db.selectOnly(_db.dailyLogs)
-      ..addColumns([_db.dailyLogs.breakfastPrice]);
+    final sumExp = _db.dailyLogs.breakfastPrice.sum();
+    final query = _db.selectOnly(_db.dailyLogs)..addColumns([sumExp]);
     if (fromDate != null) {
       query.where(_db.dailyLogs.date.isBiggerOrEqualValue(fromDate));
     }
@@ -57,6 +57,6 @@ class SnackRepository {
       query.where(_db.dailyLogs.date.isSmallerOrEqualValue(toDate));
     }
     final result = await query.getSingle();
-    return result.read(_db.dailyLogs.breakfastPrice) ?? 0.0;
+    return result.read(sumExp) ?? 0.0;
   }
 }

@@ -30,9 +30,9 @@ class PaymentRepository {
   }
 
   Future<double> total() async {
-    final query = _db.selectOnly(_db.payments)
-      ..addColumns([_db.payments.amount]);
+    final sumExp = _db.payments.amount.sum();
+    final query = _db.selectOnly(_db.payments)..addColumns([sumExp]);
     final result = await query.getSingle();
-    return result.read(_db.payments.amount) ?? 0.0;
+    return result.read(sumExp) ?? 0.0;
   }
 }
