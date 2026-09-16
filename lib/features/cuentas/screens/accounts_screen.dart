@@ -74,14 +74,11 @@ class _AccountsView extends StatelessWidget {
               Navigator.of(context).push(
                 MaterialPageRoute<void>(
                   builder: (_) => ChangeNotifierProvider(
-                    create: (ctx) {
-                      final vm = SearchViewModel(
-                        ctx.read<SnackRepository>(),
-                        ctx.read<PaymentRepository>(),
-                      );
-                      vm.init();
-                      return vm;
-                    },
+                    create: (ctx) => SearchViewModel(
+                      ctx.read<AppDataStreams>(),
+                      ctx.read<SnackRepository>(),
+                      ctx.read<PaymentRepository>(),
+                    ),
                     child: const SearchScreen(),
                   ),
                 ),

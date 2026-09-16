@@ -1,8 +1,6 @@
-import 'dart:async';
-
 import 'package:flutter/foundation.dart';
 
-import '../../../data/database/app_database.dart';
+import '../../../data/app_data_streams.dart';
 import '../../../data/repositories/payment_repository.dart';
 import '../../../data/repositories/snack_repository.dart';
 
@@ -28,31 +26,28 @@ class SearchHit {
 }
 
 /// ViewModel de búsqueda global.
+///
+/// Lee del `AppDataStreams` global para reactividad en vivo.
 class SearchViewModel extends ChangeNotifier {
+  final AppDataStreams _streams;
+  // ignore: unused_field
   final SnackRepository _snackRepo;
+  // ignore: unused_field
   final PaymentRepository _paymentRepo;
 
+  SearchViewModel(this._streams, this._snackRepo, this._paymentRepo) {
+    _streams.addListener(_onChange);
+  }
+
   String query = '';
-  List<SearchHit> hits = [];
   bool loading = false;
 
-  StreamSubscription<List<SnackEntry>>? _snacksSub;
-  StreamSubscription<List<Payment>>? _paymentsSub;
+  void _onChange() => notifyListeners();
 
-  List<SnackEntry> _snacks = [];
-  List<Payment> _payments = [];
-
-  SearchViewModel(this._snackRepo, this._paymentRepo);
-
-  Future<void> init() async {
-    _snacksSub = _snackRepo.watchAll().listen((value) {
-      _snacks = value;
-      _recompute();
-    });
-    _paymentsSub = _paymentRepo.watchAll().listen((value) {
-      _payments = value;
-      _recompute();
-    });
+  @override
+  void dispose() {
+    _streams.removeListener(_onChange);
+    super.dispose();
   }
 
   void setQuery(String q) {
@@ -60,16 +55,12 @@ class SearchViewModel extends ChangeNotifier {
     _recompute();
   }
 
-  void _recompute() {
+  List<SearchHit> get hits {
     final q = query.trim().toLowerCase();
-    if (q.isEmpty) {
-      hits = [];
-      notifyListeners();
-      return;
-    }
+    if (q.isEmpty) return const [];
     final result = <SearchHit>[];
 
-    for (final s in _snacks) {
+    for (final s in _streams.snacks) {
       final decoded = SnackRepository.decode(s.description);
       final title = decoded.$2 ?? 'Bocadillo';
       final cat = decoded.$1;
@@ -87,7 +78,7 @@ class SearchViewModel extends ChangeNotifier {
         ));
       }
     }
-    for (final p in _payments) {
+    for (final p in _streams.payments) {
       final decoded = PaymentRepository.decode(p.note);
       final title = decoded.$1 ?? 'Pago';
       final note = decoded.$2;
@@ -105,15 +96,8 @@ class SearchViewModel extends ChangeNotifier {
         ));
       }
     }
-
-    hits = result;
-    notifyListeners();
+    return result;
   }
 
-  @override
-  void dispose() {
-    _snacksSub?.cancel();
-    _paymentsSub?.cancel();
-    super.dispose();
-  }
+  void _recompute() => notifyListeners();
 }

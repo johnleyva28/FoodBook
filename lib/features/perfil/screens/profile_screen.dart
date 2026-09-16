@@ -5,10 +5,8 @@ import '../../../core/theme/foodbook_colors.dart';
 import '../../../core/theme/foodbook_spacing.dart';
 import '../../../core/theme/foodbook_text_styles.dart';
 import '../../../core/widgets/stat_row.dart';
-import '../../../data/repositories/daily_log_repository.dart';
-import '../../../data/repositories/payment_repository.dart';
+import '../../../data/app_data_streams.dart';
 import '../../../data/repositories/settings_repository.dart';
-import '../../../data/repositories/snack_repository.dart';
 import '../../calendario/calendario_screen.dart';
 import '../../logros/achievements_screen.dart';
 import '../viewmodels/profile_viewmodel.dart';
@@ -21,9 +19,7 @@ class ProfileScreen extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (ctx) {
         final vm = ProfileViewModel(
-          ctx.read<DailyLogRepository>(),
-          ctx.read<SnackRepository>(),
-          ctx.read<PaymentRepository>(),
+          ctx.read<AppDataStreams>(),
           ctx.read<SettingsRepository>(),
         );
         vm.init();

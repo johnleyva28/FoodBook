@@ -1,69 +1,46 @@
 import 'package:flutter/foundation.dart';
 
+import '../../../data/app_data_streams.dart';
 import '../../../data/database/app_database.dart';
-import '../../../data/repositories/daily_log_repository.dart';
-import '../../../data/repositories/payment_repository.dart';
 import '../../../data/repositories/settings_repository.dart';
 import '../../../data/repositories/snack_repository.dart';
 
 /// ViewModel de la pantalla Perfil.
 ///
-/// Calcula estadísticas personales del usuario: días registrados,
-/// gasto total, gasto promedio, desglose por tipo, etc.
+/// Lee del `AppDataStreams` global para reactividad en vivo y
+/// carga los datos de usuario desde `SettingsRepository`.
 class ProfileViewModel extends ChangeNotifier {
-  final DailyLogRepository _dailyLogRepo;
-  final SnackRepository _snackRepo;
-  final PaymentRepository _paymentRepo;
+  final AppDataStreams _streams;
   final SettingsRepository _settingsRepo;
 
-  ProfileViewModel(
-    this._dailyLogRepo,
-    this._snackRepo,
-    this._paymentRepo,
-    this._settingsRepo,
-  );
+  ProfileViewModel(this._streams, this._settingsRepo);
 
   String userName = '';
   double lunchPrice = 9.0;
   double dinnerPrice = 9.0;
-  int totalDays = 0;
-  int totalLunches = 0;
-  int totalDinners = 0;
-  int totalBreakfasts = 0;
-  double totalConsumed = 0;
-  double totalPaid = 0;
-  double totalSnacks = 0;
-  double avgDaily = 0;
-  String? topSnack;
   bool loading = true;
 
-  Future<void> init() async {
-    userName =
-        await _settingsRepo.getString('user_name') ?? '';
-    lunchPrice = await _settingsRepo.getLunchPrice();
-    dinnerPrice = await _settingsRepo.getDinnerPrice();
+  // ── Datos reactivos desde el bus ──
+  List<DailyLog> get logs => _streams.logs;
+  List<SnackEntry> get snacks => _streams.snacks;
+  List<Payment> get payments => _streams.payments;
 
-    final logs = await _dailyLogRepo.watchAll().first;
-    final snacks = await _snackRepo.watchAll().first;
-    final payments = await _paymentRepo.watchAll().first;
+  // ── Estadísticas ──
+  int get totalDays => logs.length;
+  int get totalLunches => logs.where((l) => l.hadLunch).length;
+  int get totalDinners => logs.where((l) => l.hadDinner).length;
+  int get totalBreakfasts => logs.where((l) => l.hadBreakfast).length;
 
-    totalDays = logs.length;
-    totalLunches = logs.where((l) => l.hadLunch).length;
-    totalDinners = logs.where((l) => l.hadDinner).length;
-    totalBreakfasts = logs.where((l) => l.hadBreakfast).length;
-    totalConsumed =
-        (totalLunches * lunchPrice) + (totalDinners * dinnerPrice) +
-        logs.fold<double>(0, (s, l) => s + l.breakfastPrice);
-    totalSnacks = snacks.fold<double>(0, (s, e) => s + e.price);
-    totalPaid = payments.fold<double>(0, (s, p) => s + p.amount);
-    avgDaily = totalDays == 0 ? 0 : totalConsumed / totalDays;
-    topSnack = _findTopSnack(snacks);
+  double get totalConsumed =>
+      (totalLunches * lunchPrice) +
+      (totalDinners * dinnerPrice) +
+      logs.fold<double>(0, (sum, l) => sum + l.breakfastPrice);
 
-    loading = false;
-    notifyListeners();
-  }
+  double get totalSnacks => snacks.fold<double>(0, (s, e) => s + e.price);
+  double get totalPaid => payments.fold<double>(0, (s, p) => s + p.amount);
+  double get avgDaily => totalDays == 0 ? 0 : totalConsumed / totalDays;
 
-  String? _findTopSnack(List<SnackEntry> snacks) {
+  String? get topSnack {
     if (snacks.isEmpty) return null;
     final counts = <String, int>{};
     for (final s in snacks) {
@@ -76,12 +53,6 @@ class ProfileViewModel extends ChangeNotifier {
     return sorted.isEmpty ? null : sorted.first.key;
   }
 
-  /// Actualiza el nombre del usuario y refresca el estado del VM.
-  void updateUserName(String value) {
-    userName = value;
-    notifyListeners();
-  }
-
   String get initials {
     if (userName.trim().isEmpty) return 'FB';
     final parts = userName.trim().split(RegExp(r'\s+'));
@@ -91,5 +62,30 @@ class ProfileViewModel extends ChangeNotifier {
     }
     return (parts.first.substring(0, 1) + parts.last.substring(0, 1))
         .toUpperCase();
+  }
+
+  Future<void> init() async {
+    userName = await _settingsRepo.getString('user_name') ?? '';
+    lunchPrice = await _settingsRepo.getLunchPrice();
+    dinnerPrice = await _settingsRepo.getDinnerPrice();
+    _streams.addListener(_onChange);
+    loading = false;
+    notifyListeners();
+  }
+
+  void _onChange() {
+    if (!loading) notifyListeners();
+  }
+
+  /// Actualiza el nombre del usuario y refresca el estado del VM.
+  void updateUserName(String value) {
+    userName = value;
+    notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    _streams.removeListener(_onChange);
+    super.dispose();
   }
 }

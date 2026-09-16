@@ -5,8 +5,7 @@ import '../../../core/theme/foodbook_colors.dart';
 import '../../../core/theme/foodbook_spacing.dart';
 import '../../../core/theme/foodbook_text_styles.dart';
 import '../../../core/widgets/stat_row.dart';
-import '../../../data/repositories/daily_log_repository.dart';
-import '../../../data/repositories/snack_repository.dart';
+import '../../../data/app_data_streams.dart';
 import 'achievements_viewmodel.dart';
 
 class AchievementsScreen extends StatelessWidget {
@@ -15,14 +14,7 @@ class AchievementsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (ctx) {
-        final vm = AchievementsViewModel(
-          ctx.read<DailyLogRepository>(),
-          ctx.read<SnackRepository>(),
-        );
-        vm.init();
-        return vm;
-      },
+      create: (ctx) => AchievementsViewModel(ctx.read<AppDataStreams>()),
       child: const _AchievementsView(),
     );
   }

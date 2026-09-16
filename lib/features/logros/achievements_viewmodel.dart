@@ -1,11 +1,8 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 
 import '../../../core/utils/date_helper.dart';
+import '../../../data/app_data_streams.dart';
 import '../../../data/database/app_database.dart';
-import '../../../data/repositories/daily_log_repository.dart';
-import '../../../data/repositories/snack_repository.dart';
 
 class Achievement {
   final String id;
@@ -28,39 +25,29 @@ class Achievement {
 }
 
 /// ViewModel de logros / metas del usuario.
+///
+/// Escucha `AppDataStreams` global para reactividad en vivo.
 class AchievementsViewModel extends ChangeNotifier {
-  final DailyLogRepository _dailyLogRepo;
-  final SnackRepository _snackRepo;
+  final AppDataStreams _streams;
 
-  StreamSubscription<List<DailyLog>>? _logsSub;
-  StreamSubscription<List<SnackEntry>>? _snacksSub;
-
-  List<DailyLog> logs = [];
-  List<SnackEntry> snacks = [];
-
-  AchievementsViewModel(this._dailyLogRepo, this._snackRepo);
-
-  Future<void> init() async {
-    _logsSub = _dailyLogRepo.watchAll().listen((value) {
-      logs = value;
-      notifyListeners();
-    });
-    _snacksSub = _snackRepo.watchAll().listen((value) {
-      snacks = value;
-      notifyListeners();
-    });
+  AchievementsViewModel(this._streams) {
+    _streams.addListener(_onChange);
   }
+
+  void _onChange() => notifyListeners();
+
+  @override
+  void dispose() {
+    _streams.removeListener(_onChange);
+    super.dispose();
+  }
+
+  List<DailyLog> get logs => _streams.logs;
+  List<SnackEntry> get snacks => _streams.snacks;
 
   /// Racha actual de días consecutivos con al menos un registro.
   int get currentStreak {
-    if (logs.isEmpty && snacks.isEmpty) return 0;
-    final dates = <String>{};
-    for (final l in logs) {
-      dates.add(l.date);
-    }
-    for (final s in snacks) {
-      dates.add(s.date);
-    }
+    final dates = _datesWithActivity;
     if (dates.isEmpty) return 0;
 
     int streak = 0;
@@ -83,14 +70,7 @@ class AchievementsViewModel extends ChangeNotifier {
 
   /// Mejor racha histórica.
   int get longestStreak {
-    if (logs.isEmpty && snacks.isEmpty) return 0;
-    final dates = <String>{};
-    for (final l in logs) {
-      dates.add(l.date);
-    }
-    for (final s in snacks) {
-      dates.add(s.date);
-    }
+    final dates = _datesWithActivity;
     if (dates.isEmpty) return 0;
 
     final sorted = dates.map(DateHelper.parse).toList()
@@ -107,6 +87,17 @@ class AchievementsViewModel extends ChangeNotifier {
       }
     }
     return best;
+  }
+
+  Set<String> get _datesWithActivity {
+    final dates = <String>{};
+    for (final l in logs) {
+      dates.add(l.date);
+    }
+    for (final s in snacks) {
+      dates.add(s.date);
+    }
+    return dates;
   }
 
   int get totalLunches => logs.where((l) => l.hadLunch).length;
@@ -187,11 +178,4 @@ class AchievementsViewModel extends ChangeNotifier {
 
   int get unlockedCount => achievements.where((a) => a.unlocked).length;
   int get totalCount => achievements.length;
-
-  @override
-  void dispose() {
-    _logsSub?.cancel();
-    _snacksSub?.cancel();
-    super.dispose();
-  }
 }
