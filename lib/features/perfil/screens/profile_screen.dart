@@ -9,6 +9,7 @@ import '../../../data/repositories/daily_log_repository.dart';
 import '../../../data/repositories/payment_repository.dart';
 import '../../../data/repositories/settings_repository.dart';
 import '../../../data/repositories/snack_repository.dart';
+import '../../logros/achievements_screen.dart';
 import '../viewmodels/profile_viewmodel.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -172,6 +173,18 @@ class _ProfileView extends StatelessWidget {
             onPressed: () => _editName(context, vm),
             icon: const Icon(Icons.edit_rounded),
             label: const Text('Cambiar mi nombre'),
+          ),
+          const SizedBox(height: FoodBookSpacing.sm),
+          OutlinedButton.icon(
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => const AchievementsScreen(),
+                ),
+              );
+            },
+            icon: const Icon(Icons.emoji_events_rounded),
+            label: const Text('Ver mis logros'),
           ),
         ],
       ),
