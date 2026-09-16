@@ -59,4 +59,7 @@ class SnackRepository {
     final result = await query.getSingle();
     return result.read(sumExp) ?? 0.0;
   }
+
+  /// Stream de TODOS los bocadillos (para Cuentas).
+  Stream<List<SnackEntry>> watchAll() => _db.select(_db.snackEntries).watch();
 }

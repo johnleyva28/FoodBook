@@ -89,4 +89,7 @@ class DailyLogRepository {
     }
     return (lunches, dinners);
   }
+
+  /// Stream de TODOS los registros diarios (para Cuentas).
+  Stream<List<DailyLog>> watchAll() => _db.select(_db.dailyLogs).watch();
 }
