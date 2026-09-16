@@ -6,20 +6,20 @@ import 'package:foodbook/core/theme/foodbook_colors.dart';
 
 void main() {
   group('Tema FoodBook', () {
-    testWidgets('ThemeData dark se construye con ColorScheme dark', (tester) async {
+    test('ThemeData dark se construye con ColorScheme dark', () {
       final theme = AppTheme.dark;
       expect(theme.brightness, Brightness.dark);
       expect(theme.colorScheme.primary, FoodBookColors.sky);
       expect(theme.colorScheme.surface, FoodBookColors.navySurface);
     });
 
-    testWidgets('ThemeData light se construye con fondo blanco', (tester) async {
+    test('ThemeData light se construye con fondo blanco', () {
       final theme = AppTheme.light;
       expect(theme.brightness, Brightness.light);
       expect(theme.colorScheme.surface, Colors.white);
     });
 
-    testWidgets('ThemeData usa Material 3', (tester) async {
+    test('ThemeData usa Material 3', () {
       expect(AppTheme.dark.useMaterial3, isTrue);
       expect(AppTheme.light.useMaterial3, isTrue);
     });
