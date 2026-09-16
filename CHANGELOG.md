@@ -8,6 +8,17 @@ Todos los cambios notables en FoodBook se documentan aquí. El formato sigue [Ke
 - ✅ `flutter test` → 14/14 tests passed
 - ✅ `flutter build windows --debug` → Build successful
 
+## [2.1.0] — 2026-09-15
+
+### Changed
+- **refactor(shell)** — Barra de navegación inferior con 4 destinos (Cuentas | Hoy | Perfil | Ajustes). Historial eliminado del bottom nav.
+- **refactor(perfil)** — Nueva sección "Mi actividad" con accesos a Calendario, Historial (alias) y Logros.
+- **feat(calendario)** — Nueva feature `lib/features/calendario/`: grid mensual editable con vista de detalle por día. Permite editar días pasados o futuros (toggle comidas, agregar/editar/borrar snacks y pagos, notas, rating, gastos extra).
+- **feat(repos)** — `DailyLogRepository` ahora expone `setLunchForDate`, `setDinnerForDate`, `saveBreakfastForDate`. `SnackRepository` y `PaymentRepository` aceptan fecha personalizada en `add()`.
+
+### Removed
+- **refactor(historial)** — Eliminado `lib/features/historial/` completo. Reemplazado por el Calendario que cubre el mismo caso de uso y mucho más.
+
 ## [2.0.0] — 2026-09-15
 
 ### Added — Sistema visual

@@ -28,16 +28,17 @@ FoodBook es una app Flutter offline-first para Android, iOS y Windows. Te ayuda 
 - Desglose histórico de almuerzos, cenas, desayunos, snacks, consumido y pagado.
 - Registrar / **editar** / borrar pagos con método (Efectivo, Yape, Plin, Transferencia).
 
-### 📅 Historial
-- Navegación por **mes** con flechas.
-- Resumen del mes (días activos, snacks, pagos).
-- Lista de días con actividad: cada día expandible muestra el detalle completo (comidas + snacks + pagos).
+### 📅 Calendario
+- Vista mensual con grid 7xN y marcadores para días con actividad.
+- Tap en cualquier día (pasado o futuro) abre la vista de detalle.
+- Día editable: toggle desayuno/almuerzo/cena, agregar/editar/borrar snacks y pagos.
+- Editor de notas, rating 1-5 y gastos extra por día.
 
 ### 👤 Perfil
 - Avatar con iniciales y gradiente.
 - Grid de estadísticas personales: consumido, pagado, promedio diario, snacks.
 - Bocadillo **favorito** (el más registrado).
-- Acceso directo a la pantalla de **logros**.
+- Sección **Mi actividad** con acceso directo a Calendario, Historial y Logros.
 
 ### 🏆 Logros
 - **Racha actual** e histórica.
