@@ -12,6 +12,8 @@ import '../../../data/repositories/daily_log_repository.dart';
 import '../../../data/repositories/payment_repository.dart';
 import '../../../data/repositories/settings_repository.dart';
 import '../../../data/repositories/snack_repository.dart';
+import '../../busqueda/search_screen.dart';
+import '../../busqueda/search_viewmodel.dart';
 import '../viewmodels/accounts_viewmodel.dart';
 import '../widgets/payment_history.dart';
 import '../widgets/summary_card.dart';
@@ -65,6 +67,29 @@ class _AccountsView extends StatelessWidget {
             const Text('Cuentas'),
           ],
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.search_rounded),
+            tooltip: 'Buscar',
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => ChangeNotifierProvider(
+                    create: (ctx) {
+                      final vm = SearchViewModel(
+                        ctx.read<SnackRepository>(),
+                        ctx.read<PaymentRepository>(),
+                      );
+                      vm.init();
+                      return vm;
+                    },
+                    child: const SearchScreen(),
+                  ),
+                ),
+              );
+            },
+          ),
+        ],
       ),
       body: ListView(
         padding: const EdgeInsets.all(FoodBookSpacing.lg),
