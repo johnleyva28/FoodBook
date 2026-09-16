@@ -25,6 +25,9 @@ dependencies:
   # Date formatting (es_PE)
   intl: ^0.19.0
 
+  # Crypto para hash del PIN local (sin almacenamiento seguro de claves)
+  crypto: ^3.0.3
+
   cupertino_icons: ^1.0.8
 
 dev_dependencies:

@@ -13,6 +13,8 @@ import 'data/repositories/payment_repository.dart';
 import 'data/repositories/settings_repository.dart';
 import 'data/repositories/snack_repository.dart';
 import 'features/ajustes/viewmodels/settings_viewmodel.dart';
+import 'features/auth/auth_service.dart';
+import 'features/auth/settings_auth_backend.dart';
 import 'shell/root_router.dart';
 
 Future<void> main() async {
@@ -21,6 +23,15 @@ Future<void> main() async {
 
   // ✅ Se crea UNA sola vez, antes de runApp.
   final db = AppDatabase();
+  final settingsRepo = SettingsRepository(db);
+
+  // Configuramos el AuthService con un backend que persiste via la
+  // tabla `settings` (misma BD que el resto de la app).
+  AuthService.init(SettingsAuthBackend(settingsRepo));
+  // Cuando se restablezca el PIN, también borramos los datos locales.
+  AuthService.onPinReset = () async {
+    await MaintenanceRepository(db).wipeAll();
+  };
 
   runApp(FoodBookApp(db: db));
 }
