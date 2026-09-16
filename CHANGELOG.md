@@ -21,7 +21,7 @@ Todos los cambios notables en FoodBook se documentan aquí. El formato sigue [Ke
 - **feat(db)** — `PaymentRepository` codifica método como `[method:nombre]nota`.
 - **feat(db)** — `DailyLogRepository.watchRange`, `watchLastMonth`, `watchAllOrdered`.
 
-### Changed — Pantallas
+### Added — Pantallas rediseñadas
 - **feat(principal)** — `DailyScreen` rediseñada con `HeroCard`, FAB extendido, `RefreshIndicator`, cards nuevas, `Dismissible` con undo.
 - **feat(principal)** — Diálogo unificado de bocadillos con selector de categoría (`ChoiceChip`) y soporte para edición.
 - **feat(cuentas)** — `AccountsScreen` rediseñada con presupuesto, proyección, gráfico semanal de 7 días y `SummaryCard` con variantes semánticas.
@@ -35,6 +35,11 @@ Todos los cambios notables en FoodBook se documentan aquí. El formato sigue [Ke
 - **feat(onboarding)** — Pantalla de bienvenida con 4 páginas y `RootRouter`.
 - **feat(logros)** — `AchievementsScreen` y `AchievementsViewModel` con rachas y 7 logros.
 - **feat(reminder)** — `ReminderBanner` in-app que sugiere acciones según la hora.
+- **feat(maintenance)** — `MaintenanceRepository.wipeAll()` borra datos preservando configuración.
+
+### Changed
+- **chore(cleanup)** — Eliminados archivos placeholder vacíos.
+- **chore(lint)** — `analysis_options.yaml` endurecido con strict-casts, super_params y reglas Material 3.
 
 ### Added — Calidad
 - **test(coverage)** — Tests unitarios de decode, constantes y tema.
@@ -52,3 +57,4 @@ Todos los cambios notables en FoodBook se documentan aquí. El formato sigue [Ke
 - **feat(app)** — Primer commit del proyecto FoodBook con las pantallas Principal y Cuentas semi-funcionales.
 - **fix(cuentas)** — Solución de errores y configuración de `.gitignore`.
 - **fix(cuentas)** — Corrección para usar streams en la data de gastos y cuentas.
+
