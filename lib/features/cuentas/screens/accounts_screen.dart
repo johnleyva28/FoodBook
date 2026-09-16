@@ -1,6 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../core/theme/foodbook_colors.dart';
+import '../../../core/theme/foodbook_spacing.dart';
+import '../../../core/theme/foodbook_text_styles.dart';
+import '../../../core/widgets/hero_card.dart';
+import '../../../data/database/app_database.dart';
+import '../../../data/models/category.dart';
+import '../../../data/repositories/catalog_repository.dart';
 import '../../../data/repositories/daily_log_repository.dart';
 import '../../../data/repositories/payment_repository.dart';
 import '../../../data/repositories/settings_repository.dart';
@@ -39,187 +46,575 @@ class _AccountsView extends StatelessWidget {
     final theme = Theme.of(context);
 
     if (vm.loading) {
-      return const Center(child: CircularProgressIndicator());
+      return Scaffold(
+        appBar: AppBar(title: const Text('Cuentas')),
+        body: const Center(child: CircularProgressIndicator()),
+      );
     }
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Cuentas 💰')),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          // ── Deuda total con la pensión ──
-          Card(
-            color: vm.debt > 0
-                ? theme.colorScheme.errorContainer
-                : theme.colorScheme.primaryContainer,
-            child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                children: [
-                  Text(
-                    vm.debt > 0 ? 'Debes a la pensión' : 'Al día 🎉',
-                    style: theme.textTheme.titleMedium,
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    'S/ ${vm.debt.abs().toStringAsFixed(2)}',
-                    style: theme.textTheme.headlineLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
+      appBar: AppBar(
+        title: Row(
+          children: [
+            Icon(
+              Icons.account_balance_wallet_rounded,
+              color: theme.colorScheme.primary,
+              size: 22,
             ),
+            const SizedBox(width: FoodBookSpacing.sm),
+            const Text('Cuentas'),
+          ],
+        ),
+      ),
+      body: ListView(
+        padding: const EdgeInsets.all(FoodBookSpacing.lg),
+        children: [
+          // ── Deuda con la pensión ──
+          HeroCard(
+            label: vm.debt > 0 ? 'DEUDAS CON LA PENSIÓN' : 'AL DÍA 🎉',
+            amount: 'S/ ${vm.debt.abs().toStringAsFixed(2)}',
+            subtitle: vm.debt > 0
+                ? 'Consumido menos lo que has pagado'
+                : 'No le debes nada a la pensión',
+            icon: vm.debt > 0
+                ? Icons.trending_up_rounded
+                : Icons.check_circle_rounded,
+            variant: vm.debt > 0
+                ? HeroCardVariant.danger
+                : HeroCardVariant.success,
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: FoodBookSpacing.lg),
+
+          // ── Presupuesto del mes ──
+          if (vm.monthlyBudget > 0) ...[
+            _BudgetCard(
+              consumed: vm.monthConsumed,
+              budget: vm.monthlyBudget,
+              usage: vm.monthBudgetUsage,
+              projection: vm.monthProjection,
+            ),
+            const SizedBox(height: FoodBookSpacing.lg),
+          ],
+
+          // ── Gráfico últimos 7 días ──
+          _WeeklyChartCard(breakdown: vm.last7DaysBreakdown),
+          const SizedBox(height: FoodBookSpacing.lg),
 
           // ── Desglose histórico ──
-          Text('Consumo total (histórico)', style: theme.textTheme.titleLarge),
-          const SizedBox(height: 8),
+          _SectionTitle('Consumo total (histórico)'),
+          const SizedBox(height: FoodBookSpacing.sm),
           SummaryCard(
-            icon: Icons.lunch_dining,
+            icon: Icons.lunch_dining_rounded,
             label: 'Almuerzos',
             detail:
                 '${vm.totalLunches} veces × S/ ${vm.lunchPrice.toStringAsFixed(2)}',
             amount: vm.totalLunches * vm.lunchPrice,
+            kind: SummaryCardKind.accent,
           ),
           SummaryCard(
-            icon: Icons.dinner_dining,
+            icon: Icons.dinner_dining_rounded,
             label: 'Cenas',
             detail:
                 '${vm.totalDinners} veces × S/ ${vm.dinnerPrice.toStringAsFixed(2)}',
             amount: vm.totalDinners * vm.dinnerPrice,
+            kind: SummaryCardKind.accent,
           ),
           SummaryCard(
-            icon: Icons.free_breakfast,
+            icon: Icons.free_breakfast_rounded,
             label: 'Desayunos',
-            detail: 'Precio manual (acumulado)',
+            detail:
+                '${vm.totalBreakfasts} desayunos (precio manual acumulado)',
             amount: vm.breakfastTotal,
+            kind: SummaryCardKind.warning,
           ),
           SummaryCard(
-            icon: Icons.bakery_dining,
+            icon: Icons.bakery_dining_rounded,
             label: 'Bocadillos',
-            detail: 'Acumulado',
+            detail: 'Acumulado histórico',
             amount: vm.snacksTotal,
+            kind: SummaryCardKind.warning,
           ),
           SummaryCard(
-            icon: Icons.calculate,
+            icon: Icons.calculate_rounded,
             label: 'Total consumido',
-            detail: 'Almuerzos + cenas + desayunos + bocadillos',
+            detail: 'Suma de todo lo consumido',
             amount: vm.consumedTotal,
+            kind: SummaryCardKind.danger,
           ),
           SummaryCard(
-            icon: Icons.payments,
+            icon: Icons.payments_rounded,
             label: 'Total pagado',
             detail: '${vm.payments.length} pago(s) registrado(s)',
             amount: vm.paymentsTotal,
+            kind: SummaryCardKind.success,
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: FoodBookSpacing.lg),
 
           // ── Este mes ──
-          Text('Este mes', style: theme.textTheme.titleLarge),
-          const SizedBox(height: 8),
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text('Consumido en el mes'),
-                  Text(
-                    'S/ ${vm.monthConsumed.toStringAsFixed(2)}',
-                    style: theme.textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+          _SectionTitle('Este mes'),
+          const SizedBox(height: FoodBookSpacing.sm),
+          SummaryCard(
+            icon: Icons.event_available_rounded,
+            label: 'Consumido en el mes',
+            detail:
+                '${vm.monthLunches} almuerzos · ${vm.monthDinners} cenas · ${vm.monthBreakfasts} desayunos',
+            amount: vm.monthConsumed,
+            kind: SummaryCardKind.default_,
           ),
-          const SizedBox(height: 20),
+          SummaryCard(
+            icon: Icons.send_rounded,
+            label: 'Pagado en el mes',
+            detail: 'Abonos registrados',
+            amount: vm.monthPaymentsTotal,
+            kind: SummaryCardKind.success,
+          ),
+          const SizedBox(height: FoodBookSpacing.lg),
 
           // ── Pagos ──
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Mis pagos', style: theme.textTheme.titleLarge),
+              _SectionTitle('Mis pagos'),
               FilledButton.icon(
                 onPressed: () => _showPaymentDialog(context, vm),
-                icon: const Icon(Icons.add),
+                icon: const Icon(Icons.add_rounded, size: 18),
                 label: const Text('Registrar pago'),
               ),
             ],
           ),
-          const SizedBox(height: 8),
-          PaymentHistory(payments: vm.payments, onDelete: vm.deletePayment),
+          const SizedBox(height: FoodBookSpacing.sm),
+          PaymentHistory(
+            payments: vm.payments,
+            onDelete: vm.deletePayment,
+            onEdit: (Payment p) async {
+              final decoded = PaymentRepository.decode(p.note);
+              await _showPaymentDialog(
+                context,
+                vm,
+                editingId: p.id,
+                initialAmount: p.amount,
+                initialNote: decoded.$2,
+                initialMethod: decoded.$1,
+              );
+            },
+          ),
         ],
       ),
     );
   }
 
-  void _showPaymentDialog(BuildContext context, AccountsViewModel vm) {
-    final amountController = TextEditingController();
-    final noteController = TextEditingController();
+  void _showPaymentDialog(
+    BuildContext context,
+    AccountsViewModel vm, {
+    int? editingId,
+    double? initialAmount,
+    String? initialNote,
+    String? initialMethod,
+  }) async {
+    final methods = await context.read<CatalogRepository>().getAllPaymentMethods();
+    if (!context.mounted) return;
+    final result = await _PaymentDialog.show(
+      context,
+      methodNames: methods.map((m) => m.name).toList(),
+      initialAmount: initialAmount,
+      initialNote: initialNote,
+      initialMethod: initialMethod,
+      isEditing: editingId != null,
+    );
+    if (result == null) return;
+    if (editingId == null) {
+      await vm.addPayment(
+        amount: result.amount,
+        note: result.note,
+        methodName: result.methodName,
+      );
+    } else {
+      await vm.updatePayment(
+        id: editingId,
+        amount: result.amount,
+        note: result.note,
+        methodName: result.methodName,
+      );
+    }
+  }
+}
+
+class _SectionTitle extends StatelessWidget {
+  final String text;
+  const _SectionTitle(this.text);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 0),
+      child: Text(text, style: Theme.of(context).textTheme.titleLarge),
+    );
+  }
+}
+
+class _BudgetCard extends StatelessWidget {
+  final double consumed;
+  final double budget;
+  final double usage;
+  final double projection;
+
+  const _BudgetCard({
+    required this.consumed,
+    required this.budget,
+    required this.usage,
+    required this.projection,
+  });
+
+  Color get _statusColor {
+    if (usage >= 1.0) return FoodBookColors.danger;
+    if (usage >= 0.8) return FoodBookColors.warning;
+    return FoodBookColors.success;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final clampedUsage = usage.clamp(0.0, 1.5);
+    final isOver = usage > 1.0;
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(FoodBookSpacing.lg),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(
+                  Icons.savings_rounded,
+                  color: _statusColor,
+                  size: 22,
+                ),
+                const SizedBox(width: FoodBookSpacing.sm),
+                Text(
+                  'Presupuesto mensual',
+                  style: theme.textTheme.titleMedium,
+                ),
+              ],
+            ),
+            const SizedBox(height: FoodBookSpacing.md),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Consumido',
+                      style: theme.textTheme.bodySmall,
+                    ),
+                    Text(
+                      'S/ ${consumed.toStringAsFixed(2)}',
+                      style: theme.textTheme.titleLarge?.copyWith(
+                        color: _statusColor,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                  ],
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      'de S/ ${budget.toStringAsFixed(2)}',
+                      style: theme.textTheme.bodySmall,
+                    ),
+                    Text(
+                      '${(usage * 100).toStringAsFixed(0)}%',
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        color: _statusColor,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            const SizedBox(height: FoodBookSpacing.md),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(FoodBookSpacing.radiusFull),
+              child: LinearProgressIndicator(
+                value: clampedUsage.toDouble(),
+                minHeight: 10,
+                color: _statusColor,
+                backgroundColor: theme.colorScheme.surfaceContainerHigh,
+              ),
+            ),
+            const SizedBox(height: FoodBookSpacing.md),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Proyección fin de mes',
+                        style: theme.textTheme.bodySmall,
+                      ),
+                      Text(
+                        'S/ ${projection.toStringAsFixed(2)}',
+                        style: FoodBookTextStyles.titleSmall.copyWith(
+                          color: projection > budget
+                              ? FoodBookColors.danger
+                              : FoodBookColors.skyLight,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                if (isOver)
+                  StatusBadge(
+                    label: 'Excedido',
+                    color: FoodBookColors.danger,
+                    icon: Icons.warning_amber_rounded,
+                  )
+                else if (usage >= 0.8)
+                  StatusBadge(
+                    label: 'Cerca',
+                    color: FoodBookColors.warning,
+                    icon: Icons.info_outline_rounded,
+                  )
+                else
+                  StatusBadge(
+                    label: 'En rango',
+                    color: FoodBookColors.success,
+                    icon: Icons.check_circle_outline_rounded,
+                  ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _WeeklyChartCard extends StatelessWidget {
+  final Map<String, double> breakdown;
+  const _WeeklyChartCard({required this.breakdown});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final entries = breakdown.entries.toList();
+    final maxValue = entries.fold<double>(
+      0,
+      (m, e) => e.value > m ? e.value : m,
+    );
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(FoodBookSpacing.lg),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(
+                  Icons.bar_chart_rounded,
+                  color: theme.colorScheme.primary,
+                  size: 22,
+                ),
+                const SizedBox(width: FoodBookSpacing.sm),
+                Text('Últimos 7 días', style: theme.textTheme.titleMedium),
+              ],
+            ),
+            const SizedBox(height: FoodBookSpacing.lg),
+            SizedBox(
+              height: 120,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: entries.map((entry) {
+                  final ratio = maxValue == 0 ? 0.0 : entry.value / maxValue;
+                  final isToday = entry.key ==
+                      DateTime.now()
+                          .toString()
+                          .substring(0, 10)
+                          .replaceFirstMapped(
+                            RegExp(r'^(\d{4})-(\d{2})-(\d{2})$'),
+                            (m) => '${m[1]}-${m[2]}-${m[3]}',
+                          );
+                  return Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 4),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Container(
+                            height: (ratio * 80).clamp(2, 80),
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.bottomCenter,
+                                end: Alignment.topCenter,
+                                colors: isToday
+                                    ? [
+                                        FoodBookColors.skyMuted,
+                                        FoodBookColors.sky,
+                                      ]
+                                    : [
+                                        theme.colorScheme.surfaceContainerHigh,
+                                        theme.colorScheme.surfaceContainerHighest,
+                                      ],
+                              ),
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            entry.key.substring(8, 10),
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              fontWeight: isToday
+                                  ? FontWeight.w700
+                                  : FontWeight.w400,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _PaymentResult {
+  final double amount;
+  final String? note;
+  final String? methodName;
+  _PaymentResult(this.amount, this.note, this.methodName);
+}
+
+class _PaymentDialog extends StatelessWidget {
+  static Future<_PaymentResult?> show(
+    BuildContext context, {
+    required List<String> methodNames,
+    double? initialAmount,
+    String? initialNote,
+    String? initialMethod,
+    bool isEditing = false,
+  }) {
+    final amountController = TextEditingController(
+      text: initialAmount != null ? initialAmount.toString() : '',
+    );
+    final noteController = TextEditingController(text: initialNote ?? '');
+    final selectedMethod = ValueNotifier<String?>(initialMethod);
     final formKey = GlobalKey<FormState>();
 
-    showDialog(
+    return showDialog<_PaymentResult>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Registrar pago 💳'),
-        content: Form(
-          key: formKey,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextFormField(
-                controller: amountController,
-                autofocus: true,
-                keyboardType: const TextInputType.numberWithOptions(
-                  decimal: true,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: Text(isEditing ? 'Editar pago' : 'Registrar pago'),
+          content: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 400),
+            child: Form(
+              key: formKey,
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    TextFormField(
+                      controller: amountController,
+                      autofocus: true,
+                      keyboardType: const TextInputType.numberWithOptions(
+                        decimal: true,
+                      ),
+                      decoration: const InputDecoration(
+                        labelText: 'Monto (S/)',
+                        prefixIcon: Icon(Icons.attach_money_rounded),
+                      ),
+                      validator: (v) {
+                        final amount = double.tryParse(
+                          v?.replaceAll(',', '.') ?? '',
+                        );
+                        if (amount == null || amount <= 0) {
+                          return 'Ingresa un monto válido';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: FoodBookSpacing.md),
+                    if (methodNames.isNotEmpty) ...[
+                      Text(
+                        'Método de pago',
+                        style: Theme.of(dialogContext).textTheme.bodySmall,
+                      ),
+                      const SizedBox(height: FoodBookSpacing.xs),
+                      ValueListenableBuilder<String?>(
+                        valueListenable: selectedMethod,
+                        builder: (_, current, __) {
+                          return Wrap(
+                            spacing: 6,
+                            runSpacing: 6,
+                            children: methodNames.map((m) {
+                              final selected = current == m;
+                              return ChoiceChip(
+                                label: Text(m),
+                                selected: selected,
+                                onSelected: (sel) {
+                                  selectedMethod.value = sel ? m : null;
+                                },
+                              );
+                            }).toList(),
+                          );
+                        },
+                      ),
+                      const SizedBox(height: FoodBookSpacing.md),
+                    ],
+                    TextFormField(
+                      controller: noteController,
+                      textCapitalization: TextCapitalization.sentences,
+                      decoration: const InputDecoration(
+                        labelText: 'Nota (opcional)',
+                        prefixIcon: Icon(Icons.notes_rounded),
+                      ),
+                    ),
+                  ],
                 ),
-                decoration: const InputDecoration(
-                  labelText: 'Monto (S/)',
-                  prefixIcon: Icon(Icons.attach_money),
-                ),
-                validator: (v) {
-                  final amount = double.tryParse(v?.replaceAll(',', '.') ?? '');
-                  if (amount == null || amount <= 0) {
-                    return 'Ingresa un monto válido';
-                  }
-                  return null;
-                },
               ),
-              const SizedBox(height: 12),
-              TextFormField(
-                controller: noteController,
-                textCapitalization: TextCapitalization.sentences,
-                decoration: const InputDecoration(
-                  labelText: 'Nota (opcional)',
-                  prefixIcon: Icon(Icons.notes),
-                ),
-              ),
-            ],
+            ),
           ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancelar'),
-          ),
-          FilledButton(
-            onPressed: () {
-              if (formKey.currentState!.validate()) {
-                final amount = double.parse(
-                  amountController.text.replaceAll(',', '.'),
-                );
-                vm.addPayment(amount: amount, note: noteController.text.trim());
-                Navigator.pop(context);
-              }
-            },
-            child: const Text('Guardar'),
-          ),
-        ],
-      ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(dialogContext),
+              child: const Text('Cancelar'),
+            ),
+            FilledButton.icon(
+              onPressed: () {
+                if (formKey.currentState!.validate()) {
+                  final amount = double.parse(
+                    amountController.text.replaceAll(',', '.'),
+                  );
+                  Navigator.pop<_PaymentResult>(
+                    dialogContext,
+                    _PaymentResult(
+                      amount,
+                      noteController.text.trim().isEmpty
+                          ? null
+                          : noteController.text.trim(),
+                      selectedMethod.value,
+                    ),
+                  );
+                }
+              },
+              icon: const Icon(Icons.check_rounded, size: 18),
+              label: Text(isEditing ? 'Guardar' : 'Registrar'),
+            ),
+          ],
+        );
+      },
     );
   }
+
+  @override
+  Widget build(BuildContext context) => const SizedBox.shrink();
 }
