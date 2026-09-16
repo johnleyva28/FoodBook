@@ -5,6 +5,7 @@ import '../../../core/constants/app_constants.dart';
 import '../../../core/theme/foodbook_colors.dart';
 import '../../../core/theme/foodbook_spacing.dart';
 import '../../../core/theme/foodbook_text_styles.dart';
+import '../../../data/repositories/maintenance_repository.dart';
 import '../../../data/repositories/settings_repository.dart';
 import '../viewmodels/settings_viewmodel.dart';
 
@@ -432,7 +433,7 @@ class SettingsScreen extends StatelessWidget {
       builder: (dialogContext) => AlertDialog(
         title: const Text('¿Borrar todos los datos?'),
         content: const Text(
-          'Esta acción no se puede deshacer. Se eliminarán todos los registros de comidas, snacks y pagos.',
+          'Esta acción no se puede deshacer. Se eliminarán todos los registros de comidas, snacks y pagos. Tus ajustes y precios se conservan.',
         ),
         actions: [
           TextButton(
@@ -443,13 +444,14 @@ class SettingsScreen extends StatelessWidget {
             style: FilledButton.styleFrom(
               backgroundColor: FoodBookColors.danger,
             ),
-            onPressed: () {
+            onPressed: () async {
+              final repo = context.read<MaintenanceRepository>();
               Navigator.pop(dialogContext);
+              await repo.wipeAll();
+              if (!context.mounted) return;
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
-                  content: Text(
-                    'Reset pendiente: la implementación completa se agregará en la próxima versión.',
-                  ),
+                  content: Text('Todos los datos fueron eliminados'),
                 ),
               );
             },

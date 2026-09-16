@@ -7,6 +7,7 @@ import 'data/database/app_database.dart';
 import 'data/repositories/catalog_repository.dart';
 import 'data/repositories/daily_extras_repository.dart';
 import 'data/repositories/daily_log_repository.dart';
+import 'data/repositories/maintenance_repository.dart';
 import 'data/repositories/payment_repository.dart';
 import 'data/repositories/settings_repository.dart';
 import 'data/repositories/snack_repository.dart';
@@ -50,6 +51,9 @@ class FoodBookApp extends StatelessWidget {
         ),
         ProxyProvider<AppDatabase, DailyExtrasRepository>(
           update: (_, db, _) => DailyExtrasRepository(db),
+        ),
+        ProxyProvider<AppDatabase, MaintenanceRepository>(
+          update: (_, db, _) => MaintenanceRepository(db),
         ),
         // VM global de ajustes para que el themeMode sea reactivo desde
         // cualquier punto de la app (settings, splash, etc.).
