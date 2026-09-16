@@ -6,6 +6,8 @@ import '../../../core/theme/foodbook_colors.dart';
 import '../../../core/theme/foodbook_spacing.dart';
 import '../../../core/widgets/app_toast.dart';
 import '../../../data/repositories/maintenance_repository.dart';
+import '../../auth/auth_service.dart';
+import '../../auth/pin_screen.dart';
 import '../viewmodels/settings_viewmodel.dart';
 
 class SettingsScreen extends StatelessWidget {
@@ -190,6 +192,51 @@ class SettingsScreen extends StatelessWidget {
                 ),
               ),
               onTap: () => _editBudget(context, vm),
+            ),
+          ),
+          const SizedBox(height: FoodBookSpacing.lg),
+
+          // ── Seguridad ──
+          const _SectionTitle('Seguridad'),
+          const SizedBox(height: FoodBookSpacing.sm),
+          Card(
+            child: Column(
+              children: [
+                FutureBuilder<bool>(
+                  future: AuthService.hasPin(),
+                  builder: (ctx, snap) {
+                    final hasPin = snap.data ?? false;
+                    return SwitchListTile(
+                      secondary: const Icon(Icons.lock_outline_rounded),
+                      title: Text(
+                        hasPin
+                            ? 'PIN de seguridad activado'
+                            : 'Activar PIN de seguridad',
+                      ),
+                      subtitle: const Text(
+                        'Pide un PIN de 4 dígitos al abrir la app',
+                      ),
+                      value: hasPin,
+                      onChanged: (v) async {
+                        if (v) {
+                          // Lanzamos setup con un await dentro del
+                          // future para que el botón refleje el estado.
+                          await Navigator.of(context).push(
+                            MaterialPageRoute<bool>(
+                              builder: (_) =>
+                                  const PinScreen(mode: PinMode.setup),
+                            ),
+                          );
+                          if (ctx.mounted) (ctx as Element).markNeedsBuild();
+                        } else {
+                          await AuthService.clearPin();
+                          if (ctx.mounted) (ctx as Element).markNeedsBuild();
+                        }
+                      },
+                    );
+                  },
+                ),
+              ],
             ),
           ),
           const SizedBox(height: FoodBookSpacing.lg),
