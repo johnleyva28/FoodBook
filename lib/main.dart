@@ -3,6 +3,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
 
 import 'core/theme/app_theme.dart';
+import 'core/widgets/app_error_boundary.dart';
 import 'data/app_data_streams.dart';
 import 'data/database/app_database.dart';
 import 'data/repositories/catalog_repository.dart';
@@ -90,6 +91,8 @@ class FoodBookApp extends StatelessWidget {
             theme: AppTheme.light,
             darkTheme: AppTheme.dark,
             themeMode: settingsVm.themeMode,
+            builder: (ctx, child) =>
+                AppErrorBoundary(child: child ?? const SizedBox.shrink()),
             home: const RootRouter(),
           );
         },
