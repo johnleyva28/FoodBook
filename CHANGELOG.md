@@ -5,8 +5,16 @@ Todos los cambios notables en FoodBook se documentan aquí. El formato sigue [Ke
 ## Estado del build
 
 - ✅ `flutter analyze` → No issues found
-- ✅ `flutter test` → 14/14 tests passed
+- ✅ `flutter test` → 19/19 tests passed
 - ✅ `flutter build windows --debug` → Build successful
+
+## [2.2.0] — 2026-09-15
+
+### Changed
+- **feat(streams)** — Nuevo `AppDataStreams` global que mantiene una única subscripción a `daily_logs`, `snack_entries`, `payments` y `categories`. Todas las pantallas (Hoy, Cuentas, Calendario, DíaDetalle) lo escuchan vía `addListener`, así cualquier edición se refleja instantáneamente en todas las vistas sin recargar.
+
+### Fixed
+- **fix(sync)** — Los cambios hechos desde Calendario/DíaDetalle ya no tardan en propagarse a Hoy/Cuentas. Bug raíz: cada VM creaba su propio cache interno con subscripciones duplicadas a Drift.
 
 ## [2.1.0] — 2026-09-15
 
