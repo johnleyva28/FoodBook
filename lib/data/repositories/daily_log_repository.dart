@@ -41,7 +41,12 @@ class DailyLogRepository {
   /// Stream de registros en un rango de fechas (ordenados desc).
   Stream<List<DailyLog>> watchRange(String from, String to) {
     final query = _db.select(_db.dailyLogs)
-      ..where((t) => t.date.isBetween(from, to))
+      ..where(
+        (t) => t.date.isBetween(
+          Variable.withString(from),
+          Variable.withString(to),
+        ),
+      )
       ..orderBy([(t) => OrderingTerm.desc(t.date)]);
     return query.watch();
   }

@@ -3,8 +3,6 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 
 import '../../../data/database/app_database.dart';
-import '../../../data/repositories/catalog_repository.dart';
-import '../../../data/repositories/daily_log_repository.dart';
 import '../../../data/repositories/payment_repository.dart';
 import '../../../data/repositories/snack_repository.dart';
 

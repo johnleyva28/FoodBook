@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../../../core/theme/foodbook_colors.dart';
 import '../../../core/theme/foodbook_spacing.dart';
-import '../../../core/theme/foodbook_text_styles.dart';
 
 class OnboardingPage {
   final IconData icon;

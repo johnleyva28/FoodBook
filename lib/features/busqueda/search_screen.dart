@@ -7,7 +7,7 @@ import '../../../core/theme/foodbook_text_styles.dart';
 import '../../../core/widgets/stat_row.dart';
 import '../../../data/repositories/payment_repository.dart';
 import '../../../data/repositories/snack_repository.dart';
-import '../search_viewmodel.dart';
+import 'search_viewmodel.dart';
 
 /// Pantalla de búsqueda global de snacks y pagos.
 class SearchScreen extends StatefulWidget {

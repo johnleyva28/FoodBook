@@ -5,8 +5,8 @@ import '../../../core/theme/foodbook_colors.dart';
 import '../../../core/theme/foodbook_spacing.dart';
 import '../../../core/theme/foodbook_text_styles.dart';
 import '../../../core/widgets/hero_card.dart';
+import '../../../core/widgets/stat_row.dart';
 import '../../../data/database/app_database.dart';
-import '../../../data/models/category.dart';
 import '../../../data/repositories/catalog_repository.dart';
 import '../../../data/repositories/daily_log_repository.dart';
 import '../../../data/repositories/payment_repository.dart';
@@ -228,7 +228,7 @@ class _AccountsView extends StatelessWidget {
     );
   }
 
-  void _showPaymentDialog(
+  Future<void> _showPaymentDialog(
     BuildContext context,
     AccountsViewModel vm, {
     int? editingId,

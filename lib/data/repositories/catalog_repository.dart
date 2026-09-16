@@ -8,9 +8,9 @@ class CatalogRepository {
   final AppDatabase _db;
   CatalogRepository(this._db);
 
-  // ════════════════════════════════════════════════════════
+  // ════════════════════════════════════════════════════════════
   // CATEGORIES
-  // ════════════════════════════════════════════════════════
+  // ════════════════════════════════════════════════════════════
 
   Future<List<Category>> getAllCategories() async {
     final rows = await _db.customSelect(
@@ -34,27 +34,25 @@ class CatalogRepository {
     String icon = 'fastfood',
     String colorHex = '#38BDF8',
   }) async {
-    return _db.customInsert(
+    await _db.customStatement(
       'INSERT INTO categories (name, icon, color_hex, is_default) VALUES (?, ?, ?, 0)',
-      variables: [
-        Variable.withString(name),
-        Variable.withString(icon),
-        Variable.withString(colorHex),
-      ],
-      updates: const {'categories': const {'id'}},
+      [name, icon, colorHex],
     );
+    final row = await _db.customSelect(
+      'SELECT id FROM categories WHERE name = ? ORDER BY id DESC LIMIT 1',
+      variables: [Variable.withString(name)],
+      readsFrom: const {},
+    ).getSingleOrNull();
+    return (row?.data['id'] as int?) ?? 0;
   }
 
   Future<void> deleteCategory(int id) async {
-    await _db.customStatement(
-      'DELETE FROM categories WHERE id = ?',
-      [id],
-    );
+    await _db.customStatement('DELETE FROM categories WHERE id = ?', [id]);
   }
 
-  // ════════════════════════════════════════════════════════
+  // ════════════════════════════════════════════════════════════
   // PAYMENT METHODS
-  // ════════════════════════════════════════════════════════
+  // ════════════════════════════════════════════════════════════
 
   Future<List<PaymentMethod>> getAllPaymentMethods() async {
     final rows = await _db.customSelect(
@@ -69,21 +67,19 @@ class CatalogRepository {
     String icon = 'payments',
     String colorHex = '#38BDF8',
   }) async {
-    return _db.customInsert(
+    await _db.customStatement(
       'INSERT INTO payment_methods (name, icon, color_hex, is_default) VALUES (?, ?, ?, 0)',
-      variables: [
-        Variable.withString(name),
-        Variable.withString(icon),
-        Variable.withString(colorHex),
-      ],
-      updates: const {'payment_methods': const {'id'}},
+      [name, icon, colorHex],
     );
+    final row = await _db.customSelect(
+      'SELECT id FROM payment_methods WHERE name = ? ORDER BY id DESC LIMIT 1',
+      variables: [Variable.withString(name)],
+      readsFrom: const {},
+    ).getSingleOrNull();
+    return (row?.data['id'] as int?) ?? 0;
   }
 
   Future<void> deletePaymentMethod(int id) async {
-    await _db.customStatement(
-      'DELETE FROM payment_methods WHERE id = ?',
-      [id],
-    );
+    await _db.customStatement('DELETE FROM payment_methods WHERE id = ?', [id]);
   }
 }

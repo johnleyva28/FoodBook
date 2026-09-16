@@ -4,9 +4,7 @@ import 'package:provider/provider.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../core/theme/foodbook_colors.dart';
 import '../../../core/theme/foodbook_spacing.dart';
-import '../../../core/theme/foodbook_text_styles.dart';
 import '../../../data/repositories/maintenance_repository.dart';
-import '../../../data/repositories/settings_repository.dart';
 import '../viewmodels/settings_viewmodel.dart';
 
 class SettingsScreen extends StatelessWidget {

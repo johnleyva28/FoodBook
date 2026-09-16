@@ -105,7 +105,7 @@ class AppDatabase extends _$AppDatabase {
   }
 
   Future<void> _seedCategories() async {
-    final defaults = const [
+    const defaults = [
       _CategorySeed('Panadería', 'bakery_dining', '#FBBF24'),
       _CategorySeed('Fruta', 'spa', '#34D399'),
       _CategorySeed('Gaseosa', 'local_drink', '#22D3EE'),
@@ -120,21 +120,16 @@ class AppDatabase extends _$AppDatabase {
         readsFrom: const {},
       ).getSingleOrNull();
       if (exists == null) {
-        await customInsert(
+        await customStatement(
           'INSERT INTO categories (name, icon, color_hex, is_default) VALUES (?, ?, ?, 1)',
-          variables: [
-            Variable.withString(c.name),
-            Variable.withString(c.icon),
-            Variable.withString(c.colorHex),
-          ],
-          updates: {_CategoriesTableExcluded},
+          [c.name, c.icon, c.colorHex],
         );
       }
     }
   }
 
   Future<void> _seedPaymentMethods() async {
-    final defaults = const [
+    const defaults = [
       _PaymentMethodSeed('Efectivo', 'payments', '#34D399'),
       _PaymentMethodSeed('Yape', 'phone_android', '#7DD3FC'),
       _PaymentMethodSeed('Plin', 'phone_iphone', '#38BDF8'),
@@ -147,22 +142,14 @@ class AppDatabase extends _$AppDatabase {
         readsFrom: const {},
       ).getSingleOrNull();
       if (exists == null) {
-        await customInsert(
+        await customStatement(
           'INSERT INTO payment_methods (name, icon, color_hex, is_default) VALUES (?, ?, ?, 1)',
-          variables: [
-            Variable.withString(m.name),
-            Variable.withString(m.icon),
-            Variable.withString(m.colorHex),
-          ],
-          updates: {_PaymentMethodsTableExcluded},
+          [m.name, m.icon, m.colorHex],
         );
       }
     }
   }
 }
-
-const Set<String> _CategoriesTableExcluded = {'id'};
-const Set<String> _PaymentMethodsTableExcluded = {'id'};
 
 class _CategorySeed {
   final String name;

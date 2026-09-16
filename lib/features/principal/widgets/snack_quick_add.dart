@@ -133,7 +133,10 @@ Future<SnackFormResult?> showSnackDialog(
 }
 
 /// Diálogo para editar el desayuno (precio manual + descripción).
-Future<({double price, String? description})?> showBreakfastDialog(
+///
+/// Devuelve `null` si el usuario cancela; en caso contrario una tupla
+/// posicional `(price, description)`.
+Future<(double price, String? description)?> showBreakfastDialog(
   BuildContext context, {
   double? initialPrice,
   String? initialDesc,

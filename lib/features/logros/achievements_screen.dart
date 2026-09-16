@@ -7,7 +7,7 @@ import '../../../core/theme/foodbook_text_styles.dart';
 import '../../../core/widgets/stat_row.dart';
 import '../../../data/repositories/daily_log_repository.dart';
 import '../../../data/repositories/snack_repository.dart';
-import '../achievements_viewmodel.dart';
+import 'achievements_viewmodel.dart';
 
 class AchievementsScreen extends StatelessWidget {
   const AchievementsScreen({super.key});

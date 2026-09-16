@@ -9,7 +9,6 @@ import '../../../core/widgets/foodbook_logo.dart';
 import '../../../core/widgets/hero_card.dart';
 import '../../../core/widgets/reminder_banner.dart';
 import '../../../core/widgets/stat_row.dart';
-import '../../../data/database/app_database.dart';
 import '../../../data/repositories/catalog_repository.dart';
 import '../../../data/repositories/daily_log_repository.dart';
 import '../../../data/repositories/settings_repository.dart';

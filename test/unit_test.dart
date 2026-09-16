@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:foodbook/core/constants/app_constants.dart';
+import 'package:foodbook/data/repositories/payment_repository.dart';
 import 'package:foodbook/data/repositories/snack_repository.dart';
 
 void main() {

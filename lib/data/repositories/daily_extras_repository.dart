@@ -23,22 +23,20 @@ class DailyExtrasRepository {
   }
 
   Future<void> upsert(DailyExtras extras) async {
-    await _db.customInsert(
+    final notesValue = extras.notes ?? '';
+    await _db.customStatement(
       'INSERT INTO daily_extras (date, notes, rating, extra_expenses) '
       'VALUES (?, ?, ?, ?) '
       'ON CONFLICT(date) DO UPDATE SET '
       '  notes = excluded.notes, '
       '  rating = excluded.rating, '
       '  extra_expenses = excluded.extra_expenses',
-      variables: [
-        Variable.withString(extras.date),
-        Variable.withString(extras.notes),
-        extras.rating == null
-            ? const Variable(null)
-            : Variable.withInt(extras.rating!),
-        Variable.withDouble(extras.extraExpenses),
+      [
+        extras.date,
+        notesValue,
+        extras.rating,
+        extras.extraExpenses,
       ],
-      updates: const {'daily_extras': const {'date'}},
     );
   }
 }
