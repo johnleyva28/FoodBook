@@ -8,7 +8,6 @@ import '../../../core/theme/foodbook_text_styles.dart';
 import '../../../core/utils/date_helper.dart';
 import '../../../core/widgets/stat_row.dart';
 import '../../../data/database/app_database.dart';
-import '../../../data/repositories/catalog_repository.dart';
 import '../../../data/repositories/daily_extras_repository.dart';
 import '../../../data/repositories/daily_log_repository.dart';
 import '../../../data/repositories/payment_repository.dart';
@@ -27,7 +26,6 @@ class HistoryScreen extends StatelessWidget {
           ctx.read<SnackRepository>(),
           ctx.read<PaymentRepository>(),
           ctx.read<DailyExtrasRepository>(),
-          ctx.read<CatalogRepository>(),
         );
         vm.init();
         return vm;
@@ -226,13 +224,13 @@ class _HistoryView extends StatelessWidget {
                                 amount: dayLog.breakfastPrice,
                               ),
                             if (dayLog.hadLunch)
-                              _DetailRow(
+                              const _DetailRow(
                                 icon: Icons.lunch_dining_rounded,
                                 label: 'Almuerzo',
                                 amount: 9.0,
                               ),
                             if (dayLog.hadDinner)
-                              _DetailRow(
+                              const _DetailRow(
                                 icon: Icons.dinner_dining_rounded,
                                 label: 'Cena',
                                 amount: 9.0,
@@ -354,7 +352,7 @@ class _DetailRow extends StatelessWidget {
             ),
           ),
           Text(
-            (isPayment ? '-' : '+') + 'S/ ${amount.toStringAsFixed(2)}',
+            '${isPayment ? '-' : '+'}S/ ${amount.toStringAsFixed(2)}',
             style: theme.textTheme.titleSmall?.copyWith(
               color: isPayment
                   ? FoodBookColors.success

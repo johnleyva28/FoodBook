@@ -94,7 +94,7 @@ class PaymentHistory extends StatelessWidget {
               subtitle: Text(
                 [
                   p.date,
-                  if (method != null) method,
+                  ?method,
                   if (note != null && note.isNotEmpty) note,
                 ].join(' • '),
               ),

@@ -10,8 +10,7 @@ class MoneyFormatter {
   final String symbol;
   final String _locale;
 
-  MoneyFormatter({required this.symbol, String locale = 'es_PE'})
-    : _locale = locale;
+  const MoneyFormatter({required this.symbol, this._locale = 'es_PE'});
 
   /// Formato estándar: `S/ 12.50`.
   String format(double amount) {

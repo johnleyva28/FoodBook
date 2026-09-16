@@ -155,7 +155,7 @@ class _ProfileView extends StatelessWidget {
               child: ListTile(
                 leading: CircleAvatar(
                   backgroundColor: FoodBookColors.warning.withValues(alpha: 0.2),
-                  child: Icon(
+                  child: const Icon(
                     Icons.star_rounded,
                     color: FoodBookColors.warning,
                   ),
@@ -215,8 +215,7 @@ class _ProfileView extends StatelessWidget {
           FilledButton(
             onPressed: () async {
               await repo.setString('user_name', controller.text.trim());
-              vm.userName = controller.text.trim();
-              vm.notifyListeners();
+              vm.updateUserName(controller.text.trim());
               if (dialogContext.mounted) Navigator.pop(dialogContext);
             },
             child: const Text('Guardar'),

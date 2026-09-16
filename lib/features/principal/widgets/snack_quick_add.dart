@@ -69,7 +69,7 @@ Future<SnackFormResult?> showSnackDialog(
                 if (categoryNames.isNotEmpty) ...[
                   ValueListenableBuilder<String?>(
                     valueListenable: selectedCategory,
-                    builder: (_, current, __) {
+                    builder: (_, current, _) {
                       return Wrap(
                         spacing: 6,
                         runSpacing: 6,

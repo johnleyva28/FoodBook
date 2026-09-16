@@ -76,6 +76,12 @@ class ProfileViewModel extends ChangeNotifier {
     return sorted.isEmpty ? null : sorted.first.key;
   }
 
+  /// Actualiza el nombre del usuario y refresca el estado del VM.
+  void updateUserName(String value) {
+    userName = value;
+    notifyListeners();
+  }
+
   String get initials {
     if (userName.trim().isEmpty) return 'FB';
     final parts = userName.trim().split(RegExp(r'\s+'));

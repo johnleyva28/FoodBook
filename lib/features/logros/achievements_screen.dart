@@ -203,7 +203,7 @@ class _AchievementsView extends StatelessWidget {
                                 ),
                               ),
                               if (a.unlocked)
-                                Icon(
+                                const Icon(
                                   Icons.check_circle_rounded,
                                   color: FoodBookColors.success,
                                   size: 18,

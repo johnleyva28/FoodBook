@@ -112,7 +112,7 @@ class _DailyView extends StatelessWidget {
             ),
 
             // ── Comidas de la pensión ──
-            _SectionHeader(title: 'Comidas de hoy', icon: Icons.lunch_dining_rounded),
+            const _SectionHeader(title: 'Comidas de hoy', icon: Icons.lunch_dining_rounded),
             const SizedBox(height: FoodBookSpacing.sm),
             BreakfastCard(
               checked: vm.log?.hadBreakfast ?? false,
@@ -180,8 +180,8 @@ class _DailyView extends StatelessWidget {
             ),
             const SizedBox(height: FoodBookSpacing.sm),
             if (vm.snacks.isEmpty)
-              Card(
-                child: const EmptyState(
+              const Card(
+                child: EmptyState(
                   icon: Icons.cookie_rounded,
                   title: 'Sin bocadillos',
                   message:
@@ -341,7 +341,7 @@ class _SectionHeader extends StatelessWidget {
         Expanded(
           child: Text(title, style: theme.textTheme.titleMedium),
         ),
-        if (trailing != null) trailing!,
+        ?trailing,
       ],
     );
   }

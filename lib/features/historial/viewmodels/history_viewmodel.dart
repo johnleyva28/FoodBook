@@ -4,9 +4,8 @@ import 'package:flutter/foundation.dart';
 
 import '../../../core/utils/date_helper.dart';
 import '../../../data/database/app_database.dart';
-import '../../../data/repositories/catalog_repository.dart';
-import '../../../data/repositories/daily_log_repository.dart';
 import '../../../data/repositories/daily_extras_repository.dart';
+import '../../../data/repositories/daily_log_repository.dart';
 import '../../../data/repositories/payment_repository.dart';
 import '../../../data/repositories/snack_repository.dart';
 
@@ -19,7 +18,6 @@ class HistoryViewModel extends ChangeNotifier {
   final SnackRepository _snackRepo;
   final PaymentRepository _paymentRepo;
   final DailyExtrasRepository _extrasRepo;
-  final CatalogRepository _catalogRepo;
 
   StreamSubscription<List<DailyLog>>? _logsSub;
   StreamSubscription<List<SnackEntry>>? _snacksSub;
@@ -30,7 +28,6 @@ class HistoryViewModel extends ChangeNotifier {
     this._snackRepo,
     this._paymentRepo,
     this._extrasRepo,
-    this._catalogRepo,
   );
 
   // ── Estado ──

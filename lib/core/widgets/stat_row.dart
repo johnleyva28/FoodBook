@@ -184,7 +184,7 @@ class StatusBadge extends StatelessWidget {
           ],
           Text(
             label,
-            style: TextStyle(
+            style: const TextStyle(
               color: FoodBookColors.textHigh,
               fontWeight: FontWeight.w600,
               fontSize: 12,

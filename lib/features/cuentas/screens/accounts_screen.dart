@@ -126,7 +126,7 @@ class _AccountsView extends StatelessWidget {
           const SizedBox(height: FoodBookSpacing.lg),
 
           // ── Desglose histórico ──
-          _SectionTitle('Consumo total (histórico)'),
+          const _SectionTitle('Consumo total (histórico)'),
           const SizedBox(height: FoodBookSpacing.sm),
           SummaryCard(
             icon: Icons.lunch_dining_rounded,
@@ -176,7 +176,7 @@ class _AccountsView extends StatelessWidget {
           const SizedBox(height: FoodBookSpacing.lg),
 
           // ── Este mes ──
-          _SectionTitle('Este mes'),
+          const _SectionTitle('Este mes'),
           const SizedBox(height: FoodBookSpacing.sm),
           SummaryCard(
             icon: Icons.event_available_rounded,
@@ -199,7 +199,7 @@ class _AccountsView extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              _SectionTitle('Mis pagos'),
+              const _SectionTitle('Mis pagos'),
               FilledButton.icon(
                 onPressed: () => _showPaymentDialog(context, vm),
                 icon: const Icon(Icons.add_rounded, size: 18),
@@ -392,19 +392,19 @@ class _BudgetCard extends StatelessWidget {
                   ),
                 ),
                 if (isOver)
-                  StatusBadge(
+                  const StatusBadge(
                     label: 'Excedido',
                     color: FoodBookColors.danger,
                     icon: Icons.warning_amber_rounded,
                   )
                 else if (usage >= 0.8)
-                  StatusBadge(
+                  const StatusBadge(
                     label: 'Cerca',
                     color: FoodBookColors.warning,
                     icon: Icons.info_outline_rounded,
                   )
                 else
-                  StatusBadge(
+                  const StatusBadge(
                     label: 'En rango',
                     color: FoodBookColors.success,
                     icon: Icons.check_circle_outline_rounded,
@@ -576,7 +576,7 @@ class _PaymentDialog extends StatelessWidget {
                       const SizedBox(height: FoodBookSpacing.xs),
                       ValueListenableBuilder<String?>(
                         valueListenable: selectedMethod,
-                        builder: (_, current, __) {
+                        builder: (_, current, _) {
                           return Wrap(
                             spacing: 6,
                             runSpacing: 6,

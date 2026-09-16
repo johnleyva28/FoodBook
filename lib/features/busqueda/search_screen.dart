@@ -5,8 +5,6 @@ import '../../../core/theme/foodbook_colors.dart';
 import '../../../core/theme/foodbook_spacing.dart';
 import '../../../core/theme/foodbook_text_styles.dart';
 import '../../../core/widgets/stat_row.dart';
-import '../../../data/repositories/payment_repository.dart';
-import '../../../data/repositories/snack_repository.dart';
 import 'search_viewmodel.dart';
 
 /// Pantalla de búsqueda global de snacks y pagos.
@@ -115,7 +113,7 @@ class _SearchHitTile extends StatelessWidget {
           ].join(' • '),
         ),
         trailing: Text(
-          (isPayment ? '-' : '+') + 'S/ ${hit.amount.toStringAsFixed(2)}',
+          '${isPayment ? '-' : '+'}S/ ${hit.amount.toStringAsFixed(2)}',
           style: FoodBookTextStyles.titleSmall.copyWith(color: color),
         ),
       ),

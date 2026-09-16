@@ -41,7 +41,7 @@ class SettingsScreen extends StatelessWidget {
         padding: const EdgeInsets.all(FoodBookSpacing.lg),
         children: [
           // ── Perfil ──
-          _SectionTitle('Perfil'),
+          const _SectionTitle('Perfil'),
           const SizedBox(height: FoodBookSpacing.sm),
           Card(
             child: ListTile(
@@ -60,50 +60,44 @@ class SettingsScreen extends StatelessWidget {
           const SizedBox(height: FoodBookSpacing.lg),
 
           // ── Tema ──
-          _SectionTitle('Apariencia'),
+          const _SectionTitle('Apariencia'),
           const SizedBox(height: FoodBookSpacing.sm),
           Card(
-            child: Column(
-              children: [
-                RadioListTile<ThemeMode>(
-                  value: ThemeMode.dark,
-                  groupValue: vm.themeMode,
-                  onChanged: (v) {
-                    if (v != null) vm.setThemeMode(v);
-                  },
-                  title: const Text('Oscuro'),
-                  subtitle: const Text('Identidad FoodBook (azul marino)'),
-                  secondary: const Icon(Icons.dark_mode_rounded),
-                ),
-                const Divider(height: 1),
-                RadioListTile<ThemeMode>(
-                  value: ThemeMode.light,
-                  groupValue: vm.themeMode,
-                  onChanged: (v) {
-                    if (v != null) vm.setThemeMode(v);
-                  },
-                  title: const Text('Claro'),
-                  subtitle: const Text('Fondo blanco con acentos celeste'),
-                  secondary: const Icon(Icons.light_mode_rounded),
-                ),
-                const Divider(height: 1),
-                RadioListTile<ThemeMode>(
-                  value: ThemeMode.system,
-                  groupValue: vm.themeMode,
-                  onChanged: (v) {
-                    if (v != null) vm.setThemeMode(v);
-                  },
-                  title: const Text('Sistema'),
-                  subtitle: const Text('Sigue el modo del dispositivo'),
-                  secondary: const Icon(Icons.brightness_auto_rounded),
-                ),
-              ],
+            child: RadioGroup<ThemeMode>(
+              groupValue: vm.themeMode,
+              onChanged: (v) {
+                if (v != null) vm.setThemeMode(v);
+              },
+              child: const Column(
+                children: [
+                  RadioListTile<ThemeMode>(
+                    value: ThemeMode.dark,
+                    title: Text('Oscuro'),
+                    subtitle: Text('Identidad FoodBook (azul marino)'),
+                    secondary: Icon(Icons.dark_mode_rounded),
+                  ),
+                  Divider(height: 1),
+                  RadioListTile<ThemeMode>(
+                    value: ThemeMode.light,
+                    title: Text('Claro'),
+                    subtitle: Text('Fondo blanco con acentos celeste'),
+                    secondary: Icon(Icons.light_mode_rounded),
+                  ),
+                  Divider(height: 1),
+                  RadioListTile<ThemeMode>(
+                    value: ThemeMode.system,
+                    title: Text('Sistema'),
+                    subtitle: Text('Sigue el modo del dispositivo'),
+                    secondary: Icon(Icons.brightness_auto_rounded),
+                  ),
+                ],
+              ),
             ),
           ),
           const SizedBox(height: FoodBookSpacing.lg),
 
           // ── Moneda ──
-          _SectionTitle('Moneda'),
+          const _SectionTitle('Moneda'),
           const SizedBox(height: FoodBookSpacing.sm),
           Card(
             child: Padding(
@@ -124,7 +118,7 @@ class SettingsScreen extends StatelessWidget {
           const SizedBox(height: FoodBookSpacing.lg),
 
           // ── Precios base ──
-          _SectionTitle('Precios base de la pensión'),
+          const _SectionTitle('Precios base de la pensión'),
           const SizedBox(height: FoodBookSpacing.sm),
           Card(
             child: Column(
@@ -178,7 +172,7 @@ class SettingsScreen extends StatelessWidget {
           const SizedBox(height: FoodBookSpacing.lg),
 
           // ── Presupuesto ──
-          _SectionTitle('Presupuesto mensual'),
+          const _SectionTitle('Presupuesto mensual'),
           const SizedBox(height: FoodBookSpacing.sm),
           Card(
             child: ListTile(
@@ -200,7 +194,7 @@ class SettingsScreen extends StatelessWidget {
           const SizedBox(height: FoodBookSpacing.lg),
 
           // ── Datos ──
-          _SectionTitle('Datos'),
+          const _SectionTitle('Datos'),
           const SizedBox(height: FoodBookSpacing.sm),
           Card(
             child: Column(
@@ -216,7 +210,7 @@ class SettingsScreen extends StatelessWidget {
                 ),
                 const Divider(height: 1),
                 ListTile(
-                  leading: Icon(
+                  leading: const Icon(
                     Icons.delete_forever_rounded,
                     color: FoodBookColors.danger,
                   ),
@@ -232,7 +226,7 @@ class SettingsScreen extends StatelessWidget {
           const SizedBox(height: FoodBookSpacing.lg),
 
           // ── Acerca de ──
-          _SectionTitle('Acerca de'),
+          const _SectionTitle('Acerca de'),
           const SizedBox(height: FoodBookSpacing.sm),
           Card(
             child: Padding(
