@@ -26,14 +26,41 @@ class DailyLogRepository {
   }
 
   /// Stream del registro de hoy (null si aún no existe).
-  /// El ViewModel decidirá mostrar valores por defecto.
   Stream<DailyLog?> watchToday() {
     final date = DateHelper.today();
     final query = _db.select(_db.dailyLogs)..where((t) => t.date.equals(date));
     return query.watchSingleOrNull();
   }
 
-  /// Marca/desmarca almuerzo.
+  /// Stream de un día específico.
+  Stream<DailyLog?> watchDate(String date) {
+    final query = _db.select(_db.dailyLogs)..where((t) => t.date.equals(date));
+    return query.watchSingleOrNull();
+  }
+
+  /// Stream de registros en un rango de fechas (ordenados desc).
+  Stream<List<DailyLog>> watchRange(String from, String to) {
+    final query = _db.select(_db.dailyLogs)
+      ..where((t) => t.date.isBetween(from, to))
+      ..orderBy([(t) => OrderingTerm.desc(t.date)]);
+    return query.watch();
+  }
+
+  /// Stream del último mes (incluye hoy).
+  Stream<List<DailyLog>> watchLastMonth() {
+    final today = DateTime.now();
+    final first = DateTime(today.year, today.month, 1);
+    final last = DateTime(today.year, today.month + 1, 0);
+    return watchRange(DateHelper.format(first), DateHelper.format(last));
+  }
+
+  /// Stream de TODOS los registros.
+  Stream<List<DailyLog>> watchAll() {
+    final query = _db.select(_db.dailyLogs)
+      ..orderBy([(t) => OrderingTerm.desc(t.date)]);
+    return query.watch();
+  }
+
   Future<void> toggleLunch(bool value) async {
     await getOrCreateToday();
     await (_db.update(_db.dailyLogs)
@@ -41,7 +68,6 @@ class DailyLogRepository {
         .write(DailyLogsCompanion(hadLunch: Value(value)));
   }
 
-  /// Marca/desmarca cena.
   Future<void> toggleDinner(bool value) async {
     await getOrCreateToday();
     await (_db.update(_db.dailyLogs)
@@ -49,7 +75,6 @@ class DailyLogRepository {
         .write(DailyLogsCompanion(hadDinner: Value(value)));
   }
 
-  /// Guarda el desayuno (consumido + precio + descripción).
   Future<void> saveBreakfast({
     required bool had,
     required double price,
@@ -67,7 +92,6 @@ class DailyLogRepository {
     );
   }
 
-  /// Total de almuerzos y cenas en un rango (para Cuentas).
   Future<(int lunches, int dinners)> countLunchesAndDinners({
     String? fromDate,
     String? toDate,
@@ -89,7 +113,4 @@ class DailyLogRepository {
     }
     return (lunches, dinners);
   }
-
-  /// Stream de TODOS los registros diarios (para Cuentas).
-  Stream<List<DailyLog>> watchAll() => _db.select(_db.dailyLogs).watch();
 }

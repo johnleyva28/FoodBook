@@ -1,6 +1,11 @@
 import 'package:drift/drift.dart';
 
 /// Registro diario: qué comió el usuario y precios del desayuno.
+///
+/// Esquema v1 (estable). Los nuevos campos (notes, rating, extras) se
+/// serializan en JSON dentro de `breakfastDesc` mediante `DailyLogExtras`
+/// para no requerir migración de esquema y mantener compatibilidad con
+/// el `.g.dart` ya generado.
 class DailyLogs extends Table {
   IntColumn get id => integer().autoIncrement()();
   // Fecha como texto 'yyyy-MM-dd' → única por día, fácil de comparar.
