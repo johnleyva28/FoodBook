@@ -4,12 +4,14 @@ import 'package:provider/provider.dart';
 
 import 'core/theme/app_theme.dart';
 import 'data/database/app_database.dart';
+import 'data/repositories/catalog_repository.dart';
+import 'data/repositories/daily_extras_repository.dart';
 import 'data/repositories/daily_log_repository.dart';
 import 'data/repositories/payment_repository.dart';
 import 'data/repositories/settings_repository.dart';
 import 'data/repositories/snack_repository.dart';
 import 'features/ajustes/viewmodels/settings_viewmodel.dart';
-import 'shell/main_shell.dart';
+import 'shell/root_router.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -43,6 +45,12 @@ class FoodBookApp extends StatelessWidget {
         ProxyProvider<AppDatabase, SettingsRepository>(
           update: (_, db, _) => SettingsRepository(db),
         ),
+        ProxyProvider<AppDatabase, CatalogRepository>(
+          update: (_, db, _) => CatalogRepository(db),
+        ),
+        ProxyProvider<AppDatabase, DailyExtrasRepository>(
+          update: (_, db, _) => DailyExtrasRepository(db),
+        ),
         // VM global de ajustes para que el themeMode sea reactivo desde
         // cualquier punto de la app (settings, splash, etc.).
         ChangeNotifierProvider<SettingsViewModel>(
@@ -61,7 +69,7 @@ class FoodBookApp extends StatelessWidget {
             theme: AppTheme.light,
             darkTheme: AppTheme.dark,
             themeMode: settingsVm.themeMode,
-            home: const MainShell(),
+            home: const RootRouter(),
           );
         },
       ),
