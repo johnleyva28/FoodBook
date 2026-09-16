@@ -9,6 +9,7 @@ import '../../../data/app_data_streams.dart';
 import '../../../data/repositories/settings_repository.dart';
 import '../../calendario/calendario_screen.dart';
 import '../../logros/achievements_screen.dart';
+import '../../pension/pension_screen.dart';
 import '../viewmodels/profile_viewmodel.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -238,7 +239,30 @@ class _ProfileView extends StatelessWidget {
                       ),
                     );
                   },
-                ),
+                  ),
+                  const Divider(height: 1),
+                  ListTile(
+                  leading: CircleAvatar(
+                    backgroundColor:
+                        FoodBookColors.cyanBright.withValues(alpha: 0.18),
+                    child: const Icon(
+                      Icons.store_rounded,
+                      color: FoodBookColors.cyanBright,
+                    ),
+                  ),
+                  title: const Text('Modo pensión'),
+                  subtitle: const Text(
+                    'Vista agregada del día: comensales, ingresos y menú',
+                  ),
+                  trailing: const Icon(Icons.chevron_right_rounded),
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => const PensionScreen(),
+                      ),
+                    );
+                  },
+                  ),
               ],
             ),
           ),
