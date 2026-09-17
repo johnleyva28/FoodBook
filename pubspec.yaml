@@ -28,6 +28,9 @@ dependencies:
   # Crypto para hash del PIN local (sin almacenamiento seguro de claves)
   crypto: ^3.0.3
 
+  # Compartir archivos (exportar CSV)
+  share_plus: ^10.0.2
+
   cupertino_icons: ^1.0.8
 
 dev_dependencies:

@@ -1,5 +1,5 @@
 import '../database/app_database.dart';
-import '../utils/foodbook_log.dart';
+import '../../core/utils/foodbook_log.dart';
 
 /// Repositorio para operaciones destructivas sobre la base de datos.
 ///

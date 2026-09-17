@@ -5,6 +5,8 @@ import '../../../core/constants/app_constants.dart';
 import '../../../core/theme/foodbook_colors.dart';
 import '../../../core/theme/foodbook_spacing.dart';
 import '../../../core/widgets/app_toast.dart';
+import '../../../data/app_data_streams.dart';
+import '../../../data/exporters/csv_exporter.dart';
 import '../../../data/repositories/maintenance_repository.dart';
 import '../../auth/auth_service.dart';
 import '../../auth/pin_screen.dart';
@@ -457,11 +459,19 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 
-  void _exportCsv(BuildContext context, SettingsViewModel vm) {
-    AppToast.warning(
-      context,
-      'Exportación CSV en construcción. Estará disponible en la próxima versión.',
+  Future<void> _exportCsv(BuildContext context, SettingsViewModel vm) async {
+    final streams = context.read<AppDataStreams>();
+    AppToast.info(context, 'Generando CSV...');
+    final path = await CsvExporter.exportAndShare(
+      snacks: streams.snacks,
+      payments: streams.payments,
     );
+    if (!context.mounted) return;
+    if (path != null) {
+      AppToast.success(context, 'CSV exportado y compartido');
+    } else {
+      AppToast.warning(context, 'No se pudo generar el CSV');
+    }
   }
 
   void _confirmDelete(BuildContext context) {
