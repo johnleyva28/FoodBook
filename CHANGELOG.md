@@ -5,8 +5,22 @@ Todos los cambios notables en FoodBook se documentan aquí. El formato sigue [Ke
 ## Estado del build
 
 - ✅ `flutter analyze` → No issues found
-- ✅ `flutter test` → 42/42 tests passed
+- ✅ `flutter test` → 46/46 tests passed
 - ✅ `flutter build windows --debug` → Build successful
+
+## [2.4.0] — 2026-09-16
+
+### Added — Multi-rol
+- **feat(rol)** — Sistema multi-rol: el usuario elige entre `consumer` (comensal) o `provider` (dueño de pensión) la primera vez que abre la app. Pantalla `RoleSelectorScreen` con tarjetas grandes para cada rol y opción embebida para cambiarlo desde Ajustes. Persistencia vía `AuthService.hasChosenRole()`.
+- **feat(pension)** — `MenuComidaScreen` y `ComensalesScreen` (nuevo bottom nav para el rol provider). Cada una tiene su `Scaffold` + `AppBar` con icono del rol. Reactividad en vivo desde `AppDataStreams`.
+- **feat(shell)** — `MainShell` ahora es reactivo al rol: muestra `Cuentas | Hoy | Perfil | Ajustes` para consumer, o `Resumen | Menú | Clientes | Ajustes` para provider. El cambio es instantáneo al cambiar de rol en Ajustes.
+- **feat(auth)** — `AuthService` refactorizado a singleton `ChangeNotifier` (`AuthService.instance`) con `load()` async, getters de instancia (`role`, `hasPin`) y `setRole()`, `setPin()`, `clearPin()`, `resetPin()` como métodos de instancia. Compatibilidad con API estática anterior (`AuthService.hasPin()`, `setPin()`).
+
+### Changed
+- **feat(settings)** — Nueva sección "Mi rol" con `ListTile` que muestra el rol actual y abre `RoleSelectorScreen` embebido. Al cambiar, muestra `AppToast.success` y reconstruye el `MainShell`.
+
+### Tests
+- **test(rol)** — 4 tests para `AppRole` enum: id, fromId con null/desconocido/provider/consumer, defaults, metadata no vacía.
 
 ## [2.3.0] — 2026-09-16
 
