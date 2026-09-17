@@ -16,6 +16,7 @@ import '../../../data/repositories/snack_repository.dart';
 import '../../../data/app_data_streams.dart';
 import '../../busqueda/search_screen.dart';
 import '../../busqueda/search_viewmodel.dart';
+import '../../cuentas/year_stats_screen.dart';
 import '../viewmodels/accounts_viewmodel.dart';
 import '../widgets/payment_history.dart';
 import '../widgets/summary_card.dart';
@@ -135,7 +136,24 @@ class _AccountsView extends StatelessWidget {
 
           // ── Gráfico últimos 7 días ──
           _WeeklyChartCard(breakdown: vm.last7DaysBreakdown),
-          const SizedBox(height: FoodBookSpacing.lg),
+          const SizedBox(height: FoodBookSpacing.sm),
+
+          // ── Botón "Ver estadísticas anuales" ──
+          Align(
+            alignment: Alignment.centerRight,
+            child: TextButton.icon(
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (_) => const YearStatsScreen(),
+                  ),
+                );
+              },
+              icon: const Icon(Icons.insights_rounded, size: 18),
+              label: const Text('Ver estadísticas anuales'),
+            ),
+          ),
+          const SizedBox(height: FoodBookSpacing.md),
 
           // ── Desglose histórico ──
           const _SectionTitle('Consumo total (histórico)'),
