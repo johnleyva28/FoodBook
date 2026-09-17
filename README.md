@@ -5,9 +5,23 @@
 FoodBook es una app Flutter offline-first para Android, iOS y Windows. Te ayuda a registrar qué comiste en la pensión, controlar cuánto gastas y saber siempre cuánto le debes a tu pensión.
 
 ![Estado](https://img.shields.io/badge/estado-activo-38BDF8)
-![Versión](https://img.shields.io/badge/versión-2.3.0-38BDF8)
+![Versión](https://img.shields.io/badge/versión-2.4.0-38BDF8)
 ![Flutter](https://img.shields.io/badge/Flutter-3.13%2B-0B1E3F)
 ![Plataformas](https://img.shields.io/badge/plataformas-Android%20%7C%20iOS%20%7C%20Windows-7DD3FC)
+![Tests](https://img.shields.io/badge/tests-46%2F46-38BDF8)
+
+---
+
+## 👥 Multi-rol
+
+FoodBook tiene dos interfaces según el rol elegido:
+
+- **Consumidor** (comensal): Cuentas | Hoy | Perfil | Ajustes.
+- **Pensión** (dueño): Resumen | Menú | Clientes | Ajustes.
+
+Eliges tu rol la primera vez (o desde Ajustes → Mi rol) y la app
+adapta su barra inferior y muestra los datos agregados apropiados
+(turnos servidos, balance, pedidos) en el modo pensión.
 
 ---
 
@@ -39,6 +53,7 @@ FoodBook es una app Flutter offline-first para Android, iOS y Windows. Te ayuda 
 - Comensales servidos hoy: desayunos / almuerzos / cenas.
 - Balance del día: consumido vs cobrado, margen o déficit.
 - Pedidos del día con snacks agrupados.
+- Cambia entre roles (consumidor / pensión) en cualquier momento desde Ajustes → Mi rol.
 
 ### 👤 Perfil
 - Avatar con iniciales y gradiente.
@@ -147,9 +162,9 @@ flutter run -d windows    # escritorio
 flutter test
 ```
 
-Estado actual (FoodBook 2.3.0):
+Estado actual (FoodBook 2.4.0):
 - ✅ `flutter analyze` → **No issues found**
-- ✅ `flutter test` → **42/42 tests passed**
+- ✅ `flutter test` → **46/46 tests passed**
 - ✅ `flutter build windows --debug` → **Build successful**
 
 Los tests cubren:
