@@ -5,8 +5,30 @@ Todos los cambios notables en FoodBook se documentan aquí. El formato sigue [Ke
 ## Estado del build
 
 - ✅ `flutter analyze` → No issues found
-- ✅ `flutter test` → 46/46 tests passed
+- ✅ `flutter test` → 62/62 tests passed
 - ✅ `flutter build windows --debug` → Build successful
+
+## [2.5.0] — 2026-09-17
+
+### Added — Catálogos + búsqueda mejorada + calendario
+- **feat(ajustes)** — `CatalogManagerScreen` con TabBar (Categorías / Métodos) para gestionar los items del catálogo. Permite agregar y eliminar categorías de snacks y métodos de pago personalizados. Los predeterminados están protegidos (lock icon). Accesible desde Ajustes → Catálogos.
+- **feat(search)** — `HighlightedText` widget con highlighting del término buscado. Resalta la query en color primario + bold + fondo translucido. `HighlightedSearchTile` envuelve `ListTile` con highlighting aplicado a título y subtítulo. El resultado de búsqueda ahora muestra exactamente dónde matchea el término.
+- **feat(calendario)** — Tap en el mes del `CalendarGrid` abre un `showDatePicker` para saltar directamente a otra fecha. `CalendarioViewModel.setViewedMonth(DateTime)` actualiza el mes visualizado.
+- **feat(widgets)** — `BalanceRing` con `CircularProgressIndicator` muestra el porcentaje Pagado/Consumido. Variante `BalanceRingWithLegend` con leyenda lateral de 3 valores (consumido, pagado, pendiente). Colores por estado: success >=100%, sky >=50%, warning >0, danger 0%. Integrada en Cuentas entre la HeroCard de deuda y el presupuesto.
+- **feat(export)** — `JsonExporter` con serialización estructurada (metadata + listas de snacks y pagos), decodificación de categoria/método via `SnackRepository/PaymentRepository.decode`, escritura a temporal y share sheet del SO con mimeType application/json.
+- **feat(onboarding)** — Onboarding expandido a 5 slides (Bienvenido / Marca lo que comes / Controla tu deuda / ¿Dueño de pensión? / Tus datos son privados). El nuevo slide 4 introduce el modo pensión multi-rol. El slide 5 destaca privacidad y export.
+- **feat(money)** — `MoneyFormatter.formatCompact` (notación K/M para >=1000) + `MoneyFormatter.defaultPen` (instancia por defecto) + try/catch defensivo con `FoodBookLog` como fallback.
+
+### Tests
+- **test(auth)** — 8 tests para `AuthService` (hash, verify, clear, role, hasChosenRole).
+- **test(money)** — 9 tests para `MoneyFormatter` (format, compact, fromCode).
+- **test(csv)** — 6 tests para `CsvExporter`.
+- **test(json)** — 5 tests para `JsonExporter`.
+- **test(balance)** — 5 tests para `BalanceRing`.
+- **test(highlight)** — 6 tests para `HighlightedText`.
+
+### Build
+- **chore(deps)** — Agrega `fl_chart ^0.69.2` y `share_plus ^10.0.2`.
 
 ## [2.4.0] — 2026-09-16
 
