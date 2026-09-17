@@ -16,6 +16,7 @@ import 'data/repositories/snack_repository.dart';
 import 'features/ajustes/viewmodels/settings_viewmodel.dart';
 import 'features/auth/auth_service.dart';
 import 'features/auth/settings_auth_backend.dart';
+import 'features/splash/splash_screen.dart';
 import 'shell/root_router.dart';
 
 Future<void> main() async {
@@ -100,7 +101,7 @@ class FoodBookApp extends StatelessWidget {
             themeMode: settingsVm.themeMode,
             builder: (ctx, child) =>
                 AppErrorBoundary(child: child ?? const SizedBox.shrink()),
-            home: const RootRouter(),
+            home: const SplashScreen(child: RootRouter()),
           );
         },
       ),
