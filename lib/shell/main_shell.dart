@@ -1,18 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../core/theme/foodbook_spacing.dart';
 import '../core/theme/foodbook_text_styles.dart';
 import '../features/ajustes/screens/settings_screen.dart';
+import '../features/auth/auth_service.dart';
 import '../features/cuentas/screens/accounts_screen.dart';
+import '../features/pension/comensales_screen.dart';
+import '../features/pension/menu_comida_screen.dart';
+import '../features/pension/pension_screen.dart';
 import '../features/perfil/screens/profile_screen.dart';
 import '../features/principal/screens/daily_screen.dart';
+import '../features/rol_selector/role_selector_screen.dart';
 
 /// Shell raíz con la barra de navegación inferior.
 ///
-/// Estructura de 4 destinos centrada en "Hoy":
+/// El shell se adapta al rol elegido:
+///
+/// **Consumidor (consumer):**
 ///   | Cuentas | Hoy | Perfil | Ajustes |
 ///
-/// El Historial y el Calendario se acceden desde el Perfil
+/// **Pensión (provider):**
+///   | Resumen | Menú | Clientes | Ajustes |
+///
+/// El Calendario y el Historial se acceden desde el Perfil
 /// (sección "Mi actividad").
 class MainShell extends StatefulWidget {
   const MainShell({super.key});
@@ -22,57 +33,89 @@ class MainShell extends StatefulWidget {
 }
 
 class _MainShellState extends State<MainShell> {
-  int _index = 1; // Empieza en "Hoy" (centro-izquierda)
-
-  late final List<_Destination> _destinations = const [
-    _Destination(
-      icon: Icons.account_balance_wallet_outlined,
-      selectedIcon: Icons.account_balance_wallet_rounded,
-      label: 'Cuentas',
-      screen: AccountsScreen(),
-    ),
-    _Destination(
-      icon: Icons.home_outlined,
-      selectedIcon: Icons.home_rounded,
-      label: 'Hoy',
-      screen: DailyScreen(),
-    ),
-    _Destination(
-      icon: Icons.person_outline,
-      selectedIcon: Icons.person_rounded,
-      label: 'Perfil',
-      screen: ProfileScreen(),
-    ),
-    _Destination(
-      icon: Icons.settings_outlined,
-      selectedIcon: Icons.settings_rounded,
-      label: 'Ajustes',
-      screen: SettingsScreen(),
-    ),
-  ];
-
-  void _select(int i) {
-    if (_index == i) return;
-    setState(() => _index = i);
-  }
+  int _index = 1;
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final auth = context.watch<AuthService>();
+    final isProvider = auth.role == AppRole.provider;
+
+    final destinations = isProvider
+        ? _providerDestinations()
+        : _consumerDestinations();
+
+    // Al cambiar de rol reseteamos el índice si está fuera de rango.
+    if (_index >= destinations.length) {
+      _index = destinations.length ~/ 2;
+    }
+
     return Scaffold(
       extendBody: true,
       body: IndexedStack(
         index: _index,
-        children: _destinations.map((d) => d.screen).toList(),
+        children: destinations.map((d) => d.screen).toList(),
       ),
       bottomNavigationBar: _GlassBottomBar(
-        destinations: _destinations,
+        destinations: destinations,
         selectedIndex: _index,
-        onSelect: _select,
-        theme: theme,
+        onSelect: (i) => setState(() => _index = i),
       ),
     );
   }
+
+  List<_Destination> _consumerDestinations() => const [
+        _Destination(
+          icon: Icons.account_balance_wallet_outlined,
+          selectedIcon: Icons.account_balance_wallet_rounded,
+          label: 'Cuentas',
+          screen: AccountsScreen(),
+        ),
+        _Destination(
+          icon: Icons.home_outlined,
+          selectedIcon: Icons.home_rounded,
+          label: 'Hoy',
+          screen: DailyScreen(),
+        ),
+        _Destination(
+          icon: Icons.person_outline,
+          selectedIcon: Icons.person_rounded,
+          label: 'Perfil',
+          screen: ProfileScreen(),
+        ),
+        _Destination(
+          icon: Icons.settings_outlined,
+          selectedIcon: Icons.settings_rounded,
+          label: 'Ajustes',
+          screen: SettingsScreen(),
+        ),
+      ];
+
+  List<_Destination> _providerDestinations() => const [
+        _Destination(
+          icon: Icons.dashboard_outlined,
+          selectedIcon: Icons.dashboard_rounded,
+          label: 'Resumen',
+          screen: PensionScreen(),
+        ),
+        _Destination(
+          icon: Icons.restaurant_menu_outlined,
+          selectedIcon: Icons.restaurant_menu_rounded,
+          label: 'Menú',
+          screen: MenuComidaScreen(),
+        ),
+        _Destination(
+          icon: Icons.people_alt_outlined,
+          selectedIcon: Icons.people_alt_rounded,
+          label: 'Clientes',
+          screen: ComensalesScreen(),
+        ),
+        _Destination(
+          icon: Icons.settings_outlined,
+          selectedIcon: Icons.settings_rounded,
+          label: 'Ajustes',
+          screen: SettingsScreen(),
+        ),
+      ];
 }
 
 class _Destination {
@@ -92,17 +135,15 @@ class _GlassBottomBar extends StatelessWidget {
   final List<_Destination> destinations;
   final int selectedIndex;
   final ValueChanged<int> onSelect;
-  final ThemeData theme;
-
   const _GlassBottomBar({
     required this.destinations,
     required this.selectedIndex,
     required this.onSelect,
-    required this.theme,
   });
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return SafeArea(
       top: false,
       child: Padding(
@@ -151,7 +192,6 @@ class _NavItem extends StatelessWidget {
   final bool selected;
   final VoidCallback onTap;
   final ThemeData theme;
-
   const _NavItem({
     required this.destination,
     required this.selected,
@@ -161,9 +201,8 @@ class _NavItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = selected
-        ? theme.colorScheme.primary
-        : theme.colorScheme.onSurfaceVariant;
+    final color =
+        selected ? theme.colorScheme.primary : theme.colorScheme.onSurfaceVariant;
     return Material(
       color: Colors.transparent,
       child: InkWell(
@@ -186,9 +225,8 @@ class _NavItem extends StatelessWidget {
                   color: selected
                       ? theme.colorScheme.primary.withValues(alpha: 0.18)
                       : Colors.transparent,
-                  borderRadius: BorderRadius.circular(
-                    FoodBookSpacing.radiusFull,
-                  ),
+                  borderRadius:
+                      BorderRadius.circular(FoodBookSpacing.radiusFull),
                 ),
                 child: Icon(
                   selected ? destination.selectedIcon : destination.icon,

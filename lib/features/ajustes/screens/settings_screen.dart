@@ -10,6 +10,7 @@ import '../../../data/exporters/csv_exporter.dart';
 import '../../../data/repositories/maintenance_repository.dart';
 import '../../auth/auth_service.dart';
 import '../../auth/pin_screen.dart';
+import '../../rol_selector/role_selector_screen.dart';
 import '../viewmodels/settings_viewmodel.dart';
 
 class SettingsScreen extends StatelessWidget {
@@ -196,6 +197,50 @@ class SettingsScreen extends StatelessWidget {
               ),
               onTap: () => _editBudget(context, vm),
             ),
+          ),
+          const SizedBox(height: FoodBookSpacing.lg),
+
+          // ── Mi rol ──
+          const _SectionTitle('Mi rol'),
+          const SizedBox(height: FoodBookSpacing.sm),
+          Consumer<AuthService>(
+            builder: (ctx, auth, _) {
+              return Card(
+                child: ListTile(
+                  leading: CircleAvatar(
+                    backgroundColor:
+                        auth.role.color.withValues(alpha: 0.18),
+                    child: Icon(auth.role.icon, color: auth.role.color),
+                  ),
+                  title: Text(auth.role.title),
+                  subtitle: Text(auth.role.subtitle),
+                  trailing: const Icon(Icons.swap_horiz_rounded),
+                  onTap: () {
+                    final navigator = Navigator.of(context);
+                    AppRole? pendingRole;
+                    navigator.push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => RoleSelectorScreen(
+                          embedded: true,
+                          onSelected: (newRole) async {
+                            pendingRole = newRole;
+                            await navigator.maybePop();
+                          },
+                        ),
+                      ),
+                    ).then((_) async {
+                      if (pendingRole == null) return;
+                      await auth.setRole(pendingRole!);
+                      if (!context.mounted) return;
+                      AppToast.success(
+                        context,
+                        'Rol cambiado a ${pendingRole!.title}',
+                      );
+                    });
+                  },
+                ),
+              );
+            },
           ),
           const SizedBox(height: FoodBookSpacing.lg),
 
