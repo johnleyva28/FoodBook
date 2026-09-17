@@ -3,9 +3,9 @@ import 'package:provider/provider.dart';
 
 import '../../../core/theme/foodbook_colors.dart';
 import '../../../core/theme/foodbook_spacing.dart';
-import '../../../core/theme/foodbook_text_styles.dart';
-import '../../../core/widgets/stat_row.dart';
 import '../../../core/utils/date_helper.dart';
+import '../../../core/widgets/highlighted_text.dart';
+import '../../../core/widgets/stat_row.dart';
 import 'search_viewmodel.dart';
 
 /// Tipo de filtro para reducir la búsqueda.
@@ -192,7 +192,10 @@ class _SearchScreenState extends State<SearchScreen> {
                   horizontal: FoodBookSpacing.lg,
                 ),
                 itemCount: filtered.length,
-                itemBuilder: (_, i) => _SearchHitTile(hit: filtered[i]),
+                itemBuilder: (_, i) => _SearchHitTile(
+                  hit: filtered[i],
+                  query: vm.query.trim(),
+                ),
               ),
             ),
         ],
@@ -203,35 +206,27 @@ class _SearchScreenState extends State<SearchScreen> {
 
 class _SearchHitTile extends StatelessWidget {
   final SearchHit hit;
-  const _SearchHitTile({required this.hit});
+  final String query;
+  const _SearchHitTile({required this.hit, required this.query});
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final isPayment = hit.kind == SearchKind.payment;
     final color = isPayment ? FoodBookColors.success : FoodBookColors.warning;
     final icon =
         isPayment ? Icons.payments_rounded : Icons.bakery_dining_rounded;
 
-    return Card(
-      margin: const EdgeInsets.only(bottom: FoodBookSpacing.sm),
-      child: ListTile(
-        leading: CircleAvatar(
-          backgroundColor: color.withValues(alpha: 0.18),
-          child: Icon(icon, color: color),
-        ),
-        title: Text(hit.title, style: theme.textTheme.titleSmall),
-        subtitle: Text(
-          [
-            hit.date,
-            if (hit.subtitle != null && hit.subtitle!.isNotEmpty) hit.subtitle!,
-          ].join(' • '),
-        ),
-        trailing: Text(
+    return HighlightedSearchTile(
+      icon: icon,
+      color: color,
+      title: hit.title,
+      query: query,
+      subtitle: [
+        hit.date,
+        if (hit.subtitle != null && hit.subtitle!.isNotEmpty) hit.subtitle!,
+      ].join(' • '),
+      trailing:
           '${isPayment ? '-' : '+'}S/ ${hit.amount.toStringAsFixed(2)}',
-          style: FoodBookTextStyles.titleSmall.copyWith(color: color),
-        ),
-      ),
     );
   }
 }
