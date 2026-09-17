@@ -29,10 +29,11 @@ class CalendarGrid extends StatelessWidget {
   final Set<String> datesWithActivity;
   final Map<String, double> totalsByDate;
   final ValueChanged<CalendarDay> onDayTap;
+  final String monthLabel;
   final VoidCallback? onPrevMonth;
   final VoidCallback? onNextMonth;
   final VoidCallback? onToday;
-  final String monthLabel;
+  final ValueChanged<DateTime>? onMonthSelected;
   final bool canGoNext;
 
   const CalendarGrid({
@@ -45,6 +46,7 @@ class CalendarGrid extends StatelessWidget {
     this.onPrevMonth,
     this.onNextMonth,
     this.onToday,
+    this.onMonthSelected,
     this.canGoNext = true,
   });
 
@@ -139,12 +141,51 @@ class CalendarGrid extends StatelessWidget {
             ),
             Expanded(
               child: Center(
-                child: Text(
-                  monthLabel,
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
+                child: onMonthSelected == null
+                    ? Text(
+                        monthLabel,
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.w700,
+                        ),
+                      )
+                    : InkWell(
+                        onTap: () async {
+                          final picked = await showDatePicker(
+                            context: context,
+                            initialDate: viewedMonth,
+                            firstDate: DateTime(2020),
+                            lastDate: DateTime(DateTime.now().year + 2, 12, 31),
+                          );
+                          if (picked != null) {
+                            onMonthSelected!(picked);
+                          }
+                        },
+                        borderRadius:
+                            BorderRadius.circular(FoodBookSpacing.radiusSm),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: FoodBookSpacing.md,
+                            vertical: FoodBookSpacing.xs,
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                monthLabel,
+                                style: theme.textTheme.titleMedium?.copyWith(
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                              const SizedBox(width: 4),
+                              Icon(
+                                Icons.arrow_drop_down_rounded,
+                                size: 20,
+                                color: theme.colorScheme.primary,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
               ),
             ),
             IconButton(

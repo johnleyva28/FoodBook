@@ -69,6 +69,12 @@ class CalendarioViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Salta al mes de la fecha dada (usado por el selector de fecha).
+  void setViewedMonth(DateTime date) {
+    _viewedMonth = DateTime(date.year, date.month, 1);
+    notifyListeners();
+  }
+
   String get monthLabel {
     const months = [
       'Enero',

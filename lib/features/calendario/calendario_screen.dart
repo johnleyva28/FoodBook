@@ -106,6 +106,7 @@ class _CalendarioView extends StatelessWidget {
                       onPrevMonth: () => vm.changeMonth(-1),
                       onNextMonth: canGoNext ? () => vm.changeMonth(1) : null,
                       onToday: () => vm.goToCurrentMonth(),
+                      onMonthSelected: (d) => vm.setViewedMonth(d),
                       canGoNext: canGoNext,
                     ),
                   ),
