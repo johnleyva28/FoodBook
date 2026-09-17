@@ -91,14 +91,11 @@ class DailyExtras {
     extraExpenses: ((row['extra_expenses'] as num?) ?? 0).toDouble(),
   );
 
-  DailyExtras copyWith({
-    String? notes,
-    int? rating,
-    double? extraExpenses,
-  }) => DailyExtras(
-    date: date,
-    notes: notes ?? this.notes,
-    rating: rating ?? this.rating,
-    extraExpenses: extraExpenses ?? this.extraExpenses,
-  );
+  DailyExtras copyWith({String? notes, int? rating, double? extraExpenses}) =>
+      DailyExtras(
+        date: date,
+        notes: notes ?? this.notes,
+        rating: rating ?? this.rating,
+        extraExpenses: extraExpenses ?? this.extraExpenses,
+      );
 }

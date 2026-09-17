@@ -28,9 +28,7 @@ class _SearchScreenState extends State<SearchScreen> {
   Widget build(BuildContext context) {
     final vm = context.watch<SearchViewModel>();
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Buscar'),
-      ),
+      appBar: AppBar(title: const Text('Buscar')),
       body: Column(
         children: [
           Padding(
@@ -95,8 +93,9 @@ class _SearchHitTile extends StatelessWidget {
     final theme = Theme.of(context);
     final isPayment = hit.kind == SearchKind.payment;
     final color = isPayment ? FoodBookColors.success : FoodBookColors.warning;
-    final icon =
-        isPayment ? Icons.payments_rounded : Icons.bakery_dining_rounded;
+    final icon = isPayment
+        ? Icons.payments_rounded
+        : Icons.bakery_dining_rounded;
 
     return Card(
       margin: const EdgeInsets.only(bottom: FoodBookSpacing.sm),

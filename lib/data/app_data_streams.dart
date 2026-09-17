@@ -54,8 +54,10 @@ class AppDataStreams extends ChangeNotifier {
     // mapeamos el `Stream<List<QueryRow>>` a `Stream<List<Category>>`
     // con `.map()` para evitar un cast inseguro sobre la subscripción.
     _categoriesSub = _db
-        .customSelect('SELECT * FROM categories ORDER BY name',
-            readsFrom: const {})
+        .customSelect(
+          'SELECT * FROM categories ORDER BY name',
+          readsFrom: const {},
+        )
         .watch()
         .map(
           (rows) => rows
@@ -63,9 +65,9 @@ class AppDataStreams extends ChangeNotifier {
               .toList(growable: false),
         )
         .listen((value) {
-      _categories = value;
-      notifyListeners();
-    });
+          _categories = value;
+          notifyListeners();
+        });
 
     // Marcamos como listo después del primer ciclo.
     Future<void>.delayed(const Duration(milliseconds: 50), () {

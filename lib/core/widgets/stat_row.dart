@@ -44,9 +44,7 @@ class StatRow extends StatelessWidget {
                 height: 40,
                 decoration: BoxDecoration(
                   color: effectiveColor.withValues(alpha: 0.15),
-                  borderRadius: BorderRadius.circular(
-                    FoodBookSpacing.radiusSm,
-                  ),
+                  borderRadius: BorderRadius.circular(FoodBookSpacing.radiusSm),
                 ),
                 alignment: Alignment.center,
                 child: Icon(
@@ -67,10 +65,7 @@ class StatRow extends StatelessWidget {
                       ),
                     ),
                     if (sublabel != null)
-                      Text(
-                        sublabel!,
-                        style: theme.textTheme.bodySmall,
-                      ),
+                      Text(sublabel!, style: theme.textTheme.bodySmall),
                   ],
                 ),
               ),

@@ -31,9 +31,15 @@ class MaintenanceRepository {
 
   /// Cuenta el total de registros operativos (excluye catálogos).
   Future<int> countAll() async {
-    final s = await _db.customSelect('SELECT COUNT(*) AS c FROM snack_entries').getSingle();
-    final p = await _db.customSelect('SELECT COUNT(*) AS c FROM payments').getSingle();
-    final l = await _db.customSelect('SELECT COUNT(*) AS c FROM daily_logs').getSingle();
+    final s = await _db
+        .customSelect('SELECT COUNT(*) AS c FROM snack_entries')
+        .getSingle();
+    final p = await _db
+        .customSelect('SELECT COUNT(*) AS c FROM payments')
+        .getSingle();
+    final l = await _db
+        .customSelect('SELECT COUNT(*) AS c FROM daily_logs')
+        .getSingle();
     return ((s.data['c'] as num?)?.toInt() ?? 0) +
         ((p.data['c'] as num?)?.toInt() ?? 0) +
         ((l.data['c'] as num?)?.toInt() ?? 0);

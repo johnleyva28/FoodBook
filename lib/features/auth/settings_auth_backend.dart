@@ -11,8 +11,7 @@ class SettingsAuthBackend implements AuthBackend {
   Future<String?> read(String key) => _repo.getString(key);
 
   @override
-  Future<void> write(String key, String value) =>
-      _repo.setString(key, value);
+  Future<void> write(String key, String value) => _repo.setString(key, value);
 
   @override
   Future<void> delete(String key) async {

@@ -83,15 +83,17 @@ class DailyLogRepository {
   /// Marca/desmarca almuerzo en una fecha arbitraria.
   Future<void> setLunchForDate(String date, bool value) async {
     await getOrCreateForDate(date);
-    await (_db.update(_db.dailyLogs)..where((t) => t.date.equals(date)))
-        .write(DailyLogsCompanion(hadLunch: Value(value)));
+    await (_db.update(_db.dailyLogs)..where((t) => t.date.equals(date))).write(
+      DailyLogsCompanion(hadLunch: Value(value)),
+    );
   }
 
   /// Marca/desmarca cena en una fecha arbitraria.
   Future<void> setDinnerForDate(String date, bool value) async {
     await getOrCreateForDate(date);
-    await (_db.update(_db.dailyLogs)..where((t) => t.date.equals(date)))
-        .write(DailyLogsCompanion(hadDinner: Value(value)));
+    await (_db.update(_db.dailyLogs)..where((t) => t.date.equals(date))).write(
+      DailyLogsCompanion(hadDinner: Value(value)),
+    );
   }
 
   Future<void> saveBreakfast({

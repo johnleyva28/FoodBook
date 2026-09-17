@@ -63,10 +63,7 @@ class BreakfastCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'Desayuno',
-                      style: theme.textTheme.titleMedium,
-                    ),
+                    Text('Desayuno', style: theme.textTheme.titleMedium),
                     const SizedBox(height: 2),
                     if (checked) ...[
                       Text(
@@ -91,10 +88,7 @@ class BreakfastCard extends StatelessWidget {
                   ],
                 ),
               ),
-              Switch(
-                value: checked,
-                onChanged: onToggle,
-              ),
+              Switch(value: checked, onChanged: onToggle),
             ],
           ),
         ),

@@ -9,11 +9,9 @@ class FoodBookLog {
 
   static bool get _enabled => kDebugMode;
 
-  static void d(Object? message, {String? tag}) =>
-      _log('DEBUG', message, tag);
+  static void d(Object? message, {String? tag}) => _log('DEBUG', message, tag);
 
-  static void i(Object? message, {String? tag}) =>
-      _log('INFO', message, tag);
+  static void i(Object? message, {String? tag}) => _log('INFO', message, tag);
 
   static void w(Object? message, {String? tag, Object? error}) {
     _log('WARN', message, tag);
@@ -22,7 +20,12 @@ class FoodBookLog {
     }
   }
 
-  static void e(Object? message, {String? tag, Object? error, StackTrace? stackTrace}) {
+  static void e(
+    Object? message, {
+    String? tag,
+    Object? error,
+    StackTrace? stackTrace,
+  }) {
     _log('ERROR', message, tag);
     if (error != null && _enabled) {
       debugPrint('[FoodBook]   error=$error');

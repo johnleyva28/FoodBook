@@ -56,10 +56,7 @@ class SnackRepository {
   }) async {
     final encoded = _encodeDescription(description, categoryName);
     await (_db.update(_db.snackEntries)..where((t) => t.id.equals(id))).write(
-      SnackEntriesCompanion(
-        price: Value(price),
-        description: Value(encoded),
-      ),
+      SnackEntriesCompanion(price: Value(price), description: Value(encoded)),
     );
   }
 

@@ -45,8 +45,8 @@ class _CalendarioView extends StatelessWidget {
     final vm = context.watch<CalendarioViewModel>();
     final theme = Theme.of(context);
     final now = DateTime.now();
-    final canGoNext = !(vm.viewedMonth.year == now.year &&
-        vm.viewedMonth.month == now.month);
+    final canGoNext =
+        !(vm.viewedMonth.year == now.year && vm.viewedMonth.month == now.month);
 
     return Scaffold(
       appBar: AppBar(
@@ -104,8 +104,7 @@ class _CalendarioView extends StatelessWidget {
                       onDayTap: (day) => _openDay(context, day.date),
                       monthLabel: vm.monthLabel,
                       onPrevMonth: () => vm.changeMonth(-1),
-                      onNextMonth:
-                          canGoNext ? () => vm.changeMonth(1) : null,
+                      onNextMonth: canGoNext ? () => vm.changeMonth(1) : null,
                       onToday: () => vm.goToCurrentMonth(),
                       canGoNext: canGoNext,
                     ),
@@ -128,10 +127,7 @@ class _CalendarioView extends StatelessWidget {
                         color: FoodBookColors.success,
                         label: 'Solo pago',
                       ),
-                      _Legend(
-                        color: theme.colorScheme.primary,
-                        label: 'Hoy',
-                      ),
+                      _Legend(color: theme.colorScheme.primary, label: 'Hoy'),
                     ],
                   ),
                 ),
@@ -143,9 +139,7 @@ class _CalendarioView extends StatelessWidget {
   void _openDay(BuildContext context, DateTime date) {
     final iso = DateHelper.format(date);
     Navigator.of(context).push(
-      MaterialPageRoute<void>(
-        builder: (_) => DiaDetalleScreen(date: iso),
-      ),
+      MaterialPageRoute<void>(builder: (_) => DiaDetalleScreen(date: iso)),
     );
   }
 }

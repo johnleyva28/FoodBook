@@ -46,11 +46,7 @@ class LunchDinnerCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(FoodBookSpacing.radiusMd),
                 ),
                 alignment: Alignment.center,
-                child: Icon(
-                  icon,
-                  size: 26,
-                  color: scheme.primary,
-                ),
+                child: Icon(icon, size: 26, color: scheme.primary),
               ),
               const SizedBox(width: FoodBookSpacing.md),
               Expanded(

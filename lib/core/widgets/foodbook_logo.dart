@@ -78,9 +78,7 @@ class FoodBookHeader extends StatelessWidget {
             children: [
               Text(
                 title ?? 'FoodBook',
-                style: FoodBookTextStyles.title.copyWith(
-                  letterSpacing: 0.3,
-                ),
+                style: FoodBookTextStyles.title.copyWith(letterSpacing: 0.3),
               ),
               if (subtitle != null)
                 Text(subtitle!, style: theme.textTheme.bodySmall),

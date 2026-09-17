@@ -39,11 +39,9 @@ class AccountsViewModel extends ChangeNotifier {
   int get totalDinners => logs.where((l) => l.hadDinner).length;
   int get totalBreakfasts => logs.where((l) => l.hadBreakfast).length;
 
-  double get breakfastTotal =>
-      logs.fold(0, (sum, l) => sum + l.breakfastPrice);
+  double get breakfastTotal => logs.fold(0, (sum, l) => sum + l.breakfastPrice);
   double get snacksTotal => snacks.fold(0, (sum, s) => sum + s.price);
-  double get paymentsTotal =>
-      payments.fold(0, (sum, p) => sum + p.amount);
+  double get paymentsTotal => payments.fold(0, (sum, p) => sum + p.amount);
 
   double get consumedTotal =>
       totalLunches * lunchPrice +
@@ -64,8 +62,8 @@ class AccountsViewModel extends ChangeNotifier {
   }
 
   String get _monthEnd => DateHelper.format(
-        DateTime(DateTime.now().year, DateTime.now().month + 1, 0),
-      );
+    DateTime(DateTime.now().year, DateTime.now().month + 1, 0),
+  );
 
   int get monthLunches => logs
       .where((l) => l.hadLunch && l.date.compareTo(_monthStart) >= 0)
@@ -170,24 +168,23 @@ class AccountsViewModel extends ChangeNotifier {
     String? methodName,
     String? date,
   }) => _paymentRepo.add(
-        date: date,
-        amount: amount,
-        note: note,
-        methodName: methodName,
-      );
+    date: date,
+    amount: amount,
+    note: note,
+    methodName: methodName,
+  );
 
   Future<void> updatePayment({
     required int id,
     required double amount,
     String? note,
     String? methodName,
-  }) =>
-      _paymentRepo.update(
-        id: id,
-        amount: amount,
-        note: note,
-        methodName: methodName,
-      );
+  }) => _paymentRepo.update(
+    id: id,
+    amount: amount,
+    note: note,
+    methodName: methodName,
+  );
 
   Future<void> deletePayment(int id) => _paymentRepo.delete(id);
 }

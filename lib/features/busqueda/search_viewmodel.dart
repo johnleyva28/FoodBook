@@ -68,14 +68,16 @@ class SearchViewModel extends ChangeNotifier {
           (cat != null && cat.toLowerCase().contains(q)) ||
           s.date.contains(q) ||
           s.price.toStringAsFixed(2).contains(q)) {
-        result.add(SearchHit(
-          kind: SearchKind.snack,
-          id: s.id,
-          date: s.date,
-          title: title,
-          subtitle: cat,
-          amount: s.price,
-        ));
+        result.add(
+          SearchHit(
+            kind: SearchKind.snack,
+            id: s.id,
+            date: s.date,
+            title: title,
+            subtitle: cat,
+            amount: s.price,
+          ),
+        );
       }
     }
     for (final p in _streams.payments) {
@@ -86,14 +88,16 @@ class SearchViewModel extends ChangeNotifier {
           (note != null && note.toLowerCase().contains(q)) ||
           p.date.contains(q) ||
           p.amount.toStringAsFixed(2).contains(q)) {
-        result.add(SearchHit(
-          kind: SearchKind.payment,
-          id: p.id,
-          date: p.date,
-          title: title,
-          subtitle: note,
-          amount: p.amount,
-        ));
+        result.add(
+          SearchHit(
+            kind: SearchKind.payment,
+            id: p.id,
+            date: p.date,
+            title: title,
+            subtitle: note,
+            amount: p.amount,
+          ),
+        );
       }
     }
     return result;

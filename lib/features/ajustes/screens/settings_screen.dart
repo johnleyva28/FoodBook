@@ -51,12 +51,15 @@ class SettingsScreen extends StatelessWidget {
           Card(
             child: ListTile(
               leading: CircleAvatar(
-                backgroundColor: theme.colorScheme.primary.withValues(alpha: 0.18),
-                child: Icon(Icons.person_rounded, color: theme.colorScheme.primary),
+                backgroundColor: theme.colorScheme.primary.withValues(
+                  alpha: 0.18,
+                ),
+                child: Icon(
+                  Icons.person_rounded,
+                  color: theme.colorScheme.primary,
+                ),
               ),
-              title: Text(
-                vm.userName.isEmpty ? 'Sin nombre' : vm.userName,
-              ),
+              title: Text(vm.userName.isEmpty ? 'Sin nombre' : vm.userName),
               subtitle: const Text('Toca para editar tu nombre'),
               trailing: const Icon(Icons.edit_rounded, size: 18),
               onTap: () => _editUserName(context, vm),
@@ -153,9 +156,7 @@ class SettingsScreen extends StatelessWidget {
                 ListTile(
                   leading: const Icon(Icons.dinner_dining_rounded),
                   title: const Text('Precio de la cena'),
-                  subtitle: const Text(
-                    'Se multiplica por cada vez que cenas',
-                  ),
+                  subtitle: const Text('Se multiplica por cada vez que cenas'),
                   trailing: Text(
                     '${vm.currency} ${vm.dinnerPrice.toStringAsFixed(2)}',
                     style: theme.textTheme.titleMedium?.copyWith(
@@ -252,9 +253,7 @@ class SettingsScreen extends StatelessWidget {
                 ListTile(
                   leading: const Icon(Icons.file_download_rounded),
                   title: const Text('Exportar datos a CSV'),
-                  subtitle: const Text(
-                    'Snacks y pagos como archivo CSV',
-                  ),
+                  subtitle: const Text('Snacks y pagos como archivo CSV'),
                   trailing: const Icon(Icons.chevron_right_rounded),
                   onTap: () => _exportCsv(context, vm),
                 ),
@@ -328,7 +327,9 @@ class SettingsScreen extends StatelessWidget {
     required double currentValue,
     required Future<void> Function(double) onSave,
   }) {
-    final controller = TextEditingController(text: currentValue.toStringAsFixed(2));
+    final controller = TextEditingController(
+      text: currentValue.toStringAsFixed(2),
+    );
     final formKey = GlobalKey<FormState>();
 
     showDialog<void>(
@@ -377,8 +378,9 @@ class SettingsScreen extends StatelessWidget {
   }
 
   void _editBudget(BuildContext context, SettingsViewModel vm) {
-    final controller =
-        TextEditingController(text: vm.monthlyBudget.toStringAsFixed(2));
+    final controller = TextEditingController(
+      text: vm.monthlyBudget.toStringAsFixed(2),
+    );
     final formKey = GlobalKey<FormState>();
 
     showDialog<void>(

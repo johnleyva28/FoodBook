@@ -46,10 +46,7 @@ class PaymentRepository {
   }) async {
     final encoded = _encodeNote(note, methodName);
     await (_db.update(_db.payments)..where((t) => t.id.equals(id))).write(
-      PaymentsCompanion(
-        amount: Value(amount),
-        note: Value(encoded),
-      ),
+      PaymentsCompanion(amount: Value(amount), note: Value(encoded)),
     );
   }
 

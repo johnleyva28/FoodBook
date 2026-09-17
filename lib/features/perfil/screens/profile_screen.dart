@@ -94,10 +94,7 @@ class _ProfileView extends StatelessWidget {
                   vm.userName.isEmpty ? 'FoodBooker' : vm.userName,
                   style: theme.textTheme.headlineSmall,
                 ),
-                Text(
-                  'Miembro desde siempre',
-                  style: theme.textTheme.bodySmall,
-                ),
+                Text('Miembro desde siempre', style: theme.textTheme.bodySmall),
               ],
             ),
           ),
@@ -152,16 +149,16 @@ class _ProfileView extends StatelessWidget {
             Card(
               child: ListTile(
                 leading: CircleAvatar(
-                  backgroundColor: FoodBookColors.warning.withValues(alpha: 0.2),
+                  backgroundColor: FoodBookColors.warning.withValues(
+                    alpha: 0.2,
+                  ),
                   child: const Icon(
                     Icons.star_rounded,
                     color: FoodBookColors.warning,
                   ),
                 ),
                 title: Text('Tu favorito: ${vm.topSnack}'),
-                subtitle: const Text(
-                  'El bocadillo que más registras',
-                ),
+                subtitle: const Text('El bocadillo que más registras'),
               ),
             ),
           const SizedBox(height: FoodBookSpacing.lg),
@@ -174,17 +171,16 @@ class _ProfileView extends StatelessWidget {
               children: [
                 ListTile(
                   leading: CircleAvatar(
-                    backgroundColor: theme.colorScheme.primary
-                        .withValues(alpha: 0.18),
+                    backgroundColor: theme.colorScheme.primary.withValues(
+                      alpha: 0.18,
+                    ),
                     child: Icon(
                       Icons.calendar_view_month_rounded,
                       color: theme.colorScheme.primary,
                     ),
                   ),
                   title: const Text('Calendario'),
-                  subtitle: const Text(
-                    'Ver y editar días pasados o futuros',
-                  ),
+                  subtitle: const Text('Ver y editar días pasados o futuros'),
                   trailing: const Icon(Icons.chevron_right_rounded),
                   onTap: () {
                     Navigator.of(context).push(
@@ -197,17 +193,16 @@ class _ProfileView extends StatelessWidget {
                 const Divider(height: 1),
                 ListTile(
                   leading: CircleAvatar(
-                    backgroundColor: theme.colorScheme.primary
-                        .withValues(alpha: 0.18),
+                    backgroundColor: theme.colorScheme.primary.withValues(
+                      alpha: 0.18,
+                    ),
                     child: Icon(
                       Icons.history_rounded,
                       color: theme.colorScheme.primary,
                     ),
                   ),
                   title: const Text('Historial'),
-                  subtitle: const Text(
-                    'Lista de días con actividad',
-                  ),
+                  subtitle: const Text('Lista de días con actividad'),
                   trailing: const Icon(Icons.chevron_right_rounded),
                   onTap: () {
                     Navigator.of(context).push(
@@ -220,17 +215,16 @@ class _ProfileView extends StatelessWidget {
                 const Divider(height: 1),
                 ListTile(
                   leading: CircleAvatar(
-                    backgroundColor:
-                        FoodBookColors.warning.withValues(alpha: 0.18),
+                    backgroundColor: FoodBookColors.warning.withValues(
+                      alpha: 0.18,
+                    ),
                     child: const Icon(
                       Icons.emoji_events_rounded,
                       color: FoodBookColors.warning,
                     ),
                   ),
                   title: const Text('Logros'),
-                  subtitle: const Text(
-                    'Rachas y metas desbloqueadas',
-                  ),
+                  subtitle: const Text('Rachas y metas desbloqueadas'),
                   trailing: const Icon(Icons.chevron_right_rounded),
                   onTap: () {
                     Navigator.of(context).push(
@@ -239,12 +233,13 @@ class _ProfileView extends StatelessWidget {
                       ),
                     );
                   },
-                  ),
-                  const Divider(height: 1),
-                  ListTile(
+                ),
+                const Divider(height: 1),
+                ListTile(
                   leading: CircleAvatar(
-                    backgroundColor:
-                        FoodBookColors.cyanBright.withValues(alpha: 0.18),
+                    backgroundColor: FoodBookColors.cyanBright.withValues(
+                      alpha: 0.18,
+                    ),
                     child: const Icon(
                       Icons.store_rounded,
                       color: FoodBookColors.cyanBright,
@@ -262,7 +257,7 @@ class _ProfileView extends StatelessWidget {
                       ),
                     );
                   },
-                  ),
+                ),
               ],
             ),
           ),

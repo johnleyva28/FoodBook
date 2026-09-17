@@ -186,7 +186,9 @@ class _NavItem extends StatelessWidget {
                   color: selected
                       ? theme.colorScheme.primary.withValues(alpha: 0.18)
                       : Colors.transparent,
-                  borderRadius: BorderRadius.circular(FoodBookSpacing.radiusFull),
+                  borderRadius: BorderRadius.circular(
+                    FoodBookSpacing.radiusFull,
+                  ),
                 ),
                 child: Icon(
                   selected ? destination.selectedIcon : destination.icon,

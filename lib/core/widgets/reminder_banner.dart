@@ -77,13 +77,8 @@ class ReminderBanner extends StatelessWidget {
             child: Icon(icon, color: FoodBookColors.sky),
           ),
           const SizedBox(width: FoodBookSpacing.md),
-          Expanded(
-            child: Text(text, style: theme.textTheme.titleSmall),
-          ),
-          TextButton(
-            onPressed: action,
-            child: Text(actionLabel),
-          ),
+          Expanded(child: Text(text, style: theme.textTheme.titleSmall)),
+          TextButton(onPressed: action, child: Text(actionLabel)),
         ],
       ),
     );

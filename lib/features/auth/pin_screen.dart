@@ -17,11 +17,7 @@ import 'auth_service.dart';
 class PinScreen extends StatefulWidget {
   final PinMode mode;
   final VoidCallback? onSuccess;
-  const PinScreen({
-    super.key,
-    this.mode = PinMode.lock,
-    this.onSuccess,
-  });
+  const PinScreen({super.key, this.mode = PinMode.lock, this.onSuccess});
 
   @override
   State<PinScreen> createState() => _PinScreenState();
@@ -272,10 +268,10 @@ class _NumberPad extends StatelessWidget {
               icon: key == 'borrar'
                   ? Icons.backspace_outlined
                   : (key == 'ocultar'
-                      ? (obscure
-                          ? Icons.visibility_off_outlined
-                          : Icons.visibility_outlined)
-                      : null),
+                        ? (obscure
+                              ? Icons.visibility_off_outlined
+                              : Icons.visibility_outlined)
+                        : null),
               onTap: () {
                 if (key == 'borrar') {
                   onBackspace();

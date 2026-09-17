@@ -17,7 +17,7 @@ void main() {
     });
 
     test('escapea comas en descripcion', () {
-      final snack = SnackEntry(
+      const snack = SnackEntry(
         id: 1,
         date: '2026-09-15',
         description: 'Pan, con "mantequilla" y, queso',
@@ -30,7 +30,7 @@ void main() {
     });
 
     test('decodifica categoria y descripcion del SnackRepository', () {
-      final snack = SnackEntry(
+      const snack = SnackEntry(
         id: 1,
         date: '2026-09-15',
         // [cat:Panadería]croissant -> categoria=Panadería, desc=croissant
@@ -47,7 +47,7 @@ void main() {
     });
 
     test('decodifica metodo y nota del PaymentRepository', () {
-      final payment = Payment(
+      const payment = Payment(
         id: 1,
         amount: 50.0,
         date: '2026-09-15',
@@ -61,13 +61,13 @@ void main() {
     });
 
     test('precios y montos con 2 decimales', () {
-      final snack = SnackEntry(
+      const snack = SnackEntry(
         id: 1,
         date: '2026-09-15',
         description: null,
         price: 5,
       );
-      final payment = Payment(
+      const payment = Payment(
         id: 1,
         amount: 100,
         date: '2026-09-15',

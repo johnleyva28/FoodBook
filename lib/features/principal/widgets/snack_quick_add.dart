@@ -7,11 +7,7 @@ class SnackFormResult {
   final double price;
   final String? description;
   final String? categoryName;
-  SnackFormResult({
-    required this.price,
-    this.description,
-    this.categoryName,
-  });
+  SnackFormResult({required this.price, this.description, this.categoryName});
 }
 
 /// Muestra el diálogo modal para crear un bocadillo.
@@ -57,8 +53,9 @@ Future<SnackFormResult?> showSnackDialog(
                     prefixIcon: Icon(Icons.attach_money_rounded),
                   ),
                   validator: (v) {
-                    final price =
-                        double.tryParse(v?.replaceAll(',', '.') ?? '');
+                    final price = double.tryParse(
+                      v?.replaceAll(',', '.') ?? '',
+                    );
                     if (price == null || price <= 0) {
                       return 'Ingresa un precio válido';
                     }
@@ -161,7 +158,9 @@ Future<(double price, String? description)?> showBreakfastDialog(
             TextFormField(
               controller: priceController,
               autofocus: true,
-              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+              keyboardType: const TextInputType.numberWithOptions(
+                decimal: true,
+              ),
               decoration: const InputDecoration(
                 labelText: 'Precio (S/)',
                 prefixIcon: Icon(Icons.attach_money_rounded),
@@ -197,10 +196,10 @@ Future<(double price, String? description)?> showBreakfastDialog(
               final price = double.parse(
                 priceController.text.replaceAll(',', '.'),
               );
-              Navigator.pop<(double, String?)>(
-                dialogContext,
-                (price, descController.text.trim()),
-              );
+              Navigator.pop<(double, String?)>(dialogContext, (
+                price,
+                descController.text.trim(),
+              ));
             }
           },
           child: const Text('Guardar'),

@@ -28,16 +28,14 @@ class AppToast {
     BuildContext context,
     String message, {
     Duration duration = _longDuration,
-  }) =>
-      _show(context, message, AppToastKind.warning, duration: duration);
+  }) => _show(context, message, AppToastKind.warning, duration: duration);
 
   /// Muestra un toast de error/peligro (rojo coral).
   static void danger(
     BuildContext context,
     String message, {
     Duration duration = _longDuration,
-  }) =>
-      _show(context, message, AppToastKind.danger, duration: duration);
+  }) => _show(context, message, AppToastKind.danger, duration: duration);
 
   /// Toast con acción (botón).
   static void withAction(
@@ -57,9 +55,7 @@ class AppToast {
         duration: _longDuration,
         behavior: SnackBarBehavior.floating,
         margin: const EdgeInsets.all(12),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         action: SnackBarAction(
           label: actionLabel,
           textColor: Colors.white,
@@ -85,9 +81,7 @@ class AppToast {
         duration: duration,
         behavior: SnackBarBehavior.floating,
         margin: const EdgeInsets.all(12),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
     );
   }

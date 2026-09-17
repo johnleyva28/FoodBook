@@ -151,10 +151,7 @@ class _AchievementsView extends StatelessWidget {
           const SizedBox(height: FoodBookSpacing.lg),
 
           // ── Lista de logros ──
-          Text(
-            'Todos los logros',
-            style: theme.textTheme.titleLarge,
-          ),
+          Text('Todos los logros', style: theme.textTheme.titleLarge),
           const SizedBox(height: FoodBookSpacing.sm),
           ...achievements.map((a) {
             return Card(
@@ -202,10 +199,7 @@ class _AchievementsView extends StatelessWidget {
                                 ),
                             ],
                           ),
-                          Text(
-                            a.description,
-                            style: theme.textTheme.bodySmall,
-                          ),
+                          Text(a.description, style: theme.textTheme.bodySmall),
                           const SizedBox(height: 4),
                           ClipRRect(
                             borderRadius: BorderRadius.circular(

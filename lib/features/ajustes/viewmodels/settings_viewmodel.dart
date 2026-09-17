@@ -156,10 +156,7 @@ class SettingsViewModel extends ChangeNotifier {
   }
 
   Future<void> markOnboardingCompleted() async {
-    await _settingsRepo.setString(
-      AppConstants.keyOnboardingCompleted,
-      'true',
-    );
+    await _settingsRepo.setString(AppConstants.keyOnboardingCompleted, 'true');
     onboardingCompleted = true;
     notifyListeners();
   }

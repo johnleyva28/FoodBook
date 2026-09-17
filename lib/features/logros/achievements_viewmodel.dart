@@ -57,8 +57,7 @@ class AchievementsViewModel extends ChangeNotifier {
       if (dates.contains(key)) {
         streak++;
         cursor = cursor.subtract(const Duration(days: 1));
-      } else if (streak == 0 &&
-          key == DateHelper.format(DateTime.now())) {
+      } else if (streak == 0 && key == DateHelper.format(DateTime.now())) {
         // El día de hoy no tiene registro; empezamos desde ayer.
         cursor = cursor.subtract(const Duration(days: 1));
       } else {
@@ -168,9 +167,7 @@ class AchievementsViewModel extends ChangeNotifier {
         description: 'Registra desayunos, almuerzos y cenas en un día.',
         icon: Icons.balance_rounded,
         color: const Color(0xFF34D399),
-        unlocked: logs.any(
-          (l) => l.hadBreakfast && l.hadLunch && l.hadDinner,
-        ),
+        unlocked: logs.any((l) => l.hadBreakfast && l.hadLunch && l.hadDinner),
         progress: 1.0,
       ),
     ];

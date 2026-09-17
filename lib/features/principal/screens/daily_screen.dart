@@ -58,9 +58,7 @@ class _DailyView extends StatelessWidget {
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: FoodBookHeader(subtitle: todayLabel),
-      ),
+      appBar: AppBar(title: FoodBookHeader(subtitle: todayLabel)),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () async {
           final result = await showSnackDialog(
@@ -111,7 +109,10 @@ class _DailyView extends StatelessWidget {
             ),
 
             // ── Comidas de la pensión ──
-            const _SectionHeader(title: 'Comidas de hoy', icon: Icons.lunch_dining_rounded),
+            const _SectionHeader(
+              title: 'Comidas de hoy',
+              icon: Icons.lunch_dining_rounded,
+            ),
             const SizedBox(height: FoodBookSpacing.sm),
             BreakfastCard(
               checked: vm.log?.hadBreakfast ?? false,
@@ -183,8 +184,7 @@ class _DailyView extends StatelessWidget {
                 child: EmptyState(
                   icon: Icons.cookie_rounded,
                   title: 'Sin bocadillos',
-                  message:
-                      'Toca el botón "+ Bocadillo" para registrar una compra fuera del menú.',
+                  message: 'Toca el botón "+ Bocadillo" para registrar una compra fuera del menú.',
                 ),
               )
             else
@@ -293,7 +293,9 @@ class _DailyView extends StatelessWidget {
     if (log.hadBreakfast) parts.add('desayuno');
     if (log.hadLunch) parts.add('almuerzo');
     if (log.hadDinner) parts.add('cena');
-    if (vm.todaySnacks.isNotEmpty) parts.add('${vm.todaySnacks.length} bocadillo(s)');
+    if (vm.todaySnacks.isNotEmpty) {
+      parts.add('${vm.todaySnacks.length} bocadillo(s)');
+    }
     if (parts.isEmpty) return 'Aún no marcaste ninguna comida';
     return parts.join(' • ');
   }
@@ -335,9 +337,7 @@ class _SectionHeader extends StatelessWidget {
       children: [
         Icon(icon, size: 18, color: theme.colorScheme.primary),
         const SizedBox(width: FoodBookSpacing.sm),
-        Expanded(
-          child: Text(title, style: theme.textTheme.titleMedium),
-        ),
+        Expanded(child: Text(title, style: theme.textTheme.titleMedium)),
         ?trailing,
       ],
     );

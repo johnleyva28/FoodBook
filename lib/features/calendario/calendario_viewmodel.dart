@@ -71,8 +71,18 @@ class CalendarioViewModel extends ChangeNotifier {
 
   String get monthLabel {
     const months = [
-      'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
-      'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre',
+      'Enero',
+      'Febrero',
+      'Marzo',
+      'Abril',
+      'Mayo',
+      'Junio',
+      'Julio',
+      'Agosto',
+      'Septiembre',
+      'Octubre',
+      'Noviembre',
+      'Diciembre',
     ];
     return '${months[_viewedMonth.month - 1]} ${_viewedMonth.year}';
   }
@@ -229,12 +239,14 @@ class CalendarioViewModel extends ChangeNotifier {
     int? rating,
     double extraExpenses = 0,
   }) async {
-    await _extrasRepo.upsert(model.DailyExtras(
-      date: date,
-      notes: notes,
-      rating: rating,
-      extraExpenses: extraExpenses,
-    ));
+    await _extrasRepo.upsert(
+      model.DailyExtras(
+        date: date,
+        notes: notes,
+        rating: rating,
+        extraExpenses: extraExpenses,
+      ),
+    );
   }
 }
 
@@ -266,8 +278,7 @@ class DayDetail {
     return t;
   }
 
-  double get totalPaid =>
-      payments.fold<double>(0, (sum, p) => sum + p.amount);
+  double get totalPaid => payments.fold<double>(0, (sum, p) => sum + p.amount);
 
   double get balance => totalConsumed - totalPaid;
 }

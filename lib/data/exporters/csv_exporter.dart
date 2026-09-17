@@ -27,7 +27,11 @@ class CsvExporter {
 
       // Escribimos a un archivo temporal.
       final dir = await getTemporaryDirectory();
-      final timestamp = DateTime.now().toIso8601String().replaceAll(':', '-').split('.').first;
+      final timestamp = DateTime.now()
+          .toIso8601String()
+          .replaceAll(':', '-')
+          .split('.')
+          .first;
       final file = File(p.join(dir.path, 'foodbook_$timestamp.csv'));
       await file.writeAsString(csv);
 
@@ -60,13 +64,15 @@ class CsvExporter {
     buffer.writeln('id,fecha,categoria,descripcion,precio');
     for (final s in snacks) {
       final decoded = SnackRepository.decode(s.description);
-      buffer.writeln([
-        s.id,
-        s.date,
-        _escapeCsv(decoded.$1 ?? ''),
-        _escapeCsv(decoded.$2 ?? ''),
-        s.price.toStringAsFixed(2),
-      ].join(','));
+      buffer.writeln(
+        [
+          s.id,
+          s.date,
+          _escapeCsv(decoded.$1 ?? ''),
+          _escapeCsv(decoded.$2 ?? ''),
+          s.price.toStringAsFixed(2),
+        ].join(','),
+      );
     }
     buffer.writeln();
 
@@ -75,13 +81,15 @@ class CsvExporter {
     buffer.writeln('id,fecha,metodo,nota,monto');
     for (final p in payments) {
       final decoded = PaymentRepository.decode(p.note);
-      buffer.writeln([
-        p.id,
-        p.date,
-        _escapeCsv(decoded.$1 ?? ''),
-        _escapeCsv(decoded.$2 ?? ''),
-        p.amount.toStringAsFixed(2),
-      ].join(','));
+      buffer.writeln(
+        [
+          p.id,
+          p.date,
+          _escapeCsv(decoded.$1 ?? ''),
+          _escapeCsv(decoded.$2 ?? ''),
+          p.amount.toStringAsFixed(2),
+        ].join(','),
+      );
     }
 
     return buffer.toString();
@@ -99,6 +107,5 @@ class CsvExporter {
   static String buildCsvString({
     required List<SnackEntry> snacks,
     required List<Payment> payments,
-  }) =>
-      _buildCsv(snacks: snacks, payments: payments);
+  }) => _buildCsv(snacks: snacks, payments: payments);
 }

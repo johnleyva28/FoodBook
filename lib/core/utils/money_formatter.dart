@@ -53,6 +53,5 @@ class MoneyFormatter {
   }
 
   /// Solo el número con 2 decimales, sin símbolo.
-  String number(double amount) =>
-      NumberFormat('0.00', _locale).format(amount);
+  String number(double amount) => NumberFormat('0.00', _locale).format(amount);
 }

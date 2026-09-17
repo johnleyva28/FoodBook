@@ -38,10 +38,12 @@ class PensionScreen extends StatelessWidget {
         builder: (context, streams, _) {
           final today = _todayIso();
           final todayLogs = streams.logs.where((l) => l.date == today).toList();
-          final todaySnacks =
-              streams.snacks.where((s) => s.date == today).toList();
-          final todayPayments =
-              streams.payments.where((p) => p.date == today).toList();
+          final todaySnacks = streams.snacks
+              .where((s) => s.date == today)
+              .toList();
+          final todayPayments = streams.payments
+              .where((p) => p.date == today)
+              .toList();
 
           final lunches = todayLogs.where((l) => l.hadLunch).length;
           final dinners = todayLogs.where((l) => l.hadDinner).length;
@@ -138,8 +140,7 @@ class PensionScreen extends StatelessWidget {
                       StatRow(
                         icon: Icons.payments_rounded,
                         label: 'Cobrado',
-                        sublabel:
-                            '${todayPayments.length} pago(s) recibido(s)',
+                        sublabel: '${todayPayments.length} pago(s) recibido(s)',
                         value: 'S/ ${paymentsTotal.toStringAsFixed(2)}',
                         valueColor: FoodBookColors.success,
                       ),

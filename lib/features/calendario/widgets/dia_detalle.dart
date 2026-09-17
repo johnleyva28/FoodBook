@@ -124,10 +124,7 @@ class _DiaDetalleScreenState extends State<DiaDetalleScreen> {
         const SizedBox(height: FoodBookSpacing.lg),
 
         // ── Comidas ──
-        Text(
-          'Comidas del día',
-          style: theme.textTheme.titleMedium,
-        ),
+        Text('Comidas del día', style: theme.textTheme.titleMedium),
         const SizedBox(height: FoodBookSpacing.sm),
         BreakfastCard(
           checked: detail.log?.hadBreakfast ?? false,
@@ -148,11 +145,7 @@ class _DiaDetalleScreenState extends State<DiaDetalleScreen> {
                 description: result.$2,
               );
             } else {
-              await _vm.saveBreakfast(
-                widget.date,
-                had: false,
-                price: 0,
-              );
+              await _vm.saveBreakfast(widget.date, had: false, price: 0);
             }
             await _load();
           },
@@ -235,10 +228,7 @@ class _DiaDetalleScreenState extends State<DiaDetalleScreen> {
             child: Padding(
               padding: const EdgeInsets.all(FoodBookSpacing.lg),
               child: Center(
-                child: Text(
-                  'Sin bocadillos',
-                  style: theme.textTheme.bodySmall,
-                ),
+                child: Text('Sin bocadillos', style: theme.textTheme.bodySmall),
               ),
             ),
           )
@@ -257,8 +247,9 @@ class _DiaDetalleScreenState extends State<DiaDetalleScreen> {
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   decoration: BoxDecoration(
                     color: FoodBookColors.danger.withValues(alpha: 0.9),
-                    borderRadius:
-                        BorderRadius.circular(FoodBookSpacing.radiusMd),
+                    borderRadius: BorderRadius.circular(
+                      FoodBookSpacing.radiusMd,
+                    ),
                   ),
                   child: const Icon(Icons.delete_rounded, color: Colors.white),
                 ),
@@ -270,8 +261,9 @@ class _DiaDetalleScreenState extends State<DiaDetalleScreen> {
                 },
                 child: ListTile(
                   leading: CircleAvatar(
-                    backgroundColor: theme.colorScheme.primary
-                        .withValues(alpha: 0.18),
+                    backgroundColor: theme.colorScheme.primary.withValues(
+                      alpha: 0.18,
+                    ),
                     child: Icon(
                       Icons.cookie_rounded,
                       color: theme.colorScheme.primary,
@@ -340,10 +332,7 @@ class _DiaDetalleScreenState extends State<DiaDetalleScreen> {
             child: Padding(
               padding: const EdgeInsets.all(FoodBookSpacing.lg),
               child: Center(
-                child: Text(
-                  'Sin pagos',
-                  style: theme.textTheme.bodySmall,
-                ),
+                child: Text('Sin pagos', style: theme.textTheme.bodySmall),
               ),
             ),
           )
@@ -360,8 +349,9 @@ class _DiaDetalleScreenState extends State<DiaDetalleScreen> {
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   decoration: BoxDecoration(
                     color: FoodBookColors.danger.withValues(alpha: 0.9),
-                    borderRadius:
-                        BorderRadius.circular(FoodBookSpacing.radiusMd),
+                    borderRadius: BorderRadius.circular(
+                      FoodBookSpacing.radiusMd,
+                    ),
                   ),
                   child: const Icon(Icons.delete_rounded, color: Colors.white),
                 ),
@@ -371,8 +361,9 @@ class _DiaDetalleScreenState extends State<DiaDetalleScreen> {
                 },
                 child: ListTile(
                   leading: CircleAvatar(
-                    backgroundColor:
-                        FoodBookColors.success.withValues(alpha: 0.18),
+                    backgroundColor: FoodBookColors.success.withValues(
+                      alpha: 0.18,
+                    ),
                     child: const Icon(
                       Icons.payments_rounded,
                       color: FoodBookColors.success,
@@ -394,8 +385,7 @@ class _DiaDetalleScreenState extends State<DiaDetalleScreen> {
                   trailing: IconButton(
                     icon: const Icon(Icons.edit_outlined, size: 20),
                     onPressed: () async {
-                      final methods =
-                          await _catalogRepo.getAllPaymentMethods();
+                      final methods = await _catalogRepo.getAllPaymentMethods();
                       if (!mounted) return;
                       await _showPaymentDialog(
                         methods.map((m) => m.name).toList(),
@@ -413,10 +403,7 @@ class _DiaDetalleScreenState extends State<DiaDetalleScreen> {
         const SizedBox(height: FoodBookSpacing.lg),
 
         // ── Extras del día (notas, rating, gastos extra) ──
-        Text(
-          'Notas y extras',
-          style: theme.textTheme.titleMedium,
-        ),
+        Text('Notas y extras', style: theme.textTheme.titleMedium),
         const SizedBox(height: FoodBookSpacing.sm),
         Card(
           child: Padding(
@@ -629,15 +616,17 @@ class _PaymentDialogState extends State<_PaymentDialog> {
                 TextFormField(
                   controller: _amountController,
                   autofocus: true,
-                  keyboardType:
-                      const TextInputType.numberWithOptions(decimal: true),
+                  keyboardType: const TextInputType.numberWithOptions(
+                    decimal: true,
+                  ),
                   decoration: const InputDecoration(
                     labelText: 'Monto (S/)',
                     prefixIcon: Icon(Icons.attach_money_rounded),
                   ),
                   validator: (v) {
-                    final amount =
-                        double.tryParse(v?.replaceAll(',', '.') ?? '');
+                    final amount = double.tryParse(
+                      v?.replaceAll(',', '.') ?? '',
+                    );
                     if (amount == null || amount <= 0) {
                       return 'Ingresa un monto válido';
                     }
@@ -717,8 +706,7 @@ class _NotesEditor extends StatefulWidget {
   final String? initialNotes;
   final int? initialRating;
   final double initialExtraExpenses;
-  final Future<void> Function(String? notes, int? rating, double extras)
-      onSave;
+  final Future<void> Function(String? notes, int? rating, double extras) onSave;
 
   const _NotesEditor({
     required this.initialNotes,
@@ -808,7 +796,8 @@ class _NotesEditorState extends State<_NotesEditor> {
           alignment: Alignment.centerRight,
           child: FilledButton.icon(
             onPressed: () async {
-              final extras = double.tryParse(
+              final extras =
+                  double.tryParse(
                     _extrasController.text.replaceAll(',', '.'),
                   ) ??
                   0;

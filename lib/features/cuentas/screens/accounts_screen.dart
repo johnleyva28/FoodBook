@@ -143,8 +143,7 @@ class _AccountsView extends StatelessWidget {
           SummaryCard(
             icon: Icons.free_breakfast_rounded,
             label: 'Desayunos',
-            detail:
-                '${vm.totalBreakfasts} desayunos (precio manual acumulado)',
+            detail: '${vm.totalBreakfasts} desayunos (precio manual acumulado)',
             amount: vm.breakfastTotal,
             kind: SummaryCardKind.warning,
           ),
@@ -232,7 +231,9 @@ class _AccountsView extends StatelessWidget {
     String? initialNote,
     String? initialMethod,
   }) async {
-    final methods = await context.read<CatalogRepository>().getAllPaymentMethods();
+    final methods = await context
+        .read<CatalogRepository>()
+        .getAllPaymentMethods();
     if (!context.mounted) return;
     final result = await _PaymentDialog.show(
       context,
@@ -305,16 +306,9 @@ class _BudgetCard extends StatelessWidget {
           children: [
             Row(
               children: [
-                Icon(
-                  Icons.savings_rounded,
-                  color: _statusColor,
-                  size: 22,
-                ),
+                Icon(Icons.savings_rounded, color: _statusColor, size: 22),
                 const SizedBox(width: FoodBookSpacing.sm),
-                Text(
-                  'Presupuesto mensual',
-                  style: theme.textTheme.titleMedium,
-                ),
+                Text('Presupuesto mensual', style: theme.textTheme.titleMedium),
               ],
             ),
             const SizedBox(height: FoodBookSpacing.md),
@@ -324,10 +318,7 @@ class _BudgetCard extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'Consumido',
-                      style: theme.textTheme.bodySmall,
-                    ),
+                    Text('Consumido', style: theme.textTheme.bodySmall),
                     Text(
                       'S/ ${consumed.toStringAsFixed(2)}',
                       style: theme.textTheme.titleLarge?.copyWith(
@@ -450,7 +441,8 @@ class _WeeklyChartCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: entries.map((entry) {
                   final ratio = maxValue == 0 ? 0.0 : entry.value / maxValue;
-                  final isToday = entry.key ==
+                  final isToday =
+                      entry.key ==
                       DateTime.now()
                           .toString()
                           .substring(0, 10)
@@ -477,7 +469,9 @@ class _WeeklyChartCard extends StatelessWidget {
                                       ]
                                     : [
                                         theme.colorScheme.surfaceContainerHigh,
-                                        theme.colorScheme.surfaceContainerHighest,
+                                        theme
+                                            .colorScheme
+                                            .surfaceContainerHighest,
                                       ],
                               ),
                               borderRadius: BorderRadius.circular(6),

@@ -13,11 +13,13 @@ class DailyExtrasRepository {
   DailyExtrasRepository(this._db);
 
   Future<DailyExtras> getOrCreate(String date) async {
-    final row = await _db.customSelect(
-      'SELECT * FROM daily_extras WHERE date = ?',
-      variables: [Variable.withString(date)],
-      readsFrom: const {},
-    ).getSingleOrNull();
+    final row = await _db
+        .customSelect(
+          'SELECT * FROM daily_extras WHERE date = ?',
+          variables: [Variable.withString(date)],
+          readsFrom: const {},
+        )
+        .getSingleOrNull();
     if (row != null) return DailyExtras.fromRow(row.data);
     return DailyExtras(date: date);
   }
@@ -31,12 +33,7 @@ class DailyExtrasRepository {
       '  notes = excluded.notes, '
       '  rating = excluded.rating, '
       '  extra_expenses = excluded.extra_expenses',
-      [
-        extras.date,
-        notesValue,
-        extras.rating,
-        extras.extraExpenses,
-      ],
+      [extras.date, notesValue, extras.rating, extras.extraExpenses],
     );
   }
 }

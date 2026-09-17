@@ -84,40 +84,47 @@ class CalendarGrid extends StatelessWidget {
         prevMonthLastDay - i,
       );
       final k = _key(d);
-      cells.add(CalendarDay(
-        date: d,
-        inCurrentMonth: false,
-        isToday: false,
-        hasActivity: datesWithActivity.contains(k),
-        total: totalsByDate[k] ?? 0,
-      ));
+      cells.add(
+        CalendarDay(
+          date: d,
+          inCurrentMonth: false,
+          isToday: false,
+          hasActivity: datesWithActivity.contains(k),
+          total: totalsByDate[k] ?? 0,
+        ),
+      );
     }
     // Días del mes actual
     for (int day = 1; day <= daysInMonth; day++) {
       final d = DateTime(viewedMonth.year, viewedMonth.month, day);
       final k = _key(d);
-      cells.add(CalendarDay(
-        date: d,
-        inCurrentMonth: true,
-        isToday: d.year == today.year &&
-            d.month == today.month &&
-            d.day == today.day,
-        hasActivity: datesWithActivity.contains(k),
-        total: totalsByDate[k] ?? 0,
-      ));
+      cells.add(
+        CalendarDay(
+          date: d,
+          inCurrentMonth: true,
+          isToday:
+              d.year == today.year &&
+              d.month == today.month &&
+              d.day == today.day,
+          hasActivity: datesWithActivity.contains(k),
+          total: totalsByDate[k] ?? 0,
+        ),
+      );
     }
     // Días del mes siguiente hasta completar la última semana
     while (cells.length % 7 != 0) {
       final last = cells.last.date;
       final next = DateTime(last.year, last.month, last.day + 1);
       final k = _key(next);
-      cells.add(CalendarDay(
-        date: next,
-        inCurrentMonth: false,
-        isToday: false,
-        hasActivity: datesWithActivity.contains(k),
-        total: totalsByDate[k] ?? 0,
-      ));
+      cells.add(
+        CalendarDay(
+          date: next,
+          inCurrentMonth: false,
+          isToday: false,
+          hasActivity: datesWithActivity.contains(k),
+          total: totalsByDate[k] ?? 0,
+        ),
+      );
     }
 
     return Column(
@@ -163,10 +170,7 @@ class CalendarGrid extends StatelessWidget {
               .map(
                 (l) => Expanded(
                   child: Center(
-                    child: Text(
-                      l,
-                      style: FoodBookTextStyles.labelSmall,
-                    ),
+                    child: Text(l, style: FoodBookTextStyles.labelSmall),
                   ),
                 ),
               )
@@ -184,10 +188,8 @@ class CalendarGrid extends StatelessWidget {
             crossAxisSpacing: 4,
           ),
           itemCount: cells.length,
-          itemBuilder: (_, i) => _DayCell(
-            day: cells[i],
-            onTap: () => onDayTap(cells[i]),
-          ),
+          itemBuilder: (_, i) =>
+              _DayCell(day: cells[i], onTap: () => onDayTap(cells[i])),
         ),
       ],
     );
@@ -208,14 +210,14 @@ class _DayCell extends StatelessWidget {
     final bg = day.isToday
         ? scheme.primary.withValues(alpha: 0.18)
         : (day.hasActivity && day.inCurrentMonth
-            ? scheme.surfaceContainerHighest
-            : Colors.transparent);
+              ? scheme.surfaceContainerHighest
+              : Colors.transparent);
 
     final borderColor = day.isToday
         ? scheme.primary
         : (day.hasActivity && day.inCurrentMonth
-            ? scheme.primary.withValues(alpha: 0.5)
-            : scheme.outlineVariant);
+              ? scheme.primary.withValues(alpha: 0.5)
+              : scheme.outlineVariant);
 
     return Material(
       color: Colors.transparent,
@@ -238,9 +240,7 @@ class _DayCell extends StatelessWidget {
                   fontWeight: day.isToday ? FontWeight.w800 : FontWeight.w500,
                   color: muted
                       ? scheme.onSurfaceVariant.withValues(alpha: 0.4)
-                      : (day.isToday
-                          ? scheme.primary
-                          : scheme.onSurface),
+                      : (day.isToday ? scheme.primary : scheme.onSurface),
                 ),
               ),
               if (day.hasActivity && day.inCurrentMonth) ...[
