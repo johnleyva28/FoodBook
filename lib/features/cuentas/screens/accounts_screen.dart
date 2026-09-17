@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../../core/theme/foodbook_colors.dart';
 import '../../../core/theme/foodbook_spacing.dart';
 import '../../../core/theme/foodbook_text_styles.dart';
+import '../../../core/widgets/balance_ring.dart';
 import '../../../core/widgets/daily_bar_chart.dart';
 import '../../../core/widgets/hero_card.dart';
 import '../../../core/widgets/stat_row.dart';
@@ -104,6 +105,20 @@ class _AccountsView extends StatelessWidget {
             variant: vm.debt > 0
                 ? HeroCardVariant.danger
                 : HeroCardVariant.success,
+          ),
+          const SizedBox(height: FoodBookSpacing.md),
+
+          // ── Balance: anillo con leyenda ──
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(FoodBookSpacing.lg),
+              child: BalanceRingWithLegend(
+                consumed: vm.monthConsumed,
+                paid: vm.monthPaymentsTotal,
+                consumedLabel: 'Consumido (mes)',
+                paidLabel: 'Pagado (mes)',
+              ),
+            ),
           ),
           const SizedBox(height: FoodBookSpacing.lg),
 
