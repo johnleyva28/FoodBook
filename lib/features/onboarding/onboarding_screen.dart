@@ -20,25 +20,36 @@ const _pages = [
   OnboardingPage(
     icon: Icons.restaurant_menu_rounded,
     title: 'Bienvenido a FoodBook',
-    body: 'Tu pensión, en un cuaderno. Registra comidas, snacks y pagos sin conexión y sin cuentas.',
+    body:
+        'Tu pensión, en un cuaderno. Registra comidas, snacks y pagos sin conexión y sin cuentas.',
     color: FoodBookColors.sky,
   ),
   OnboardingPage(
     icon: Icons.lunch_dining_rounded,
     title: 'Marca lo que comes',
-    body: 'Activa los switches de desayuno, almuerzo y cena. El gasto del día se calcula solo.',
+    body:
+        'Activa los switches de desayuno, almuerzo y cena. El gasto del día se calcula solo.',
     color: FoodBookColors.cyanBright,
   ),
   OnboardingPage(
     icon: Icons.account_balance_wallet_rounded,
     title: 'Controla tu deuda',
-    body: 'Ve en tiempo real cuánto le debes a la pensión y configura un presupuesto mensual.',
+    body:
+        'Ve en tiempo real cuánto le debes a la pensión y configura un presupuesto mensual.',
     color: FoodBookColors.warning,
   ),
   OnboardingPage(
-    icon: Icons.bar_chart_rounded,
-    title: 'Aprende de tus hábitos',
-    body: 'Gráficos semanales, historial completo y estadísticas personales. Tus datos nunca salen del dispositivo.',
+    icon: Icons.store_mall_directory_rounded,
+    title: '¿Dueño de pensión?',
+    body:
+        'FoodBook tiene un modo pensión con datos agregados: comensales servidos, balance diario y pedidos. Elígelo después en Ajustes.',
+    color: FoodBookColors.cyanBright,
+  ),
+  OnboardingPage(
+    icon: Icons.shield_outlined,
+    title: 'Tus datos son privados',
+    body:
+        'Todo se guarda localmente en tu dispositivo. Ningún servidor, ninguna cuenta, ningún anuncio. Puedes exportar a CSV o JSON cuando quieras.',
     color: FoodBookColors.success,
   ),
 ];
