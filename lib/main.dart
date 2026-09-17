@@ -33,6 +33,8 @@ Future<void> main() async {
   AuthService.onPinReset = () async {
     await MaintenanceRepository(db).wipeAll();
   };
+  // Cargamos rol + PIN persistidos.
+  await AuthService.instance.load();
 
   runApp(FoodBookApp(db: db));
 }
@@ -40,7 +42,10 @@ Future<void> main() async {
 class FoodBookApp extends StatelessWidget {
   final AppDatabase db;
 
-  const FoodBookApp({super.key, required this.db});
+  const FoodBookApp({
+    super.key,
+    required this.db,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -73,6 +78,8 @@ class FoodBookApp extends StatelessWidget {
         ChangeNotifierProvider<AppDataStreams>(
           create: (_) => AppDataStreams(db),
         ),
+        // AuthService global: gestiona PIN y rol del usuario.
+        ChangeNotifierProvider<AuthService>.value(value: AuthService.instance),
         // VM global de ajustes para que el themeMode sea reactivo desde
         // cualquier punto de la app (settings, splash, etc.).
         ChangeNotifierProvider<SettingsViewModel>(

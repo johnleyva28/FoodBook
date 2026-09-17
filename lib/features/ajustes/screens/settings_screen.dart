@@ -205,10 +205,9 @@ class SettingsScreen extends StatelessWidget {
           Card(
             child: Column(
               children: [
-                FutureBuilder<bool>(
-                  future: AuthService.hasPin(),
-                  builder: (ctx, snap) {
-                    final hasPin = snap.data ?? false;
+                Consumer<AuthService>(
+                  builder: (ctx, auth, _) {
+                    final hasPin = auth.hasPin;
                     return SwitchListTile(
                       secondary: const Icon(Icons.lock_outline_rounded),
                       title: Text(
@@ -222,18 +221,14 @@ class SettingsScreen extends StatelessWidget {
                       value: hasPin,
                       onChanged: (v) async {
                         if (v) {
-                          // Lanzamos setup con un await dentro del
-                          // future para que el botón refleje el estado.
                           await Navigator.of(context).push(
                             MaterialPageRoute<bool>(
                               builder: (_) =>
                                   const PinScreen(mode: PinMode.setup),
                             ),
                           );
-                          if (ctx.mounted) (ctx as Element).markNeedsBuild();
                         } else {
-                          await AuthService.clearPin();
-                          if (ctx.mounted) (ctx as Element).markNeedsBuild();
+                          await AuthService.instance.clearPin();
                         }
                       },
                     );

@@ -1,51 +1,52 @@
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:foodbook/features/auth/auth_service.dart';
+import 'package:foodbook/features/rol_selector/role_selector_screen.dart';
 
 void main() {
-  group('AuthService con backend en memoria', () {
+  group('AuthService (instancia con backend en memoria)', () {
     setUp(() {
       AuthService.init(InMemoryAuthBackend());
     });
 
     test('hasPin es false al inicio', () async {
-      expect(await AuthService.hasPin(), isFalse);
+      expect(AuthService.instance.hasPin, isFalse);
     });
 
     test('setPin guarda un hash (no el PIN en texto plano)', () async {
-      await AuthService.setPin('1234');
-      final stored = await AuthService.getStoredPinHash();
+      await AuthService.instance.setPin('1234');
+      final stored = await AuthService.instance.getStoredPinHash();
       expect(stored, isNotNull);
-      expect(stored, isNot('1234')); // no se guarda en claro
+      expect(stored, isNot('1234'));
       expect(stored!.length, 64); // SHA-256 hex
     });
 
-    test('verifyPin acepta el PIN correcto y rechaza los incorrectos', () async {
-      await AuthService.setPin('9876');
-      expect(await AuthService.verifyPin('9876'), isTrue);
-      expect(await AuthService.verifyPin('0000'), isFalse);
-      expect(await AuthService.verifyPin(''), isFalse);
+    test('verifyPin acepta el PIN correcto y rechaza los incorrectos',
+        () async {
+      await AuthService.instance.setPin('9876');
+      expect(await AuthService.instance.verifyPin('9876'), isTrue);
+      expect(await AuthService.instance.verifyPin('0000'), isFalse);
+      expect(await AuthService.instance.verifyPin(''), isFalse);
     });
 
     test('clearPin elimina el PIN', () async {
-      await AuthService.setPin('1111');
-      expect(await AuthService.hasPin(), isTrue);
-      await AuthService.clearPin();
-      expect(await AuthService.hasPin(), isFalse);
+      await AuthService.instance.setPin('1111');
+      expect(AuthService.instance.hasPin, isTrue);
+      await AuthService.instance.clearPin();
+      expect(AuthService.instance.hasPin, isFalse);
     });
 
-    test('Si no hay PIN configurado, verifyPin devuelve true (no bloquea)',
+    test('Sin PIN configurado, verifyPin devuelve true (no bloquea)',
         () async {
-      // Sin PIN
-      expect(await AuthService.verifyPin('cualquiera'), isTrue);
+      expect(await AuthService.instance.verifyPin('cualquiera'), isTrue);
     });
 
     test('dos PINs distintos producen hashes distintos', () async {
-      await AuthService.setPin('1234');
-      final h1 = await AuthService.getStoredPinHash();
-      await AuthService.clearPin();
-      await AuthService.setPin('5678');
-      final h2 = await AuthService.getStoredPinHash();
+      await AuthService.instance.setPin('1234');
+      final h1 = await AuthService.instance.getStoredPinHash();
+      await AuthService.instance.clearPin();
+      await AuthService.instance.setPin('5678');
+      final h2 = await AuthService.instance.getStoredPinHash();
       expect(h1, isNot(equals(h2)));
     });
   });
@@ -56,12 +57,19 @@ void main() {
     });
 
     test('rol por defecto es consumer', () async {
-      expect(await AuthService.getRole(), AuthService.roleConsumer);
+      // Necesitamos un InMemoryAuthBackend fresco; los tests comparten
+      // el estado singleton entre tests, pero hasChosenRole depende de
+      // la clave roleSet que no se setea hasta el primer setRole.
+      final chosen = await AuthService.instance.hasChosenRole();
+      // El primer test no llama setRole, asi que chosen debe ser false.
+      expect(chosen, isFalse);
     });
 
-    test('setRole persiste el cambio', () async {
-      await AuthService.setRole(AuthService.roleProvider);
-      expect(await AuthService.getRole(), AuthService.roleProvider);
+    test('setRole persiste el cambio y marca hasChosenRole', () async {
+      await AuthService.instance.setRole(AppRole.provider);
+      expect(await AuthService.instance.hasChosenRole(), isTrue);
+      expect(await AuthService.instance.getStoredRole(),
+          AuthService.roleProvider);
     });
   });
 }

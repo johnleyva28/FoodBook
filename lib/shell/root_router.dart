@@ -5,14 +5,16 @@ import '../features/ajustes/viewmodels/settings_viewmodel.dart';
 import '../features/auth/auth_service.dart';
 import '../features/auth/pin_screen.dart';
 import '../features/onboarding/onboarding_screen.dart';
+import '../features/rol_selector/role_selector_screen.dart';
 import 'main_shell.dart';
 
 /// Decide qué pantalla raíz mostrar.
 ///
 /// Flujo:
 ///   1. Si no se completó onboarding → Onboarding.
-///   2. Si hay PIN configurado → PinScreen (lock).
-///   3. Caso contrario → MainShell.
+///   2. Si aún no se eligió rol → RoleSelector.
+///   3. Si hay PIN configurado → PinScreen (lock).
+///   4. Caso contrario → MainShell.
 class RootRouter extends StatefulWidget {
   const RootRouter({super.key});
 
@@ -22,25 +24,28 @@ class RootRouter extends StatefulWidget {
 
 class _RootRouterState extends State<RootRouter> {
   bool _showOnboarding = false;
+  bool _showRoleSelector = false;
   bool _showPin = false;
-  bool _checkedPin = false;
+  bool _checkedAuth = false;
 
   @override
   void initState() {
     super.initState();
-    // Evaluamos flags una vez montado (los repos son async).
     WidgetsBinding.instance.addPostFrameCallback((_) => _evaluateFlags());
   }
 
   Future<void> _evaluateFlags() async {
     final settings = context.read<SettingsViewModel>();
+    final auth = context.read<AuthService>();
     final onboardingDone = settings.onboardingCompleted;
-    final hasPin = await AuthService.hasPin();
+    final roleChosen = await auth.hasChosenRole();
+    final pinNeeded = auth.hasPin;
     if (!mounted) return;
     setState(() {
       _showOnboarding = !onboardingDone;
-      _showPin = onboardingDone && hasPin;
-      _checkedPin = true;
+      _showRoleSelector = onboardingDone && !roleChosen;
+      _showPin = onboardingDone && roleChosen && pinNeeded;
+      _checkedAuth = true;
     });
   }
 
@@ -49,9 +54,19 @@ class _RootRouterState extends State<RootRouter> {
     settings.markOnboardingCompleted();
     setState(() {
       _showOnboarding = false;
-      // Mostrar PIN si existe después de onboarding.
-      _showPin = false;
-      _evaluateFlags();
+      _showRoleSelector = true;
+      _checkedAuth = true;
+    });
+  }
+
+  void _onRoleSelected(AppRole role) {
+    final auth = context.read<AuthService>();
+    auth.setRole(role);
+    setState(() {
+      _showRoleSelector = false;
+      // Re-evaluar para mostrar PIN si está configurado.
+      _showPin = auth.hasPin;
+      _checkedAuth = true;
     });
   }
 
@@ -65,7 +80,10 @@ class _RootRouterState extends State<RootRouter> {
     if (_showOnboarding) {
       return OnboardingScreen(onCompleted: _completeOnboarding);
     }
-    if (_showPin && _checkedPin) {
+    if (_showRoleSelector) {
+      return RoleSelectorScreen(onSelected: _onRoleSelected);
+    }
+    if (_showPin && _checkedAuth) {
       return PinScreen(
         key: const ValueKey('pin_lock'),
         mode: PinMode.lock,

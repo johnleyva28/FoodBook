@@ -1,54 +1,85 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:crypto/crypto.dart';
+import 'package:flutter/foundation.dart';
+
+import '../rol_selector/role_selector_screen.dart';
 
 /// Servicio de autenticación local.
 ///
-/// Almacena un hash SHA-256 del PIN (no el PIN en texto plano).
-/// El PIN es opcional: si no se ha configurado, la app abre directo.
-class AuthService {
+/// Usa el patrón singleton: una sola instancia global accesible vía
+/// `AuthService.instance`. Implementa `ChangeNotifier` para que la UI
+/// reaccione a cambios de PIN y rol.
+class AuthService extends ChangeNotifier {
   AuthService._();
+
+  static final AuthService instance = AuthService._();
 
   static const String _pinKey = 'auth_pin_hash';
   static const String _roleKey = 'auth_role';
+  static const String _roleSetKey = 'auth_role_set';
   static const String _roleConsumer = 'consumer';
   static const String _roleProvider = 'provider';
 
-  // Inyectar dependencias via constructor (no usamos DI global todavía).
   static AuthBackend? _backend;
 
-  /// Configura el backend (en main.dart se inyecta el SharedPreferences).
+  AppRole _role = AppRole.consumer;
+  bool _hasPin = false;
+  bool _initialized = false;
+
+  AppRole get role => _role;
+  bool get hasPin => _hasPin;
+  bool get isReady => _initialized;
+
+  // ── Inicialización ──
+
+  /// Configura el backend (en main.dart se inyecta el SettingsRepository).
   static void init(AuthBackend backend) => _backend = backend;
 
-  static Future<String?> getStoredPinHash() async {
-    final b = _backend;
-    if (b == null) return null;
-    return b.read(_pinKey);
+  /// Carga el estado persistido. Llamar una vez al arranque.
+  Future<void> load() async {
+    final roleId = await _read(_roleKey);
+    _role = AppRole.fromId(roleId);
+    final hash = await _read(_pinKey);
+    _hasPin = hash != null && hash.isNotEmpty;
+    _initialized = true;
+    notifyListeners();
   }
 
-  static Future<bool> hasPin() async {
-    final hash = await getStoredPinHash();
-    return hash != null && hash.isNotEmpty;
+  /// True si el usuario ya eligió rol alguna vez.
+  Future<bool> hasChosenRole() async {
+    return (await _read(_roleSetKey)) != null;
   }
 
-  static Future<void> setPin(String pin) async {
+  // ── PIN ──
+
+  /// Hash del PIN almacenado (o null si no hay PIN).
+  Future<String?> getStoredPinHash() => _read(_pinKey);
+
+  /// Configura el PIN. Lo hashea con SHA-256 antes de guardarlo.
+  Future<void> setPin(String pin) async {
     final b = _backend;
     if (b == null) return;
     await b.write(_pinKey, _hash(pin));
+    _hasPin = true;
+    notifyListeners();
   }
 
-  static Future<void> clearPin() async {
+  /// Elimina el PIN.
+  Future<void> clearPin() async {
     final b = _backend;
     if (b == null) return;
     await b.delete(_pinKey);
+    _hasPin = false;
+    notifyListeners();
   }
 
-  /// Hook que se ejecuta cuando se restablece el PIN (borrar todos los
-  /// datos locales). El caller puede asignar su propia lógica.
+  /// Hook que se ejecuta cuando se restablece el PIN.
   static Future<void> Function()? onPinReset;
 
   /// Ejecuta el flujo de reset: hook + clear.
-  static Future<void> resetPin() async {
+  Future<void> resetPin() async {
     if (onPinReset != null) {
       await onPinReset!();
     }
@@ -56,35 +87,44 @@ class AuthService {
   }
 
   /// Verifica el PIN ingresado contra el hash almacenado.
-  static Future<bool> verifyPin(String pin) async {
-    final hash = await getStoredPinHash();
+  Future<bool> verifyPin(String pin) async {
+    final hash = await _read(_pinKey);
     if (hash == null) return true; // No hay PIN configurado
     return hash == _hash(pin);
   }
 
-  static String _hash(String input) {
+  String _hash(String input) {
     final bytes = utf8.encode(input);
     return sha256.convert(bytes).toString();
   }
 
   // ── Rol ──
 
-  static Future<String> getRole() async {
+  /// Cambia el rol y lo persiste. Marca que el usuario ya eligió.
+  Future<void> setRole(AppRole role) async {
+    final b = _backend;
+    if (b == null) return;
+    await b.write(_roleKey, role.id);
+    await b.write(_roleSetKey, '1');
+    _role = role;
+    notifyListeners();
+  }
+
+  /// Devuelve el id del rol persistido (sin tocar el estado en memoria).
+  /// Útil para migraciones y tests.
+  Future<String> getStoredRole() async {
     final b = _backend;
     if (b == null) return _roleConsumer;
     return await b.read(_roleKey) ?? _roleConsumer;
   }
 
-  static Future<void> setRole(String role) async {
+  Future<String?> _read(String key) async {
     final b = _backend;
-    if (b == null) return;
-    await b.write(_roleKey, role);
+    if (b == null) return null;
+    return b.read(key);
   }
 
-  static bool get isConsumer => true; // El consumidor es el rol por defecto
-  static bool get isProvider => false;
-
-  // Constantes de rol
+  // Constantes de rol (compatibilidad con tests)
   static const String roleConsumer = _roleConsumer;
   static const String roleProvider = _roleProvider;
 }
@@ -96,7 +136,7 @@ abstract class AuthBackend {
   Future<void> delete(String key);
 }
 
-/// Implementación en memoria (fallback).
+/// Implementación en memoria (fallback / tests).
 class InMemoryAuthBackend implements AuthBackend {
   final Map<String, String> _store = {};
 

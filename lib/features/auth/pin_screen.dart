@@ -51,7 +51,7 @@ class _PinScreenState extends State<PinScreen> {
     final pin = _entered;
     switch (widget.mode) {
       case PinMode.lock:
-        final ok = await AuthService.verifyPin(pin);
+        final ok = await AuthService.instance.verifyPin(pin);
         if (!mounted) return;
         if (ok) {
           if (widget.onSuccess != null) {
@@ -89,7 +89,7 @@ class _PinScreenState extends State<PinScreen> {
           return;
         }
         if (pin == _firstSetupPin) {
-          await AuthService.setPin(pin);
+          await AuthService.instance.setPin(pin);
           if (!mounted) return;
           AppToast.success(context, 'PIN configurado');
           Navigator.of(context).pop(true);
@@ -221,7 +221,7 @@ class _PinScreenState extends State<PinScreen> {
                       ),
                     );
                     if (confirmed == true) {
-                      await AuthService.resetPin();
+                      await AuthService.instance.resetPin();
                       if (!mounted) return;
                       navigator.pop(false);
                     }
