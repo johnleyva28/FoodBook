@@ -5,8 +5,32 @@ Todos los cambios notables en FoodBook se documentan aquí. El formato sigue [Ke
 ## Estado del build
 
 - ✅ `flutter analyze` → No issues found
-- ✅ `flutter test` → 19/19 tests passed
+- ✅ `flutter test` → 42/42 tests passed
 - ✅ `flutter build windows --debug` → Build successful
+
+## [2.3.0] — 2026-09-16
+
+### Added — Robustez e infraestructura
+- **feat(streams)** — `AppDataStreams` global (bus reactivo único) compartido por todos los VMs. Reemplazó las subscripciones duplicadas a Drift en `ProfileViewModel`, `AchievementsViewModel` y `SearchViewModel`. Cualquier edición ahora se refleja al instante en todas las pantallas sin recargar.
+- **feat(auth)** — Sistema de autenticación local con PIN de 4 dígitos. SHA-256 hash vía `crypto`. Pantalla `PinScreen` con teclado numérico y tres modos (lock/setup/confirm). `AuthService` con `AuthBackend` plugin (default: `SettingsAuthBackend` que persiste vía `SettingsRepository`).
+- **feat(toast)** — Helper `AppToast` centralizado con 5 métodos (info/success/warning/danger/withAction). Estilo consistente en toda la app (floating, esquinas redondeadas, color por tipo, icono representativo).
+- **feat(core)** — `AppErrorBoundary` envuelve `MaterialApp.builder` y captura `FlutterError.onError` para mostrar pantalla amigable en lugar de pantalla roja de debug.
+- **feat(core)** — `FoodBookLog` logger centralizado con niveles d/i/w/e, activo solo en modo debug.
+- **feat(pension)** — Pantalla `PensionScreen` "Modo pensión" accesible desde Perfil > Mi actividad. Muestra comensales servidos hoy, balance consumido/cobrado, margen/déficit y pedidos de snacks del día.
+- **feat(export)** — Export CSV real con `share_plus`. `CsvExporter` genera archivo en directorio temporal con dos secciones (snacks/pagos), escapa RFC 4180, y abre el share sheet del SO.
+
+### Changed
+- **feat(settings)** — Nueva sección "Seguridad" en Ajustes con SwitchListTile para activar/desactivar PIN.
+- **feat(core)** — `MoneyFormatter.fromCode(code)` factory para mapeo PEN/USD/S-/\$ al símbolo correcto.
+- **feat(maintenance)** — `MaintenanceRepository.wipeAll()` envuelve la operación en try/catch y reporta a `FoodBookLog`.
+
+### Fixed
+- **fix(streams)** — Cast inseguro `as StreamSubscription<List<Category>>` reemplazado por `.map()` en streams. Era un bug latente en runtime.
+
+### Tests
+- **test(auth)** — 8 tests para `AuthService` (hash, verify, clear, role)
+- **test(money)** — 9 tests para `MoneyFormatter` (format, compact, fromCode)
+- **test(csv)** — 6 tests para `CsvExporter` (escape, decode, formato, vacío)
 
 ## [2.2.0] — 2026-09-15
 
@@ -14,7 +38,7 @@ Todos los cambios notables en FoodBook se documentan aquí. El formato sigue [Ke
 - **feat(streams)** — Nuevo `AppDataStreams` global que mantiene una única subscripción a `daily_logs`, `snack_entries`, `payments` y `categories`. Todas las pantallas (Hoy, Cuentas, Calendario, DíaDetalle) lo escuchan vía `addListener`, así cualquier edición se refleja instantáneamente en todas las vistas sin recargar.
 
 ### Fixed
-- **fix(sync)** — Los cambios hechos desde Calendario/DíaDetalle ya no tardan en propagarse a Hoy/Cuentas. Bug raíz: cada VM creaba su propio cache interno con subscripciones duplicadas a Drift.
+- **fix(sync)** — Los cambios hechos desde Calendario/DíaDetalle ya no tardan en propagarse a Hoy/Cuentas. Bug raíz: cada VM creaba su propio cache interno con suscripciones duplicadas a Drift.
 
 ## [2.1.0] — 2026-09-15
 
