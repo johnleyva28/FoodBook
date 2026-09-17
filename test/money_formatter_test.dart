@@ -26,9 +26,9 @@ void main() {
 
     test('compact usa notacion corta para >= 1000', () {
       const f = MoneyFormatter(symbol: 'S/');
-      expect(f.compact(500), contains('500,00'));
-      expect(f.compact(1500), anyOf(contains('1,5'), contains('1K')));
-      expect(f.compact(1500000), anyOf(contains('1,5'), contains('2')));
+      expect(f.formatCompact(500), contains('500,00'));
+      expect(f.formatCompact(1500), anyOf(contains('1,5'), contains('1K')));
+      expect(f.formatCompact(1500000), anyOf(contains('1,5'), contains('2')));
     });
 
     test('number devuelve solo el numero', () {
