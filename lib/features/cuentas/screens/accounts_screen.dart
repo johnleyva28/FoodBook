@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../../core/theme/foodbook_colors.dart';
 import '../../../core/theme/foodbook_spacing.dart';
 import '../../../core/theme/foodbook_text_styles.dart';
+import '../../../core/widgets/daily_bar_chart.dart';
 import '../../../core/widgets/hero_card.dart';
 import '../../../core/widgets/stat_row.dart';
 import '../../../data/database/app_database.dart';
@@ -413,10 +414,16 @@ class _WeeklyChartCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final entries = breakdown.entries.toList();
-    final maxValue = entries.fold<double>(
-      0,
-      (m, e) => e.value > m ? e.value : m,
-    );
+    final today = DateTime.now().toString().substring(0, 10);
+    final data = entries
+        .map(
+          (e) => DailyChartData(
+            label: e.key.substring(8, 10),
+            value: e.value,
+            isToday: e.key == today,
+          ),
+        )
+        .toList();
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(FoodBookSpacing.lg),
@@ -435,67 +442,48 @@ class _WeeklyChartCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: FoodBookSpacing.lg),
-            SizedBox(
-              height: 120,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: entries.map((entry) {
-                  final ratio = maxValue == 0 ? 0.0 : entry.value / maxValue;
-                  final isToday =
-                      entry.key ==
-                      DateTime.now()
-                          .toString()
-                          .substring(0, 10)
-                          .replaceFirstMapped(
-                            RegExp(r'^(\d{4})-(\d{2})-(\d{2})$'),
-                            (m) => '${m[1]}-${m[2]}-${m[3]}',
-                          );
-                  return Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 4),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Container(
-                            height: (ratio * 80).clamp(2, 80),
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                begin: Alignment.bottomCenter,
-                                end: Alignment.topCenter,
-                                colors: isToday
-                                    ? [
-                                        FoodBookColors.skyMuted,
-                                        FoodBookColors.sky,
-                                      ]
-                                    : [
-                                        theme.colorScheme.surfaceContainerHigh,
-                                        theme
-                                            .colorScheme
-                                            .surfaceContainerHighest,
-                                      ],
-                              ),
-                              borderRadius: BorderRadius.circular(6),
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            entry.key.substring(8, 10),
-                            style: theme.textTheme.bodySmall?.copyWith(
-                              fontWeight: isToday
-                                  ? FontWeight.w700
-                                  : FontWeight.w400,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                }).toList(),
-              ),
+            DailyBarChart(data: data, unitPrefix: 'S/ '),
+            const SizedBox(height: FoodBookSpacing.sm),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _LegendDot(
+                  color: theme.colorScheme.primary,
+                  label: 'Hoy',
+                ),
+                const SizedBox(width: FoodBookSpacing.lg),
+                const _LegendDot(
+                  color: FoodBookColors.skyMuted,
+                  label: 'Anterior',
+                ),
+              ],
             ),
           ],
         ),
       ),
+    );
+  }
+}
+
+class _LegendDot extends StatelessWidget {
+  final Color color;
+  final String label;
+  const _LegendDot({required this.color, required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          width: 10,
+          height: 10,
+          decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+        ),
+        const SizedBox(width: 6),
+        Text(label, style: theme.textTheme.bodySmall),
+      ],
     );
   }
 }

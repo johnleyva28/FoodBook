@@ -31,6 +31,9 @@ dependencies:
   # Compartir archivos (exportar CSV)
   share_plus: ^10.0.2
 
+  # Graficos (uso futuro en Cuentas / Pension)
+  fl_chart: ^0.69.2
+
   cupertino_icons: ^1.0.8
 
 dev_dependencies:
