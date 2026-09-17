@@ -34,14 +34,12 @@ void main() {
         payments: [],
       );
       final decoded = jsonDecode(json) as Map<String, dynamic>;
-      final snacks = decoded['snacks'] as List;
+      final snacks = decoded['snacks'] as List<dynamic>;
       expect(snacks.length, 1);
-      // ignore: avoid_dynamic_calls
-      expect(snacks.first['category'], 'Panadería');
-      // ignore: avoid_dynamic_calls
-      expect(snacks.first['description'], 'croissant');
-      // ignore: avoid_dynamic_calls
-      expect(snacks.first['price'], 7.5);
+      final first = snacks.first as Map<String, dynamic>;
+      expect(first['category'], 'Panadería');
+      expect(first['description'], 'croissant');
+      expect(first['price'], 7.5);
     });
 
     test('decodifica metodo y nota de pagos', () {
@@ -57,14 +55,12 @@ void main() {
         payments: [payment],
       );
       final decoded = jsonDecode(json) as Map<String, dynamic>;
-      final payments = decoded['payments'] as List;
+      final payments = decoded['payments'] as List<dynamic>;
       expect(payments.length, 1);
-      // ignore: avoid_dynamic_calls
-      expect(payments.first['method'], 'Yape');
-      // ignore: avoid_dynamic_calls
-      expect(payments.first['note'], 'abono semanal');
-      // ignore: avoid_dynamic_calls
-      expect(payments.first['amount'], 50.0);
+      final first = payments.first as Map<String, dynamic>;
+      expect(first['method'], 'Yape');
+      expect(first['note'], 'abono semanal');
+      expect(first['amount'], 50.0);
     });
 
     test('JSON vacio es valido', () {
