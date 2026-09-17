@@ -106,6 +106,20 @@ class _DiaDetalleScreenState extends State<DiaDetalleScreen> {
       body: _loading
           ? const Center(child: CircularProgressIndicator())
           : _buildBody(theme),
+      floatingActionButton: widget.date != DateHelper.today()
+          ? FloatingActionButton.extended(
+              onPressed: () {
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute<void>(
+                    builder: (_) =>
+                        DiaDetalleScreen(date: DateHelper.today()),
+                  ),
+                );
+              },
+              icon: const Icon(Icons.today_rounded),
+              label: const Text('Ir a hoy'),
+            )
+          : null,
     );
   }
 
