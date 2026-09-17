@@ -5,7 +5,7 @@
 FoodBook es una app Flutter offline-first para Android, iOS y Windows. Te ayuda a registrar qué comiste en la pensión, controlar cuánto gastas y saber siempre cuánto le debes a tu pensión.
 
 ![Estado](https://img.shields.io/badge/estado-activo-38BDF8)
-![Versión](https://img.shields.io/badge/versión-2.0.0-38BDF8)
+![Versión](https://img.shields.io/badge/versión-2.3.0-38BDF8)
 ![Flutter](https://img.shields.io/badge/Flutter-3.13%2B-0B1E3F)
 ![Plataformas](https://img.shields.io/badge/plataformas-Android%20%7C%20iOS%20%7C%20Windows-7DD3FC)
 
@@ -27,6 +27,7 @@ FoodBook es una app Flutter offline-first para Android, iOS y Windows. Te ayuda 
 - **Gráfico semanal** de los últimos 7 días.
 - Desglose histórico de almuerzos, cenas, desayunos, snacks, consumido y pagado.
 - Registrar / **editar** / borrar pagos con método (Efectivo, Yape, Plin, Transferencia).
+- **Exportar CSV** con `share_plus` — abre el share sheet del SO con el archivo.
 
 ### 📅 Calendario
 - Vista mensual con grid 7xN y marcadores para días con actividad.
@@ -34,11 +35,25 @@ FoodBook es una app Flutter offline-first para Android, iOS y Windows. Te ayuda 
 - Día editable: toggle desayuno/almuerzo/cena, agregar/editar/borrar snacks y pagos.
 - Editor de notas, rating 1-5 y gastos extra por día.
 
+### 🏪 Modo pensión (vista del dueño)
+- Comensales servidos hoy: desayunos / almuerzos / cenas.
+- Balance del día: consumido vs cobrado, margen o déficit.
+- Pedidos del día con snacks agrupados.
+
 ### 👤 Perfil
 - Avatar con iniciales y gradiente.
 - Grid de estadísticas personales: consumido, pagado, promedio diario, snacks.
 - Bocadillo **favorito** (el más registrado).
-- Sección **Mi actividad** con acceso directo a Calendario, Historial y Logros.
+- Sección **Mi actividad** con acceso a Calendario, Historial (alias) y Modo pensión.
+
+### 🔒 Seguridad (opcional)
+- PIN de 4 dígitos con hash **SHA-256**.
+- Actívalo en Ajustes → Seguridad.
+- Si lo olvidas, "Restablecer" borra los datos locales (se puede volver a empezar).
+
+### 🔍 Búsqueda global
+- Busca por nombre, categoría, método, fecha o monto.
+- Filtra tanto snacks como pagos.
 
 ### 🏆 Logros
 - **Racha actual** e histórica.
@@ -132,9 +147,9 @@ flutter run -d windows    # escritorio
 flutter test
 ```
 
-Estado actual (FoodBook 2.0.0):
+Estado actual (FoodBook 2.3.0):
 - ✅ `flutter analyze` → **No issues found**
-- ✅ `flutter test` → **14/14 tests passed**
+- ✅ `flutter test` → **42/42 tests passed**
 - ✅ `flutter build windows --debug` → **Build successful**
 
 Los tests cubren:
