@@ -11,6 +11,7 @@ import '../../../data/repositories/maintenance_repository.dart';
 import '../../auth/auth_service.dart';
 import '../../auth/pin_screen.dart';
 import '../../rol_selector/role_selector_screen.dart';
+import '../catalog_manager_screen.dart';
 import '../viewmodels/settings_viewmodel.dart';
 
 class SettingsScreen extends StatelessWidget {
@@ -241,6 +242,32 @@ class SettingsScreen extends StatelessWidget {
                 ),
               );
             },
+          ),
+          const SizedBox(height: FoodBookSpacing.lg),
+
+          // ── Catálogos ──
+          const _SectionTitle('Catálogos'),
+          const SizedBox(height: FoodBookSpacing.sm),
+          Card(
+            child: Column(
+              children: [
+                ListTile(
+                  leading: const Icon(Icons.category_rounded),
+                  title: const Text('Gestionar categorías y métodos'),
+                  subtitle: const Text(
+                    'Agrega o elimina categorías de snacks y métodos de pago',
+                  ),
+                  trailing: const Icon(Icons.chevron_right_rounded),
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => const CatalogManagerScreen(),
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
           ),
           const SizedBox(height: FoodBookSpacing.lg),
 
