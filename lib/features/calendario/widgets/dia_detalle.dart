@@ -81,6 +81,16 @@ class _DiaDetalleScreenState extends State<DiaDetalleScreen> {
     });
   }
 
+  void _goToOffset(int delta) {
+    final current = DateTime.parse(widget.date);
+    final next = current.add(Duration(days: delta));
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute<void>(
+        builder: (_) => DiaDetalleScreen(date: DateHelper.format(next)),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -102,6 +112,18 @@ class _DiaDetalleScreenState extends State<DiaDetalleScreen> {
             ),
           ],
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.chevron_left_rounded),
+            tooltip: 'Día anterior',
+            onPressed: () => _goToOffset(-1),
+          ),
+          IconButton(
+            icon: const Icon(Icons.chevron_right_rounded),
+            tooltip: 'Día siguiente',
+            onPressed: () => _goToOffset(1),
+          ),
+        ],
       ),
       body: _loading
           ? const Center(child: CircularProgressIndicator())
