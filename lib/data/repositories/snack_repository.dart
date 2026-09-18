@@ -77,6 +77,30 @@ class SnackRepository {
     return result.read(sumExp) ?? 0.0;
   }
 
+  /// Lista todos los snacks entre dos fechas (inclusive) ordenados por fecha desc.
+  Future<List<SnackEntry>> getBetween({
+    required String fromDate,
+    required String toDate,
+  }) {
+    return (_db.select(_db.snackEntries)
+          ..where((t) => t.date.isBetweenValues(fromDate, toDate))
+          ..orderBy([(t) => OrderingTerm.desc(t.date)]))
+        .get();
+  }
+
+  /// Agrupa snacks por fecha y devuelve el total por dia.
+  Future<Map<String, double>> totalsByDate({
+    required String fromDate,
+    required String toDate,
+  }) async {
+    final all = await getBetween(fromDate: fromDate, toDate: toDate);
+    final map = <String, double>{};
+    for (final s in all) {
+      map[s.date] = (map[s.date] ?? 0) + s.price;
+    }
+    return map;
+  }
+
   Future<double> breakfastTotalBetween({
     String? fromDate,
     String? toDate,
