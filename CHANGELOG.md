@@ -8,6 +8,11 @@ Todos los cambios notables en FoodBook se documentan aquí. El formato sigue [Ke
 - ✅ `flutter test` → 81/81 tests passed
 - ✅ `flutter build windows --debug` → Build successful
 
+## [2.6.4] — 2026-09-17
+
+### Added
+- **feat(search)** — Botón "Limpiar todos los filtros" (`clear_all_rounded` en color `error`) que aparece solo cuando hay filtros activos. Resetea `dateRange`, `minAmount` y `typeFilter` a sus defaults con un `AppToast.info` de confirmación.
+
 ## [2.6.3] — 2026-09-17
 
 ### Added
