@@ -37,6 +37,7 @@ class _SearchScreenState extends State<SearchScreen> {
   final _controller = TextEditingController();
   SearchTypeFilter _typeFilter = SearchTypeFilter.all;
   DateTimeRange? _dateRange;
+  double? _minAmount;
 
   @override
   void dispose() {
@@ -58,6 +59,7 @@ class _SearchScreenState extends State<SearchScreen> {
           return false;
         }
       }
+      if (_minAmount != null && h.amount < _minAmount!) return false;
       return true;
     }).toList();
   }
@@ -73,6 +75,45 @@ class _SearchScreenState extends State<SearchScreen> {
     );
     if (picked != null && mounted) {
       setState(() => _dateRange = picked);
+    }
+  }
+
+  Future<void> _pickMinAmount() async {
+    final controller = TextEditingController(
+      text: _minAmount?.toStringAsFixed(2) ?? '',
+    );
+    final result = await showDialog<String>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Monto mínimo'),
+        content: TextField(
+          controller: controller,
+          autofocus: true,
+          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+          decoration: const InputDecoration(
+            labelText: 'S/',
+            hintText: 'Ej. 5.00',
+            prefixText: 'S/ ',
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Cancelar'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, controller.text.trim()),
+            child: const Text('Aplicar'),
+          ),
+        ],
+      ),
+    );
+    if (!mounted) return;
+    if (result == null || result.isEmpty) {
+      setState(() => _minAmount = null);
+    } else {
+      final v = double.tryParse(result.replaceAll(',', '.'));
+      setState(() => _minAmount = v);
     }
   }
 
@@ -158,6 +199,18 @@ class _SearchScreenState extends State<SearchScreen> {
                         }
                       },
                     ),
+                    IconButton(
+                      icon: Icon(
+                        Icons.payments_outlined,
+                        color: _minAmount != null
+                            ? theme.colorScheme.primary
+                            : theme.colorScheme.onSurfaceVariant,
+                      ),
+                      tooltip: _minAmount == null
+                          ? 'Filtrar por monto mínimo'
+                          : 'Quitar filtro de monto',
+                      onPressed: () => _pickMinAmount(),
+                    ),
                   ],
                 ),
                 if (_dateRange != null)
@@ -167,6 +220,17 @@ class _SearchScreenState extends State<SearchScreen> {
                     child: Text(
                       '${DateHelper.format(_dateRange!.start)} → '
                       '${DateHelper.format(_dateRange!.end)}',
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.colorScheme.primary,
+                      ),
+                    ),
+                  ),
+                if (_minAmount != null)
+                  Padding(
+                    padding:
+                        const EdgeInsets.only(top: FoodBookSpacing.xs),
+                    child: Text(
+                      'Monto ≥ S/ ${_minAmount!.toStringAsFixed(2)}',
                       style: theme.textTheme.bodySmall?.copyWith(
                         color: theme.colorScheme.primary,
                       ),
