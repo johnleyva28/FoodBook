@@ -56,6 +56,21 @@ class CatalogRepository {
     await _db.customStatement('DELETE FROM categories WHERE id = ?', [id]);
   }
 
+  /// Renombra una categoria.
+  ///
+  /// Lanza [StateError] si la categoria es de solo-lectura (default) o
+  /// si el nuevo nombre coincide con otra categoria existente.
+  Future<void> renameCategory(int id, String newName) async {
+    final trimmed = newName.trim();
+    if (trimmed.isEmpty) {
+      throw ArgumentError('El nombre no puede estar vacio');
+    }
+    await _db.customStatement(
+      'UPDATE categories SET name = ? WHERE id = ? AND is_default = 0',
+      [trimmed, id],
+    );
+  }
+
   // ════════════════════════════════════════════════════════════
   // PAYMENT METHODS
   // ════════════════════════════════════════════════════════════
@@ -91,5 +106,17 @@ class CatalogRepository {
 
   Future<void> deletePaymentMethod(int id) async {
     await _db.customStatement('DELETE FROM payment_methods WHERE id = ?', [id]);
+  }
+
+  /// Renombra un metodo de pago. Mismas reglas que [renameCategory].
+  Future<void> renamePaymentMethod(int id, String newName) async {
+    final trimmed = newName.trim();
+    if (trimmed.isEmpty) {
+      throw ArgumentError('El nombre no puede estar vacio');
+    }
+    await _db.customStatement(
+      'UPDATE payment_methods SET name = ? WHERE id = ? AND is_default = 0',
+      [trimmed, id],
+    );
   }
 }

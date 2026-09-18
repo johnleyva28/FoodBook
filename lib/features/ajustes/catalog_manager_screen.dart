@@ -76,6 +76,13 @@ class _CategoryList extends StatelessWidget {
                               if (!context.mounted) return;
                               AppToast.info(context, 'Categoría eliminada');
                             },
+                      onRename: c.isDefault
+                          ? null
+                          : (newName) async {
+                              await repo.renameCategory(c.id, newName);
+                              if (!context.mounted) return;
+                              AppToast.success(context, 'Categoría renombrada');
+                            },
                     );
                   },
                 ),
@@ -137,6 +144,13 @@ class _PaymentMethodList extends StatelessWidget {
                               if (!context.mounted) return;
                               AppToast.info(context, 'Método eliminado');
                             },
+                      onRename: m.isDefault
+                          ? null
+                          : (newName) async {
+                              await repo.renamePaymentMethod(m.id, newName);
+                              if (!context.mounted) return;
+                              AppToast.success(context, 'Método renombrado');
+                            },
                     );
                   },
                 ),
@@ -161,12 +175,14 @@ class _CatalogTile extends StatelessWidget {
   final String title;
   final bool isDefault;
   final VoidCallback? onDelete;
+  final Future<void> Function(String newName)? onRename;
 
   const _CatalogTile({
     required this.icon,
     required this.title,
     required this.isDefault,
-    required this.onDelete,
+    this.onDelete,
+    this.onRename,
   });
 
   @override
@@ -181,13 +197,24 @@ class _CatalogTile extends StatelessWidget {
         ),
         title: Text(title),
         subtitle: isDefault ? const Text('Predeterminado') : null,
-        trailing: onDelete == null
-            ? Icon(
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (onRename != null)
+              IconButton(
+                icon: const Icon(Icons.edit_outlined),
+                color: theme.colorScheme.primary,
+                tooltip: 'Renombrar',
+                onPressed: () => _showRenameDialog(context),
+              ),
+            if (onDelete == null)
+              Icon(
                 Icons.lock_outline_rounded,
                 size: 18,
                 color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
               )
-            : IconButton(
+            else
+              IconButton(
                 icon: const Icon(Icons.delete_outline_rounded),
                 color: FoodBookColors.danger,
                 onPressed: () async {
@@ -211,8 +238,54 @@ class _CatalogTile extends StatelessWidget {
                   if (confirmed == true) onDelete?.call();
                 },
               ),
+          ],
+        ),
       ),
     );
+  }
+
+  Future<void> _showRenameDialog(BuildContext context) async {
+    final controller = TextEditingController(text: title);
+    final formKey = GlobalKey<FormState>();
+    final newName = await showDialog<String>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Renombrar'),
+        content: Form(
+          key: formKey,
+          child: TextFormField(
+            controller: controller,
+            autofocus: true,
+            decoration: const InputDecoration(
+              labelText: 'Nuevo nombre',
+            ),
+            validator: (v) {
+              final t = v?.trim() ?? '';
+              if (t.isEmpty) return 'El nombre no puede estar vacío';
+              if (t == title) return 'El nombre es igual al actual';
+              return null;
+            },
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Cancelar'),
+          ),
+          FilledButton(
+            onPressed: () {
+              if (formKey.currentState?.validate() ?? false) {
+                Navigator.pop(ctx, controller.text.trim());
+              }
+            },
+            child: const Text('Guardar'),
+          ),
+        ],
+      ),
+    );
+    if (newName != null && newName.isNotEmpty) {
+      await onRename?.call(newName);
+    }
   }
 }
 
