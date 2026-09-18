@@ -8,6 +8,11 @@ Todos los cambios notables en FoodBook se documentan aquí. El formato sigue [Ke
 - ✅ `flutter test` → 91/91 tests passed
 - ✅ `flutter build windows --debug` → Build successful
 
+## [2.6.6] — 2026-09-17
+
+### Added
+- **feat(cuentas)** — Nueva `MonthlyStatsScreen` con selector de mes (chevron prev/next + botón "Actual"), 3 cards de resumen (consumido/pagado/pendiente), chart de barras con consumo diario del mes, top 5 días con mayor consumo y pie chart con distribución por categoría. Acceso desde `YearStatsScreen` con `IconButton calendar_view_month`.
+
 ## [2.6.5] — 2026-09-17
 
 ### Added
