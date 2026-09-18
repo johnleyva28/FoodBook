@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../../core/theme/foodbook_colors.dart';
 import '../../../core/theme/foodbook_spacing.dart';
 import '../../../core/utils/date_helper.dart';
+import '../../../core/widgets/app_toast.dart';
 import '../../../core/widgets/highlighted_text.dart';
 import '../../../core/widgets/stat_row.dart';
 import 'search_viewmodel.dart';
@@ -105,6 +106,18 @@ class _SearchScreenState extends State<SearchScreen> {
     if (picked != null && mounted) {
       setState(() => _dateRange = picked);
     }
+  }
+
+  bool _hasActiveFilters() =>
+      _dateRange != null || _minAmount != null || _typeFilter != SearchTypeFilter.all;
+
+  void _clearAllFilters() {
+    setState(() {
+      _dateRange = null;
+      _minAmount = null;
+      _typeFilter = SearchTypeFilter.all;
+    });
+    AppToast.info(context, 'Filtros limpiados');
   }
 
   Future<void> _pickMinAmount() async {
@@ -288,6 +301,15 @@ class _SearchScreenState extends State<SearchScreen> {
                       tooltip: 'Ordenar por',
                       onPressed: () => _pickSortOrder(),
                     ),
+                    if (_hasActiveFilters())
+                      IconButton(
+                        icon: Icon(
+                          Icons.clear_all_rounded,
+                          color: theme.colorScheme.error,
+                        ),
+                        tooltip: 'Limpiar todos los filtros',
+                        onPressed: _clearAllFilters,
+                      ),
                   ],
                 ),
                 if (_dateRange != null)
