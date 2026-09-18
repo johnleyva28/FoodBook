@@ -5,8 +5,17 @@ Todos los cambios notables en FoodBook se documentan aquí. El formato sigue [Ke
 ## Estado del build
 
 - ✅ `flutter analyze` → No issues found
-- ✅ `flutter test` → 91/91 tests passed
+- ✅ `flutter test` → 97/97 tests passed
 - ✅ `flutter build windows --debug` → Build successful
+
+## [2.6.7] — 2026-09-17
+
+### Added
+- **feat(catalog)** — Renombrar categorías y métodos de pago desde `CatalogManagerScreen` con validación (`CatalogRepository.renameCategory` / `renamePaymentMethod`). Solo disponible para entradas no-default.
+- **feat(empty_state)** — Widget reutilizable `EmptyState` (icono + título + descripción + hasta 2 acciones). Reemplaza los `Center+Column` hardcodeados en mensajes vacíos.
+
+### Tests
+- 97/97 tests pasando (+6 nuevos en `test/empty_state_test.dart`).
 
 ## [2.6.6] — 2026-09-17
 
