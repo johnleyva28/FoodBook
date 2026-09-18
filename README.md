@@ -5,7 +5,7 @@
 FoodBook es una app Flutter offline-first para Android, iOS y Windows. Te ayuda a registrar qué comiste en la pensión, controlar cuánto gastas y saber siempre cuánto le debes a tu pensión.
 
 ![Estado](https://img.shields.io/badge/estado-activo-38BDF8)
-![Versión](https://img.shields.io/badge/versión-2.6.0-38BDF8)
+![Versión](https://img.shields.io/badge/versión-2.6.3-38BDF8)
 ![Flutter](https://img.shields.io/badge/Flutter-3.13%2B-0B1E3F)
 ![Plataformas](https://img.shields.io/badge/plataformas-Android%20%7C%20iOS%20%7C%20Windows-7DD3FC)
 ![Tests](https://img.shields.io/badge/tests-46%2F46-38BDF8)
@@ -162,9 +162,9 @@ flutter run -d windows    # escritorio
 flutter test
 ```
 
-Estado actual (FoodBook 2.6.0):
+Estado actual (FoodBook 2.6.3):
 - ✅ `flutter analyze` → **No issues found**
-- ✅ `flutter test` → **62/62 tests passed**
+- ✅ `flutter test` → **81/81 tests passed**
 - ✅ `flutter build windows --debug` → **Build successful**
 
 Los tests cubren:

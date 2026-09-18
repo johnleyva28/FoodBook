@@ -5,8 +5,23 @@ Todos los cambios notables en FoodBook se documentan aquí. El formato sigue [Ke
 ## Estado del build
 
 - ✅ `flutter analyze` → No issues found
-- ✅ `flutter test` → 62/62 tests passed
+- ✅ `flutter test` → 81/81 tests passed
 - ✅ `flutter build windows --debug` → Build successful
+
+## [2.6.3] — 2026-09-17
+
+### Added
+- **feat(constants)** — `AppStrings` centraliza todos los strings del producto (auth, onboarding, roles, daily, cuentas, calendario, busqueda, pension, ajustes, errores, confirmaciones) como preparación para futura i18n.
+- **feat(help)** — Nueva `HelpScreen` (`/profile` → Ayuda) con 8 preguntas frecuentes (agregar bocadillo/pago, cambiar rol, política de datos, recuperación de PIN, catálogos, sincronización, eliminación de ítems).
+
+### Fixed
+- **fix(auth)** — `AuthService.setPin('')` o solo-espacios ya no marca `hasPin = true`. Ahora valida con `trim()` antes de hashear.
+
+### Validation
+- **feat(validation)** — Límite máximo en formularios de monto: precio de snack ≤ S/ 500, monto de pago ≤ S/ 10000. Protege contra typos sin impedir valores grandes legítimos.
+
+### Tests
+- 81/81 tests pasando (+9 nuevos en `test/auth_validation_test.dart`, expandido `money_formatter_test.dart` y `balance_ring_test.dart`).
 
 ## [2.6.2] — 2026-09-17
 
