@@ -8,7 +8,7 @@ y saber siempre cuánto le debes a tu pensión (o cuánto te deben tus
 comensales, si eres el dueño).
 
 ![Estado](https://img.shields.io/badge/estado-activo-38BDF8)
-![Versión](https://img.shields.io/badge/versión-2.6.7-38BDF8)
+![Versión](https://img.shields.io/badge/versión-2.6.8-38BDF8)
 ![Flutter](https://img.shields.io/badge/Flutter-3.13%2B-0B1E3F)
 ![Plataformas](https://img.shields.io/badge/plataformas-Android%20%7C%20iOS%20%7C%20Windows-7DD3FC)
 ![Tests](https://img.shields.io/badge/tests-97%2F97-38BDF8)
@@ -272,7 +272,7 @@ flutter test
 flutter test --coverage
 ```
 
-Estado actual (**FoodBook 2.6.7**):
+Estado actual (**FoodBook 2.6.8**):
 
 - ✅ `flutter analyze` → **No issues found**
 - ✅ `flutter test` → **97/97 tests passed**

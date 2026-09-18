@@ -8,6 +8,14 @@ Todos los cambios notables en FoodBook se documentan aquí. El formato sigue [Ke
 - ✅ `flutter test` → 97/97 tests passed
 - ✅ `flutter build windows --debug` → Build successful
 
+## [2.6.8] — 2026-09-17
+
+### Documentation
+- **docs(readme)** — Reescrito completo para 2.6.7: badges actualizados (97/97 tests, 0 issues), tabla de tokens visuales, todas las features nuevas documentadas (MonthlyStats, Help, AppStrings, rename catálogos, etc), sección de tests con detalle por archivo, dependencias principales.
+- **docs(contributing)** — Nuevo `CONTRIBUTING.md` con guía completa: Convención de Conventional Commits en español, scopes, pre-push checklist, estructura por feature, patrón ViewModel, reglas de estilo.
+- **docs(architecture)** — Nuevo `ARCHITECTURE.md` con documento técnico profundo: stack, modelo de datos, codificación de campos opcionales, `AppDataStreams`, patrón ViewModel, shell adaptativo, auth/PIN, charts, exports, theming, testing, limitaciones conocidas.
+- **docs(daily_log)** — Dartdoc en `DailyLogRepository` explicando naturaleza upsert.
+
 ## [2.6.7] — 2026-09-17
 
 ### Added
