@@ -7,6 +7,7 @@ import '../../../core/theme/foodbook_spacing.dart';
 import '../../../core/utils/date_helper.dart';
 import '../../../core/utils/money_formatter.dart';
 import '../../../core/widgets/daily_bar_chart.dart';
+import '../../../core/widgets/empty_state.dart';
 import '../../../data/app_data_streams.dart';
 import '../../../data/database/app_database.dart';
 import '../../../data/repositories/snack_repository.dart';
@@ -228,24 +229,11 @@ class _MonthlyStatsScreenState extends State<MonthlyStatsScreen> {
           ],
 
           if (monthSnacks.isEmpty && monthPayments.isEmpty)
-            Center(
-              child: Padding(
-                padding: const EdgeInsets.all(FoodBookSpacing.xl),
-                child: Column(
-                  children: [
-                    Icon(
-                      Icons.inbox_rounded,
-                      size: 48,
-                      color: theme.colorScheme.onSurfaceVariant,
-                    ),
-                    const SizedBox(height: FoodBookSpacing.md),
-                    Text(
-                      'Sin datos para este mes',
-                      style: theme.textTheme.titleMedium,
-                    ),
-                  ],
-                ),
-              ),
+            const EmptyState(
+              icon: Icons.inbox_rounded,
+              title: 'Sin datos para este mes',
+              description:
+                  'Agrega bocadillos o pagos para ver estadísticas.',
             ),
         ],
       ),

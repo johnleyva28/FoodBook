@@ -267,8 +267,7 @@ class _DiaDetalleScreenState extends State<DiaDetalleScreen> {
                 child: Text('Sin bocadillos', style: theme.textTheme.bodySmall),
               ),
             ),
-          )
-        else
+          ),
           ...detail.snacks.map((s) {
             final decoded = SnackRepository.decode(s.description);
             final cat = decoded.$1;
