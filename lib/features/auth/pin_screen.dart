@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../../core/constants/app_strings.dart';
 import '../../../core/theme/foodbook_colors.dart';
 import '../../../core/theme/foodbook_spacing.dart';
 import '../../../core/widgets/app_toast.dart';
@@ -203,7 +204,7 @@ class _PinScreenState extends State<PinScreen> {
                     final confirmed = await showDialog<bool>(
                       context: context,
                       builder: (ctx) => AlertDialog(
-                        title: const Text('¿Restablecer PIN?'),
+                        title: const Text(AppStrings.authPinResetTitle),
                         content: const Text(
                           'Si olvidaste tu PIN, puedes restablecerlo. '
                           'Esto requiere borrar todos los datos locales.',
@@ -211,7 +212,7 @@ class _PinScreenState extends State<PinScreen> {
                         actions: [
                           TextButton(
                             onPressed: () => Navigator.pop(ctx, false),
-                            child: const Text('Cancelar'),
+                            child: const Text(AppStrings.actionCancel),
                           ),
                           FilledButton(
                             onPressed: () => Navigator.pop(ctx, true),
