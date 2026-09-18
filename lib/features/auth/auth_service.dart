@@ -58,7 +58,11 @@ class AuthService extends ChangeNotifier {
   Future<String?> getStoredPinHash() => _read(_pinKey);
 
   /// Configura el PIN. Lo hashea con SHA-256 antes de guardarlo.
+  ///
+  /// Rechaza PINs vacíos o solo-espacios — esos no activan el modo seguro.
   Future<void> setPin(String pin) async {
+    final trimmed = pin.trim();
+    if (trimmed.isEmpty) return;
     final b = _backend;
     if (b == null) return;
     await b.write(_pinKey, _hash(pin));

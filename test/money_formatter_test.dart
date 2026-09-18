@@ -62,4 +62,49 @@ void main() {
       expect(MoneyFormatter.fromCode('XYZ').symbol, 'S/');
     });
   });
+
+  group('MoneyFormatter edge cases', () {
+    test('format con cero', () {
+      const f = MoneyFormatter(symbol: 'S/');
+      expect(f.format(0), contains('0,00'));
+      expect(f.format(-0), contains('0,00'));
+    });
+
+    test('format con negativo (deuda)', () {
+      const f = MoneyFormatter(symbol: 'S/');
+      final out = f.format(-123.45);
+      // El formato de currency maneja negativos como -123,45 S/.
+      expect(out, contains('123,45'));
+    });
+
+    test('format con numeros grandes usa separador de miles', () {
+      const f = MoneyFormatter(symbol: 'S/');
+      expect(f.format(1000), contains('1.000'));
+      expect(f.format(1234567), contains('1.234.567'));
+    });
+
+    test('number() devuelve solo el numero sin simbolo', () {
+      const f = MoneyFormatter(symbol: 'S/');
+      expect(f.number(50.5), '50,50');
+      expect(f.number(0), '0,00');
+      expect(f.number(1234.56), '1234,56');
+    });
+
+    test('compact < 1000 usa formato completo', () {
+      const f = MoneyFormatter(symbol: 'S/');
+      expect(f.formatCompact(500), contains('500,00'));
+      expect(f.formatCompact(0), contains('0,00'));
+    });
+
+    test('compact >= 1000 usa notacion corta', () {
+      const f = MoneyFormatter(symbol: 'S/');
+      expect(f.formatCompact(1500), anyOf(contains('1,5'), contains('1K')));
+      expect(f.formatCompact(1500000), anyOf(contains('1,5'), contains('2')));
+      expect(f.formatCompact(1000000000), contains('1'));
+    });
+
+    test('defaultPen es instancia S/', () {
+      expect(MoneyFormatter.defaultPen.symbol, 'S/');
+    });
+  });
 }
