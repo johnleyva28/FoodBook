@@ -666,6 +666,9 @@ class _PaymentDialogState extends State<_PaymentDialog> {
                     if (amount == null || amount <= 0) {
                       return 'Ingresa un monto válido';
                     }
+                    if (amount > 10000) {
+                      return 'Monto demasiado alto (máx S/ 10000)';
+                    }
                     return null;
                   },
                 ),

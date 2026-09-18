@@ -59,6 +59,9 @@ Future<SnackFormResult?> showSnackDialog(
                     if (price == null || price <= 0) {
                       return 'Ingresa un precio válido';
                     }
+                    if (price > 500) {
+                      return 'Precio demasiado alto (máx S/ 500)';
+                    }
                     return null;
                   },
                 ),
