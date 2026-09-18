@@ -25,6 +25,18 @@ extension SearchTypeFilterX on SearchTypeFilter {
       };
 }
 
+/// Orden de los resultados de búsqueda.
+enum SearchSortOrder { recent, oldest, amountHigh, amountLow }
+
+extension SearchSortOrderX on SearchSortOrder {
+  String get label => switch (this) {
+        SearchSortOrder.recent => 'Más reciente',
+        SearchSortOrder.oldest => 'Más antiguo',
+        SearchSortOrder.amountHigh => 'Mayor monto',
+        SearchSortOrder.amountLow => 'Menor monto',
+      };
+}
+
 /// Pantalla de búsqueda global de snacks y pagos.
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
@@ -38,6 +50,7 @@ class _SearchScreenState extends State<SearchScreen> {
   SearchTypeFilter _typeFilter = SearchTypeFilter.all;
   DateTimeRange? _dateRange;
   double? _minAmount;
+  SearchSortOrder _sortOrder = SearchSortOrder.recent;
 
   @override
   void dispose() {
@@ -46,7 +59,7 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   List<SearchHit> _applyFilters(List<SearchHit> hits) {
-    return hits.where((h) {
+    final filtered = hits.where((h) {
       if (_typeFilter.kind != null && h.kind != _typeFilter.kind) return false;
       if (_dateRange != null) {
         try {
@@ -62,6 +75,22 @@ class _SearchScreenState extends State<SearchScreen> {
       if (_minAmount != null && h.amount < _minAmount!) return false;
       return true;
     }).toList();
+    // Ordenar
+    switch (_sortOrder) {
+      case SearchSortOrder.recent:
+        filtered.sort((a, b) => b.date.compareTo(a.date));
+        break;
+      case SearchSortOrder.oldest:
+        filtered.sort((a, b) => a.date.compareTo(b.date));
+        break;
+      case SearchSortOrder.amountHigh:
+        filtered.sort((a, b) => b.amount.compareTo(a.amount));
+        break;
+      case SearchSortOrder.amountLow:
+        filtered.sort((a, b) => a.amount.compareTo(b.amount));
+        break;
+    }
+    return filtered;
   }
 
   Future<void> _pickDateRange() async {
@@ -114,6 +143,46 @@ class _SearchScreenState extends State<SearchScreen> {
     } else {
       final v = double.tryParse(result.replaceAll(',', '.'));
       setState(() => _minAmount = v);
+    }
+  }
+
+  Future<void> _pickSortOrder() async {
+    final picked = await showModalBottomSheet<SearchSortOrder>(
+      context: context,
+      builder: (ctx) {
+        final theme = Theme.of(ctx);
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Text(
+                  'Ordenar por',
+                  style: theme.textTheme.titleMedium,
+                ),
+              ),
+              for (final order in SearchSortOrder.values)
+                ListTile(
+                  leading: Icon(
+                    order == _sortOrder
+                        ? Icons.radio_button_checked_rounded
+                        : Icons.radio_button_unchecked_rounded,
+                    color: order == _sortOrder
+                        ? theme.colorScheme.primary
+                        : null,
+                  ),
+                  title: Text(order.label),
+                  onTap: () => Navigator.pop(ctx, order),
+                ),
+              const SizedBox(height: 16),
+            ],
+          ),
+        );
+      },
+    );
+    if (picked != null && mounted) {
+      setState(() => _sortOrder = picked);
     }
   }
 
@@ -210,6 +279,14 @@ class _SearchScreenState extends State<SearchScreen> {
                           ? 'Filtrar por monto mínimo'
                           : 'Quitar filtro de monto',
                       onPressed: () => _pickMinAmount(),
+                    ),
+                    IconButton(
+                      icon: Icon(
+                        Icons.sort_rounded,
+                        color: theme.colorScheme.primary,
+                      ),
+                      tooltip: 'Ordenar por',
+                      onPressed: () => _pickSortOrder(),
                     ),
                   ],
                 ),
