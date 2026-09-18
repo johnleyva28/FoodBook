@@ -3,6 +3,11 @@ import 'package:drift/drift.dart';
 import '../database/app_database.dart';
 import '../../core/utils/date_helper.dart';
 
+/// Repositorio de registros diarios.
+///
+/// Cada día tiene un único registro (`DailyLog`) con los flags
+/// `hadBreakfast`, `hadLunch`, `hadDinner` y el `breakfastPrice`.
+/// Se crea automáticamente al primer acceso (upsert).
 class DailyLogRepository {
   final AppDatabase _db;
   DailyLogRepository(this._db);
