@@ -11,9 +11,13 @@ import '../../../core/widgets/hero_card.dart';
 import '../../../core/widgets/reminder_banner.dart';
 import '../../../core/widgets/stat_row.dart';
 import '../../../data/app_data_streams.dart';
+import '../../../data/exporters/csv_exporter.dart';
 import '../../../data/repositories/daily_log_repository.dart';
+import '../../../data/repositories/payment_repository.dart';
 import '../../../data/repositories/settings_repository.dart';
 import '../../../data/repositories/snack_repository.dart';
+import '../../busqueda/search_screen.dart';
+import '../../busqueda/search_viewmodel.dart';
 import '../viewmodels/daily_viewmodel.dart';
 import '../widgets/breakfast_card.dart';
 import '../widgets/lunch_dinner_card.dart';
@@ -58,7 +62,34 @@ class _DailyView extends StatelessWidget {
     }
 
     return Scaffold(
-      appBar: AppBar(title: FoodBookHeader(subtitle: todayLabel)),
+      appBar: AppBar(
+        title: FoodBookHeader(subtitle: todayLabel),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.search_rounded),
+            tooltip: 'Buscar',
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => ChangeNotifierProvider(
+                    create: (ctx) => SearchViewModel(
+                      ctx.read<AppDataStreams>(),
+                      ctx.read<SnackRepository>(),
+                      ctx.read<PaymentRepository>(),
+                    ),
+                    child: const SearchScreen(),
+                  ),
+                ),
+              );
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.ios_share_rounded),
+            tooltip: 'Exportar',
+            onPressed: () => _exportCsv(context),
+          ),
+        ],
+      ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () async {
           final result = await showSnackDialog(
@@ -341,5 +372,21 @@ class _SectionHeader extends StatelessWidget {
         ?trailing,
       ],
     );
+  }
+}
+
+/// Exporta todos los snacks y pagos a un archivo CSV via share sheet.
+Future<void> _exportCsv(BuildContext context) async {
+  final streams = context.read<AppDataStreams>();
+  AppToast.info(context, 'Generando CSV...');
+  final path = await CsvExporter.exportAndShare(
+    snacks: streams.snacks,
+    payments: streams.payments,
+  );
+  if (!context.mounted) return;
+  if (path != null) {
+    AppToast.success(context, 'CSV exportado y compartido');
+  } else {
+    AppToast.warning(context, 'No se pudo generar el CSV');
   }
 }
