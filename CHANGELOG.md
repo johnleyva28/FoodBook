@@ -8,6 +8,11 @@ Todos los cambios notables en FoodBook se documentan aquí. El formato sigue [Ke
 - ✅ `flutter test` → 62/62 tests passed
 - ✅ `flutter build windows --debug` → Build successful
 
+## [2.6.2] — 2026-09-17
+
+### Added
+- **feat(calendario)** — Navegación prev/next en el AppBar de `DiaDetalleScreen` con dos `IconButton` (chevron_left / chevron_right) que avanzan o retroceden un día vía `pushReplacement` con el nuevo `date`. Permite revisar días consecutivos sin volver al calendario.
+
 ## [2.6.1] — 2026-09-17
 
 ### Added
