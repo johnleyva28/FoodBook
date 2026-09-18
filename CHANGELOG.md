@@ -8,6 +8,12 @@ Todos los cambios notables en FoodBook se documentan aquí. El formato sigue [Ke
 - ✅ `flutter test` → 62/62 tests passed
 - ✅ `flutter build windows --debug` → Build successful
 
+## [2.6.1] — 2026-09-17
+
+### Added
+- **feat(pension)** — `FoodBookPieChart` (torta) integrado en PensionScreen muestra la distribución de snacks del día agrupados por categoría decodificada.
+- **feat(search)** — `SearchSortOrder` enum (recent/oldest/amountHigh/amountLow) + `_pickSortOrder` modal bottom sheet con radio buttons. IconButton 'sort_rounded' en la barra de filtros.
+
 ## [2.6.0] — 2026-09-17
 
 ### Added — UX polish
