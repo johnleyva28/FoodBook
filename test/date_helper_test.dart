@@ -1,8 +1,13 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 import 'package:foodbook/core/utils/date_helper.dart';
 
 void main() {
+  setUpAll(() async {
+    await initializeDateFormatting('es_PE', null);
+  });
+
   group('DateHelper (calendario)', () {
     test('format y parse son simétricos', () {
       final now = DateTime(2026, 9, 15);
@@ -46,4 +51,70 @@ void main() {
       }
     });
   });
+
+  group('DateHelper nuevas utilidades', () {
+    test('short formatea corto', () {
+      final d = DateTime(2026, 9, 15);
+      final out = DateHelper.short(d);
+      expect(out, contains('15'));
+      expect(out, contains('2026'));
+    });
+
+    test('weekday devuelve dia corto', () {
+      // lunes 14 sep 2026
+      final d = DateTime(2026, 9, 14);
+      final wd = DateHelper.weekday(d);
+      expect(wd.toLowerCase(), contains('lun'));
+    });
+
+    test('monthYear formatea mes + anio', () {
+      final d = DateTime(2026, 9, 1);
+      final out = DateHelper.monthYear(d);
+      expect(out, contains('2026'));
+    });
+
+    test('isToday detecta correctamente', () {
+      expect(DateHelper.isToday(DateTime.now()), isTrue);
+      expect(DateHelper.isToday(DateTime(2000, 1, 1)), isFalse);
+    });
+
+    test('isCurrentMonth detecta el mes actual', () {
+      expect(DateHelper.isCurrentMonth(DateTime.now()), isTrue);
+      expect(DateHelper.isCurrentMonth(DateTime(2000, 1, 1)), isFalse);
+    });
+
+    test('firstDayOfMonth siempre es dia 1', () {
+      final d = DateTime(2026, 9, 17);
+      expect(DateHelper.firstDayOfMonth(d), DateTime(2026, 9, 1));
+    });
+
+    test('lastDayOfMonth retorna 30/31 segun mes', () {
+      expect(DateHelper.lastDayOfMonth(DateTime(2026, 9, 1)).day, 30);
+      expect(DateHelper.lastDayOfMonth(DateTime(2026, 2, 1)).day, 28);
+      // 2026 no es bisiesto
+    });
+
+    test('daysBetween calcula diferencia', () {
+      final a = DateTime(2026, 9, 1);
+      final b = DateTime(2026, 9, 10);
+      expect(DateHelper.daysBetween(a, b), 9);
+      expect(DateHelper.daysBetween(b, a), -9);
+    });
+
+    test('lastNDays retorna n fechas terminando en hoy', () {
+      final days = DateHelper.lastNDays(7);
+      expect(days.length, 7);
+      // El ultimo es hoy
+      expect(DateHelper.isToday(days.last), isTrue);
+      // El primero es hace 6 dias (valor positivo si restamos hoy - primero)
+      expect(DateHelper.daysBetween(days.first, DateTime.now()), 6);
+    });
+
+    test('monthRange devuelve inicio y fin del mes', () {
+      final range = DateHelper.monthRange(DateTime(2026, 9, 17));
+      expect(range.start, DateTime(2026, 9, 1));
+      expect(range.end, DateTime(2026, 9, 30));
+    });
+  });
+
 }
