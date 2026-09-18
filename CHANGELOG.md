@@ -8,6 +8,14 @@ Todos los cambios notables en FoodBook se documentan aquí. El formato sigue [Ke
 - ✅ `flutter test` → 62/62 tests passed
 - ✅ `flutter build windows --debug` → Build successful
 
+## [2.6.0] — 2026-09-17
+
+### Added — UX polish
+- **feat(principal)** — Acciones `Buscar` y `Exportar` en el AppBar de Hoy. Un tap en el icono de lupa abre `SearchScreen` con su propio provider; un tap en el icono share genera un CSV con todos los snacks y pagos via `CsvExporter.exportAndShare`, con `AppToast.info` mientras se genera y `success/error` al terminar.
+- **feat(calendario)** — `CalendarGrid.onMonthSelected` opcional: cuando se da, el label del mes se vuelve `InkWell` con flecha que abre `showDatePicker` para saltar a otra fecha directamente. `CalendarioViewModel.setViewedMonth(DateTime)` actualiza el mes visualizado.
+- **feat(calendario)** — `DiaDetalleScreen` muestra un FAB extendido `Ir a hoy` solo cuando la fecha mostrada no es hoy. Un tap navega via `pushReplacement` a la `DiaDetalleScreen` de hoy.
+- **feat(cuentas)** — `YearStatsScreen` accesible desde Cuentas → "Ver estadísticas anuales". Selector de año con flechas prev/next (no permite futuro), `BalanceRingWithLegend` con consumido vs pagado del año, tabla mensual con consumido/pagado/ratio (LinearProgressIndicator), y top 5 días con más gasto del año. Reactividad en vivo via `AppDataStreams`.
+
 ## [2.5.0] — 2026-09-17
 
 ### Added — Catálogos + búsqueda mejorada + calendario
