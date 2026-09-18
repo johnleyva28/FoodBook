@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../../core/theme/foodbook_colors.dart';
 import '../../../core/theme/foodbook_spacing.dart';
 import '../../../core/widgets/hero_card.dart';
+import '../../../core/widgets/pie_chart.dart';
 import '../../../core/widgets/stat_row.dart';
 import '../../../data/app_data_streams.dart';
 import '../../../data/repositories/snack_repository.dart';
@@ -60,6 +61,14 @@ class PensionScreen extends StatelessWidget {
 
           // Precio referencial (lunch + dinner + breakfast promedio)
           final consumed = lunches * 9.0 + dinners * 9.0 + snacksTotal;
+
+          // Distribucion de snacks por categoria (para el pie chart)
+          final byCategory = <String, double>{};
+          for (final s in todaySnacks) {
+            final decoded = SnackRepository.decode(s.description);
+            final cat = decoded.$1 ?? 'Otros';
+            byCategory[cat] = (byCategory[cat] ?? 0) + s.price;
+          }
 
           return ListView(
             padding: const EdgeInsets.all(FoodBookSpacing.lg),
@@ -162,6 +171,26 @@ class PensionScreen extends StatelessWidget {
                   ),
                 ),
               ),
+              if (byCategory.isNotEmpty) ...[
+                const SizedBox(height: FoodBookSpacing.lg),
+                const _SectionTitle(
+                  title: 'Snacks por categoría',
+                  icon: Icons.pie_chart_rounded,
+                ),
+                const SizedBox(height: FoodBookSpacing.sm),
+                Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(FoodBookSpacing.lg),
+                    child: Center(
+                      child: FoodBookPieChart(
+                        data: byCategory,
+                        size: 200,
+                        emptyLabel: 'Sin snacks',
+                      ),
+                    ),
+                  ),
+                ),
+              ],
               const SizedBox(height: FoodBookSpacing.lg),
 
               // ── Menú del día ──
