@@ -5,8 +5,17 @@ Todos los cambios notables en FoodBook se documentan aquí. El formato sigue [Ke
 ## Estado del build
 
 - ✅ `flutter analyze` → No issues found
-- ✅ `flutter test` → 81/81 tests passed
+- ✅ `flutter test` → 91/91 tests passed
 - ✅ `flutter build windows --debug` → Build successful
+
+## [2.6.5] — 2026-09-17
+
+### Added
+- **feat(date_helper)** — 10 métodos utilitarios nuevos: `short`, `weekday`, `monthYear`, `isToday`, `isCurrentMonth`, `firstDayOfMonth`, `lastDayOfMonth`, `daysBetween`, `lastNDays`, `monthRange` (record). Permiten construir reportes, calendarios y checks temporales sin lógica repetida.
+- **feat(snack_repository)** — `getBetween(from, to)` lista snacks por rango, `totalsByDate(from, to)` mapa fecha→total. Útil para reportes mensuales.
+
+### Tests
+- 91/91 tests pasando (+10 nuevos para `DateHelper`).
 
 ## [2.6.4] — 2026-09-17
 
