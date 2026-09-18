@@ -6,6 +6,7 @@ import '../../../core/theme/foodbook_spacing.dart';
 import '../../../core/widgets/balance_ring.dart';
 import '../../../core/widgets/stat_row.dart';
 import '../../../data/app_data_streams.dart';
+import 'monthly_stats_screen.dart';
 
 /// Pantalla de estadísticas anuales.
 ///
@@ -37,6 +38,17 @@ class _YearStatsScreenState extends State<YearStatsScreen> {
       appBar: AppBar(
         title: const Text('Estadísticas'),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.calendar_view_month_rounded),
+            tooltip: 'Resumen mensual',
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => const MonthlyStatsScreen(),
+                ),
+              );
+            },
+          ),
           IconButton(
             icon: const Icon(Icons.chevron_left_rounded),
             onPressed: () => setState(() => _year -= 1),
