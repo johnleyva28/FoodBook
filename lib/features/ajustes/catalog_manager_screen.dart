@@ -105,16 +105,11 @@ class _CategoryList extends StatelessWidget {
 class _PaymentMethodList extends StatelessWidget {
   const _PaymentMethodList();
 
-  // Nombres por defecto (mismos que en el seed del repositorio).
-  static const _defaultNames = {'Efectivo', 'Yape', 'Plin', 'Transferencia'};
-
   @override
   Widget build(BuildContext context) {
     final streams = context.watch<AppDataStreams>();
     final repo = context.read<CatalogRepository>();
-    final methods = streams.categories
-        .where((c) => _defaultNames.contains(c.name))
-        .toList();
+    final methods = streams.paymentMethods;
 
     return Column(
       children: [

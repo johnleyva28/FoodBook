@@ -40,11 +40,16 @@ void main() {
     });
 
     test('5 bodies no vacios', () {
-      for (var i = 1; i <= 5; i++) {
-        final body = (AppStrings.onboardingBody1 + i.toString()) as String;
-        // trick: just check length > 20
-        expect(body.length, greaterThan(20),
-            reason: 'body #$i debe tener contenido');
+      final bodies = [
+        AppStrings.onboardingBody1,
+        AppStrings.onboardingBody2,
+        AppStrings.onboardingBody3,
+        AppStrings.onboardingBody4,
+        AppStrings.onboardingBody5,
+      ];
+      for (var i = 0; i < bodies.length; i++) {
+        expect(bodies[i].length, greaterThan(20),
+            reason: 'body #${i + 1} debe tener contenido');
       }
     });
 

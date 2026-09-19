@@ -10,7 +10,7 @@ void main() {
     });
 
     test('appVersion es semver X.Y.Z', () {
-      final v = AppConstants.appVersion;
+      const v = AppConstants.appVersion;
       final parts = v.split('.');
       expect(parts.length, 3);
       for (final p in parts) {
