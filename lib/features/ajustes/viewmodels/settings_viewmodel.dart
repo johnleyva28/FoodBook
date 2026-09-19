@@ -117,7 +117,7 @@ class SettingsViewModel extends ChangeNotifier {
   }
 
   Future<void> setMonthlyBudget(double value) async {
-    if (value < 0) return;
+    if (value <= 0) return;
     await _settingsRepo.setString(
       AppConstants.keyMonthlyBudget,
       value.toString(),
