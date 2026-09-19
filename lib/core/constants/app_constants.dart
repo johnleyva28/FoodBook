@@ -4,7 +4,7 @@ class AppConstants {
 
   // ── Identidad ──
   static const String appName = 'FoodBook';
-  static const String appVersion = '2.6.9';
+  static const String appVersion = '2.7.0';
   static const String appTagline = 'Tu pensión, en un cuaderno';
 
   // ── Precios por defecto (soles) ──

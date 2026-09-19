@@ -5,8 +5,23 @@ Todos los cambios notables en FoodBook se documentan aquí. El formato sigue [Ke
 ## Estado del build
 
 - ✅ `flutter analyze` → No issues found
-- ✅ `flutter test` → 171/171 tests passed
+- ✅ `flutter test` → 290/290 tests passed
 - ✅ `flutter build windows --debug` → Build successful
+
+## [2.7.0] — 2026-09-17
+
+### Added
+- **test(money_formatter_edge)** — 20 tests de `formatCompact` (1000, negativos, millones), `signed` (negativos, valor absoluto), `number` (redondeo, sin símbolo), inmutabilidad const, locales custom.
+- **test(date_helper_edge)** — 36 tests de años bisiestos (feb 2024/2000/2026/1900), cruce de mes/año, `lastNDays` n=0/1/5/7/30, `monthRange` completo, formato ISO y zero-padding.
+- **test(empty_state_extra)** — 12 tests de `EmptyState`: tamaño icono 64px, alpha 0.7, `TextAlign.center` en título/descripción, padding `xl`, textos largos sin overflow.
+- **test(highlighted_text_extra)** — 17 tests de `HighlightedText`: case-insensitive bidireccional, múltiples ocurrencias como `RichText`, caracteres especiales (acentos, números, símbolos `S/`), textos largos.
+- **test(hero_card)** — 10 tests de `HeroCard`: label/amount/subtitle/icon opcionales, 4 variantes (primary/danger/success/info), onTap callback.
+- **test(stat_row)** — 9 tests de `StatRow`: icono/label/value/sublabel, valueColor custom, onTap callback, textos largos.
+- **test(foodbook_logo)** — 8 tests de `FoodBookLogo`: size default 32, custom 64/128, variantes dark, estructura Container/Stack, shadow escalable.
+- **test(reminder_banner)** — 7 tests de `ReminderBanner`: showLunch/showDinner, callbacks, factory `forNow`.
+
+### Tests
+- 290/290 tests pasando (+119 nuevos: money_formatter_edge, date_helper_edge, empty_state_extra, highlighted_text_extra, hero_card, stat_row, foodbook_logo, reminder_banner).
 
 ## [2.6.9] — 2026-09-17
 
