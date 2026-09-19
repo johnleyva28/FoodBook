@@ -5,8 +5,29 @@ Todos los cambios notables en FoodBook se documentan aquí. El formato sigue [Ke
 ## Estado del build
 
 - ✅ `flutter analyze` → No issues found
-- ✅ `flutter test` → 97/97 tests passed
+- ✅ `flutter test` → 171/171 tests passed
 - ✅ `flutter build windows --debug` → Build successful
+
+## [2.6.9] — 2026-09-17
+
+### Added
+- **test(snack_repository)** — 14 tests para codificación/decodificación `[cat:]desc`.
+- **test(payment_repository)** — 15 tests para codificación/decodificación `[method:]nota`.
+- **test(app_strings)** — 17 tests de strings centralizados (auth, onboarding, roles, daily, cuentas, calendario, búsqueda, pensión, errores, confirmaciones, inmutabilidad const).
+- **test(app_constants)** — 11 tests de invariantes (versión semver, precios, monedas, claves snake_case únicas, presupuesto, horas de notificación).
+- **test(foodbook_spacing)** — 5 tests del sistema de espaciado/radios/iconos (orden monótono creciente).
+- **test(foodbook_colors)** — 12 tests de paleta (luminancia navy/sky, semánticos verde/ámbar/rojo, contraste WCAG AA ≥ 4.5).
+- **docs(license)** — MIT LICENSE archivo.
+- **docs(editorconfig)** — `.editorconfig` con 2 espacios, LF, utf-8, final newline.
+- **docs(github)** — Pull request template + bug report + feature request templates.
+
+### Fixed
+- **fix(catalog)** — `_PaymentMethodList` ahora usa `streams.paymentMethods` en vez de filtrar `streams.categories` por nombres default. Bug crítico que mostraba resultados incorrectos.
+- **fix(streams)** — Añadida subscripción reactiva a `payment_methods` en `AppDataStreams` (patrón idéntico a `categories`). Ahora la lista de métodos de pago se sincroniza en vivo.
+- **fix(settings)** — `setMonthlyBudget(0)` ahora se rechaza (antes solo `< 0`). Barra siempre al 100% con budget 0 no tenía sentido.
+
+### Tests
+- 171/171 tests pasando (+74 nuevos: snack_repository, payment_repository, app_strings, app_constants, foodbook_spacing, foodbook_colors).
 
 ## [2.6.8] — 2026-09-17
 
