@@ -5,8 +5,21 @@ Todos los cambios notables en FoodBook se documentan aquí. El formato sigue [Ke
 ## Estado del build
 
 - ✅ `flutter analyze` → No issues found
-- ✅ `flutter test` → 290/290 tests passed
+- ✅ `flutter test` → 390/390 tests passed
 - ✅ `flutter build windows --debug` → Build successful
+
+## [2.7.1] — 2026-09-17
+
+### Added
+- **test(daily_bar_chart)** — 16 tests del chart de barras (modelo `DailyChartData`, renderizado con 0/1/7/30 elementos, valores 0, unitPrefix `S/`/`$`, marca `isToday`).
+- **test(pie_chart)** — 15 tests del chart de torta (lista vacía con emptyLabel, valores 0/negativos ignorados, sizes 60/180/300, leyenda con categorías y porcentajes, ciclo de paleta con >6 secciones).
+- **test(csv_exporter_extra)** — 17 tests de `buildCsvString` (estructura, escape RFC 4180 para comas/comillas/saltos de línea, snacks + payments).
+- **test(json_exporter_extra)** — 17 tests de `buildJsonString` (metadata con counts, snacks/payments con/sin categoría/método, formato indentado, caracteres especiales con acentos/comillas/decimales).
+- **test(daily_extras_model)** — 17 tests del modelo `DailyExtras` (constructor, `fromRow` con nulls, `copyWith`, edge cases con rating 1-5 y extraExpenses negativos/grandes).
+- **test(category_model)** — 18 tests de los modelos `Category` y `PaymentMethod` (constructor, `fromRow` con defaults para icon/color/is_default, `copyWith`).
+
+### Tests
+- 390/390 tests pasando (+100 nuevos: daily_bar_chart, pie_chart, csv_exporter_extra, json_exporter_extra, daily_extras_model, category_model).
 
 ## [2.7.0] — 2026-09-17
 
